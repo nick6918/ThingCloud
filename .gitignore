@@ -5,6 +5,10 @@ __pycache__/
 # C extensions
 *.so
 
+#execution file
+*.pyc
+settings.py
+
 # Distribution / packaging
 .Python
 env/
