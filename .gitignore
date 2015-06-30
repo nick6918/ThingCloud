@@ -7,7 +7,7 @@ __pycache__/
 
 #execution file
 *.pyc
-settings.py
+ThingCloud/settings.py
 
 # Distribution / packaging
 .Python
