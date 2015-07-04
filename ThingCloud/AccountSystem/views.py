@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.forms.models import model_to_dict 
 from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify
 from TCD_lib.security import Salt
@@ -37,20 +38,21 @@ def register(request):
 	Returns:
 		@result: Http Response in JSON.
 	"""
-	user = {gid : 1, version: "1.0 User"}
+	user = {"gid" : 1, "version": "1.0 User"}
 	user['nickName'] = request.POST.get("nickname", None)
-	userList = User.objects.filter(nickname = nickName)
+	userList = User.objects.filter(nickname = user['nickName'])
 	if userList:
-		result = Jsonify({"status":False, "error_code":"1106", "error_message":"Nickname Already Taken"})
+		return Jsonify({"status":False, "error_code":"1106", "error_message":"Nickname Already Taken"})
 	user['ip'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
-	user['birthday'] = request.POST.get("birthday", None)
+	user['birthday'] = request.POST.get("birthday", "")
 	user['password'] = request.POST.get("password", None)
 	user['phone'] = request.POST.get("phone", None)
-	user['gender'] = request.POST.get("gender", None)
-	if not (nickName and birthday and password and phone and gender):
+	user['gender'] = request.POST.get("gender", 2)
+	if not (user['nickName']  and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
-	avatar = request.Files.get("avatar", None)
+	# avatar = request.File.get("avatar", None)
+	avatar = None
 	if avatar:
 		user['hasAvatar'] = True
 		#PictureModel.uploadPicture(avatar)
@@ -59,9 +61,9 @@ def register(request):
 	salt = Salt()
 	user['username'] = "USER"+salt.generateSalt(10) +"@thingcloud.com"
 	timestamp = str(int(math.floor(time.time())))
-	_hash = salt.hash(salt.md5(password) + "|" + username + "|" + timestamp)
+	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
 	password = salt.md5(_hash+salt.md5(user['password']))
-	currentUser = User(gid = 0, nickname = user['nickName'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
+	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickName'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
 	user['session'] = createSession(user)
@@ -71,13 +73,14 @@ def verifyCode(request):
 	phone = request.GET.get('phone', None)
 	code = request.GET.get('code', None)
 	if not (phone and code):
-		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message", "user":user})
-	user = User.objects.get(phone)
+		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message"})
+	user = User.objects.filter(phone=phone)
 	if user:
-		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message", "user":user})
+		user =  model_to_dict(user[0])
+		return Jsonify({"status":False, "error_code":"1103", "error_message":"Phone number already registered"})
 	else:
 		#iMessage.send(phone, code)
-		return Jsonfiy({"status":True})
+		return Jsonify({"status":True})
 	
 def loginByPhone(request):
 	"""
@@ -90,7 +93,7 @@ def loginByPhone(request):
 	user = User.objects.get(phone = phone)
 	salt = Salt()
 	if not user:
-		return Jsonify({"status":False, "error_code":"1105", "error_message":"Phone number already registered", "user":user})
+		return Jsonify({"status":False, "error_code":"1105", "error_message":"Phone number is not registered", "user":user})
 	if user.password == salt.md5(user.salt+salt.md5(user_password)):
 		logger.debug(("#USER#", user))
 		user['session'] = updateSession(user)

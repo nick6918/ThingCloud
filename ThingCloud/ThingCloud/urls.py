@@ -16,11 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
+from AccountSystem.views import loginByPhone, register, verifyCode
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r"^index$", index),
-    url(r"^account/verifycode$", index),
-    url(r"^account/register$", index),
-    url(r"^account/login$", index),
+    url(r"^account/verifycode$", verifyCode),
+    url(r"^account/register$", register),
+    url(r"^account/login$", loginByPhone),
 ]
