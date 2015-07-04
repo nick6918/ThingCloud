@@ -20,4 +20,7 @@ from MainSystem.views import index
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r"^index$", index),
+    url(r"^account/verifycode$", index),
+    url(r"^account/register$", index),
+    url(r"^account/login$", index),
 ]
