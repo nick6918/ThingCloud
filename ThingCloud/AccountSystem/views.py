@@ -19,8 +19,9 @@ def createSession(user):
 	return sessionPassword
 
 def updateSession(user):
-	session = UserSession.objects.get(user['uid'])
+	session = UserSession.objects.filter(uid=user['uid'])
 	if session:
+		session = session[0]
 		salt = Salt()
 		timestamp = str(int(math.floor(time.time())))
 		sessionPassword = salt.hash(str(user['uid'])+"|"+timestamp)	
@@ -89,14 +90,18 @@ def loginByPhone(request):
 	phone = request.GET.get('phone', None)
 	user_password = request.GET.get('password', None)
 	if not (phone and user_password):
-		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message", "user":user})
-	user = User.objects.get(phone = phone)
+		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message"})
+	user = User.objects.filter(phone = phone)
 	salt = Salt()
 	if not user:
-		return Jsonify({"status":False, "error_code":"1105", "error_message":"Phone number is not registered", "user":user})
-	if user.password == salt.md5(user.salt+salt.md5(user_password)):
+		return Jsonify({"status":False, "error_code":"1105", "error_message":"Phone number is not registered"})
+	user = model_to_dict(user[0])
+	if user['password'] == salt.md5(user['salt']+salt.md5(user_password)):
 		logger.debug(("#USER#", user))
 		user['session'] = updateSession(user)
+		#some info is not allowed to be known by clients
+		del user['salt']
+		del user['password']
 		return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 	else:
 		return Jsonify({"status":False, "error_code":"1104", "error_message":"Password error, login failed"})
