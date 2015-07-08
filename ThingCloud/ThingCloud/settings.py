@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'thingcloud',#os.path.join(BASE_DIR, 'db.sqlite3'),
         'USER':'root',
-        'PASSWORD':'',
+        'PASSWORD':'nick885677',
         #'HOST':'192.168.3.188',
         'HOST':'127.0.0.1',
         'PORT':'3306',

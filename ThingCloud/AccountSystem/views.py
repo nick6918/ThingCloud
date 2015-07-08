@@ -5,7 +5,7 @@ from TCD_lib.utils import get_client_ip, Jsonify
 from TCD_lib.security import Salt
 from models import User, UserRelation, UserSession
 import time,math, logging
-
+import logging
 logger = logging.getLogger('appserver')
 
 # Create your views here.
@@ -50,6 +50,7 @@ def register(request):
 	user['password'] = request.POST.get("password", None)
 	user['phone'] = request.POST.get("phone", None)
 	user['gender'] = request.POST.get("gender", 2)
+	logger.debug((user['nickName'], user['password'], user['phone']))
 	if not (user['nickName']  and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
 	# avatar = request.File.get("avatar", None)
@@ -71,8 +72,10 @@ def register(request):
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 
 def verifyCode(request):
-	phone = request.GET.get('phone', None)
-	code = request.GET.get('code', None)
+	logger.debug("get here")
+	phone = request.GET.get("phone", None)
+	code = request.GET.get("code", None)
+	logger.debug((phone, code))
 	if not (phone and code):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough message"})
 	user = User.objects.filter(phone=phone)
