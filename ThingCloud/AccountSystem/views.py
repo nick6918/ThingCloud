@@ -40,13 +40,12 @@ def register(request):
 		@result: Http Response in JSON.
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
-	user['nickname'] = request.POST.get("nickname", None)
-	userList = User.objects.filter(nickname = user['nickname'])
+	user['nickName'] = request.POST.get("nickname", None)
+	userList = User.objects.filter(nickname = user['nickName'])
 	if userList:
 		return Jsonify({"status":False, "error_code":"1106", "error_message":"Nickname Already Taken"})
-	user['loginIp'] = get_client_ip(request)
+	user['ip'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
-	user['lastLogin'] = user['registerTime']
 	user['birthday'] = request.POST.get("birthday", "")
 	user['password'] = request.POST.get("password", None)
 	user['phone'] = request.POST.get("phone", None)
@@ -56,21 +55,19 @@ def register(request):
 	# avatar = request.File.get("avatar", None)
 	avatar = None
 	if avatar:
-		user['avatar'] = True
+		user['hasAvatar'] = True
 		#PictureModel.uploadPicture(avatar)
 	else:
-		user['avatar'] = False
+		user['hasAvatar'] = False
 	salt = Salt()
 	user['username'] = "USER"+salt.generateSalt(10) +"@thingcloud.com"
-	#Unchecked for uniqueness
 	timestamp = str(int(math.floor(time.time())))
 	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
 	password = salt.md5(_hash+salt.md5(user['password']))
-	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['loginIp'], avatar = ['avatar'], salt = _hash, password = password, username = user['username'] )
+	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickName'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
 	user['session'] = createSession(user)
-	del user['registerTime']
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 
 def verifyCode(request):
@@ -86,7 +83,7 @@ def verifyCode(request):
 		return Jsonify({"status":False, "error_code":"1103", "error_message":"Phone number already registered"})
 	else:
 		#iMessage.send(phone, code)
-		return Jsonify({"status":True, "error_code":"", "error_message":""})
+		return Jsonify({"status":True})
 	
 def loginByPhone(request):
 	"""
@@ -107,7 +104,6 @@ def loginByPhone(request):
 		#some info is not allowed to be known by clients
 		del user['salt']
 		del user['password']
-		del user['register']
 		return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 	else:
 		return Jsonify({"status":False, "error_code":"1104", "error_message":"Password error, login failed"})
