@@ -2,6 +2,7 @@ import math
 from Crypto.Hash import MD5,SHA
 import time,random
 import logging
+from django.db import connection
 logger = logging.getLogger('appserver')
 class Salt(object):
 	def __init__(self):
@@ -44,4 +45,3 @@ class Salt(object):
 		logger.debug('signature: '+signature)
 		logger.debug(shasum.hexdigest())
 		return shasum.hexdigest() == signature
-

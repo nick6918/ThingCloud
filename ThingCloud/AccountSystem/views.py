@@ -49,7 +49,8 @@ def register(request):
 	user['birthday'] = request.POST.get("birthday", "")
 	user['password'] = request.POST.get("password", None)
 	user['phone'] = request.POST.get("phone", None)
-	user['gender'] = request.POST.get("gender", 2)
+	gender = request.POST.get("gender", 2)
+	user['gender'] = int(gender)
 	if not (user['nickname']  and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
 	# avatar = request.File.get("avatar", None)
