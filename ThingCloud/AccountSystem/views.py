@@ -43,14 +43,14 @@ def register(request):
 	user['nickName'] = request.POST.get("nickname", None)
 	userList = User.objects.filter(nickname = user['nickName'])
 	if userList:
-		return Jsonify({"status":False, "error_code":"1106", "error_message":"Nickname Already Taken"})
-	user['ip'] = get_client_ip(request)
+		return Jsonify({"status":False, "error_code":"1106", "error_message":"nickname Already Taken"})
+	user['loginIp'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
 	user['birthday'] = request.POST.get("birthday", "")
 	user['password'] = request.POST.get("password", None)
 	user['phone'] = request.POST.get("phone", None)
 	user['gender'] = request.POST.get("gender", 2)
-	if not (user['nickName']  and user['password'] and user['phone']):
+	if not (user['nickname']  and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
 	# avatar = request.File.get("avatar", None)
 	avatar = None
