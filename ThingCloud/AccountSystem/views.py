@@ -40,8 +40,8 @@ def register(request):
 		@result: Http Response in JSON.
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
-	user['nickName'] = request.POST.get("nickname", None)
-	userList = User.objects.filter(nickname = user['nickName'])
+	user['nickname'] = request.POST.get("nickname", None)
+	userList = User.objects.filter(nickname = user['nickname'])
 	if userList:
 		return Jsonify({"status":False, "error_code":"1106", "error_message":"nickname Already Taken"})
 	user['loginIp'] = get_client_ip(request)
@@ -51,7 +51,7 @@ def register(request):
 	user['phone'] = request.POST.get("phone", None)
 	gender = request.POST.get("gender", 2)
 	user['gender'] = int(gender)
-	if not (user['nickname']  and user['password'] and user['phone']):
+	if not (user['nickname'] and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
 	# avatar = request.File.get("avatar", None)
 	avatar = None
@@ -65,7 +65,7 @@ def register(request):
 	timestamp = str(int(math.floor(time.time())))
 	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
 	password = salt.md5(_hash+salt.md5(user['password']))
-	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickName'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
+	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
 	user['session'] = createSession(user)
