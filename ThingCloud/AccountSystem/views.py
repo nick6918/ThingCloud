@@ -65,7 +65,7 @@ def register(request):
 	timestamp = str(int(math.floor(time.time())))
 	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
 	password = salt.md5(_hash+salt.md5(user['password']))
-	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['ip'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
+	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['loginIp'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
 	user['session'] = createSession(user)
