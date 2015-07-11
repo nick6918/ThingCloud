@@ -96,7 +96,9 @@ def register(request):
 					logger.error("1109 User Acquirement Fail")
 				return Jsonify({"status":False, "error_code":"1108", "error_message":"Avatar upload failed, use default", "user":user})
 	except Exceptione, e:
-		return Jsonify({"status":False, "error_code":"1110", "error_message":str(e)})
+		logger.error("upload error")
+		logger.error(e)
+		return Jsonify({"status":False, "error_code":"1110", "error_message":"file upload error"})
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 	
 def verifyCode(request):
