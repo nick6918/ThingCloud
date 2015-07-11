@@ -60,8 +60,10 @@ def register(request):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
 	avatar = request.FILES.get("avatar", None)
 	if avatar:
+		logger.error("here1")
 		user['hasAvatar'] = True
 	else:
+		logger.error("here2")
 		user['hasAvatar'] = False
 	salt = Salt()
 	user['username'] = "USER"+salt.generateSalt(10) +"@thingcloud.com"
