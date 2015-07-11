@@ -77,12 +77,12 @@ def register(request):
 		userRel = UserRelation(uid=user['uid'], uuid=uuid)
 		userRel.save()
 	user['session'] = createSession(user)
-	try:
-		if avatar:
-			currentPath = AVATARPATH + str(user['uid']) + ".png"
-			data = ""
-			for chunk in avatar.chunks():
-				data += chunk
+	if avatar:
+		currentPath = AVATARPATH + str(user['uid']) + ".png"
+		data = ""
+		for chunk in avatar.chunks():
+			data += chunk
+		try:
 			state = Picture().uploadPicture(currentPath, data)
 			if state:
 				return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
@@ -95,11 +95,12 @@ def register(request):
 				except Exception,e:
 					logger.error(e)
 					logger.error("1109 User Acquirement Fail")
-				return Jsonify({"status":False, "error_code":"1108", "error_message":"Avatar upload failed, use default", "user":user})
-	except Exception, e:
-		logger.error("upload error")
-		logger.error(e)
-		return Jsonify({"status":False, "error_code":"1110", "error_message":"file upload error"})
+			return Jsonify({"status":False, "error_code":"1108", "error_message":"Avatar upload failed, use default", "user":user})
+		except Exception, e:
+			logger.error("upload error")
+			logger.error(e)
+			return Jsonify({"status":False, "error_code":"1110", "error_message":"file upload error"})
+		
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 	
 def verifyCode(request):
