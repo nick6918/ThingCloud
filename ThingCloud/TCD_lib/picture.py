@@ -1,5 +1,5 @@
 from TCD_lib import settings
-from TCD_lib.upyun import UpYun
+from TCD_lib.upyun.upyun import UpYun
 # from multiprocessing import Process
 import logging
 logger= logging.getLogger('appserver')
