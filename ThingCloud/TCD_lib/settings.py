@@ -1,5 +1,5 @@
 # UPYUN SETTING
 image_bucket= "thingcloud-master"
 image_user= "nickwei"
-image_password= "nick885677"
+image_password= "thingcloud1234"
 
