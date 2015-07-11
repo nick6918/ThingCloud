@@ -9,6 +9,9 @@ import logging
 logger = logging.getLogger('appserver')
 
 # Create your views here.
+UPYUNURL = "thingcloud-master.b0.upaiyun.com"
+#UPYUNURL = "http://staticimage.thingcloud.net"
+AVATARPATH = UPYUNURL+"/avatar/"
 
 def createSession(user):
 	salt = Salt()
@@ -54,11 +57,9 @@ def register(request):
 	user['gender'] = int(gender)
 	if not (user['nickname'] and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error_code":"1107", "error_message":"Not enough infomation"})
-	# avatar = request.File.get("avatar", None)
-	avatar = None
+	avatar = request.FILES.get("avatar", None)
 	if avatar:
 		user['hasAvatar'] = True
-		#PictureModel.uploadPicture(avatar)
 	else:
 		user['hasAvatar'] = False
 	salt = Salt()
@@ -73,8 +74,24 @@ def register(request):
 		userRel = UserRelation(uid=user['uid'], uuid=uuid)
 		userRel.save()
 	user['session'] = createSession(user)
+	if avatar:
+		currentPath = AVATARPATH + user['uid'] + ".png"
+		for chunk in avatar.chunks():
+			data += chunk
+		state = PictureModel(cursor).uploadPicture(currentPath, data)
+		if state:
+			return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
+		else:
+			try:
+				_user = User.objects.get(uid=user['uid'])
+				_user.avatar = False
+				_user.save()
+			except Exception,e:
+				logger.error(e)
+				logger.error("1109 User Acquirement Fail")
+			return Jsonify({"status":False, "error_code":"1108", "error_message":"Avatar upload failed, use default", "user":user})
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
-
+	
 def verifyCode(request):
 	logger.debug("get here")
 	phone = request.GET.get("phone", None)
