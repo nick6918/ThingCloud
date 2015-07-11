@@ -80,6 +80,7 @@ def register(request):
 	try:
 		if avatar:
 			currentPath = AVATARPATH + str(user['uid']) + ".png"
+			data = ""
 			for chunk in avatar.chunks():
 				data += chunk
 			state = Picture().uploadPicture(currentPath, data)
@@ -95,7 +96,7 @@ def register(request):
 					logger.error(e)
 					logger.error("1109 User Acquirement Fail")
 				return Jsonify({"status":False, "error_code":"1108", "error_message":"Avatar upload failed, use default", "user":user})
-	except Exceptione, e:
+	except Exception, e:
 		logger.error("upload error")
 		logger.error(e)
 		return Jsonify({"status":False, "error_code":"1110", "error_message":"file upload error"})
