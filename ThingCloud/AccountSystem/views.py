@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict 
 from datetime import datetime
-from TCD_lib.utils import get_client_ip, Jsonify
+from TCD_lib.utils import get_client_ip, Jsonify, Picture
 from TCD_lib.security import Salt
+from TCD.lib.picture import Picture
 from models import User, UserRelation, UserSession
 import time,math, logging
 import logging
@@ -75,10 +76,10 @@ def register(request):
 		userRel.save()
 	user['session'] = createSession(user)
 	if avatar:
-		currentPath = AVATARPATH + user['uid'] + ".png"
+		currentPath = AVATARPATH + str(user['uid']) + ".png"
 		for chunk in avatar.chunks():
 			data += chunk
-		state = PictureModel(cursor).uploadPicture(currentPath, data)
+		state = Picture().uploadPicture(currentPath, data)
 		if state:
 			return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 		else:
