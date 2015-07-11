@@ -82,6 +82,7 @@ def register(request):
 		if state:
 			return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 		else:
+			logger.error("1108 UPYUN UPLOAD FAILED")
 			try:
 				_user = User.objects.get(uid=user['uid'])
 				_user.avatar = False
