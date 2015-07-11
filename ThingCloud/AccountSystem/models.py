@@ -30,7 +30,7 @@ class UserRelation(models.Model):
 	"""
 	urid = models.AutoField(primary_key = True)
 	uid = models.IntegerField(max_length = 10)
-	uuid = models.IntegerField(max_length = 10)
+	uuid = models.CharField(max_length = 100)
 	
 	class Meta:
 		db_table = 'user_relation'
