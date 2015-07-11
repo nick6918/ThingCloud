@@ -39,6 +39,7 @@ def register(request):
 	Returns:
 		@result: Http Response in JSON.
 	"""
+	uuid = request.POST.get("uuid", None)
 	user = {"gid" : 1, "version": "1.0 User"}
 	user['nickname'] = request.POST.get("nickname", None)
 	userList = User.objects.filter(nickname = user['nickname'])
@@ -65,9 +66,12 @@ def register(request):
 	timestamp = str(int(math.floor(time.time())))
 	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
 	password = salt.md5(_hash+salt.md5(user['password']))
-	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['loginIp'], avatar = ['hasAvatar'], salt = _hash, password = password, username = user['username'] )
+	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['loginIp'], avatar = user['hasAvatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
+	if uuid: 
+		userRel = UserRelation(uid=user['uid'], uuid=uuid)
+		userRel.save()
 	user['session'] = createSession(user)
 	return Jsonify({"status":True, "error_code":"", "error_message":"", "user":user})
 
@@ -90,6 +94,7 @@ def loginByPhone(request):
 	"""
 	login by phone, return dynamic session.
 	"""
+	uuid = request.GET.get('uuid', None)
 	phone = request.GET.get('phone', None)
 	user_password = request.GET.get('password', None)
 	if not (phone and user_password):
@@ -99,6 +104,9 @@ def loginByPhone(request):
 	if not user:
 		return Jsonify({"status":False, "error_code":"1105", "error_message":"Phone number is not registered"})
 	user = model_to_dict(user[0])
+	if uuid:
+		userRel = UserRelation(uuid=uuid, uid=user['uid'])
+		userRel.save()
 	if user['password'] == salt.md5(user['salt']+salt.md5(user_password)):
 		logger.debug(("#USER#", user))
 		user['session'] = updateSession(user)
