@@ -7,7 +7,7 @@ class User(models.Model):
 	Basic user info.
 	"""
 	uid = models.AutoField(primary_key = True)
-	gid = models.IntegerField(max_length = 10)
+	gid = models.IntegerField()
 	nickname = models.CharField(max_length=200)
 	gender = models.IntegerField()
 	birthday = models.CharField(max_length = 50)
@@ -23,17 +23,6 @@ class User(models.Model):
 	class Meta:
 		db_table = 'user'
 	
-class UserRelation(models.Model):
-	"""
-	The model is to record the relationship between temporary account and user account;
-	Once an temp account is logged in by an user, it is record here.
-	"""
-	urid = models.AutoField(primary_key = True)
-	uid = models.IntegerField(max_length = 10)
-	uuid = models.CharField(max_length = 100)
-	
-	class Meta:
-		db_table = 'user_relation'
 		
 class UserSession(models.Model):
 	"""

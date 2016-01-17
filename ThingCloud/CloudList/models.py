@@ -1,0 +1,26 @@
+from django.db import models
+from AccountSystem.models import User
+
+# Create your models here.
+
+class WareHouse(models.Model):
+	wid = models.AutoField(primary_key = True)
+	addr = models.CharField(max_length = 200)
+
+class Thing(models.Model):
+	tid = models.AutoField(primary_key = True)
+	user_belong_to = models.ForeignKey(User)
+	wh_in = models.ForeignKey(WareHouse)
+	name = models.CharField(max_length = 100)
+	notes = models.CharField(max_length = 200)
+	time_saved = models.DateTimeField()
+	state = (('IN', 'in_the_warehouse'), ('OUT', 'out_of_warehouse'))
+	typeid = models.IntegerField()
+	#0 for books, 1 for clothes, 2 for pants and dress, 3 for shoes
+	#4 for tools, 5 for electronics, 6 for others
+	subtype_name = models.CharField(max_length = 100)
+	#0 for female, 1 for male, 2 for suiting for both
+	gender = models.IntegerField()
+
+	class Meta:
+		db_table = 'things'

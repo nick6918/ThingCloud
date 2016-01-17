@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, verifyCode
+from CloudList.views import addNewItem, getItemList, modifyNotes
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -24,4 +25,7 @@ urlpatterns = [
     url(r"^account/verifycode$", verifyCode),
     url(r"^account/register$", register),
     url(r"^account/login$", loginByPhone),
+    url(r"^cloudlist/additem$", addNewItem),
+    url(r"^cloudlist/getlist$", getItemList),
+    url(r"^cloudlist/modifynotes$", modifyNotes),
 ]

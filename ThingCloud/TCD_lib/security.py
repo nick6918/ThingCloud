@@ -3,7 +3,11 @@ from Crypto.Hash import MD5,SHA
 import time,random
 import logging
 from django.db import connection
+from AccountSystem.models import User, UserSession
+from TCD_lib.utils import Jsonify
+
 logger = logging.getLogger('appserver')
+
 class Salt(object):
 	def __init__(self):
 		self.SaltLength=9
@@ -45,3 +49,36 @@ class Salt(object):
 		logger.debug('signature: '+signature)
 		logger.debug(shasum.hexdigest())
 		return shasum.hexdigest() == signature
+
+def UserAuthorization(func):
+	"""
+		Requre the function it decorated with request as its first Parameters.
+	"""
+	user = {}
+	def inner(request,*av,**kw):
+		if not 'HTTP_AUTHORIZATION' in request.META:
+			return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+		else:
+			auth = request.META['HTTP_AUTHORIZATION']
+			auth = auth.strip().decode('base64')
+			user['username'], user['password'] = auth.split(':')
+			if user['username']=='' or user['password']=='':
+				return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+			else:
+				_session_info = UserSession.objects.filter(session_password=user['password'])
+				if not _session_info:
+					 return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+			 	else:
+					 _uid = _session_info['uid']
+					 user = User.objects.filter(uid=_uid)
+					 if not user:
+						 return Jsonify({"error":"1102", "error_message":"User has not sufficient info", "status":False})
+					 else:
+						 del(user['loginIp'])
+						 del(user['lastLogin'])
+						 del(user['salt'])
+						 del(user['password'])
+						 del(user['register'])
+					 	 request.user=user
+		return func(request, *av, **kw)
+	return inner
