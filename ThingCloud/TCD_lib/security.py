@@ -1,5 +1,6 @@
 import math
 from Crypto.Hash import MD5,SHA
+from django.forms.models import model_to_dict
 import time,random
 import logging
 from django.db import connection
@@ -56,23 +57,28 @@ def UserAuthorization(func):
 	"""
 	user = {}
 	def inner(request,*av,**kw):
+		print request.META
+		user = {}
 		if not 'HTTP_AUTHORIZATION' in request.META:
-			return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+			return Jsonify({"error":"1102", "error_message":"User not login", "status":False})
 		else:
 			auth = request.META['HTTP_AUTHORIZATION']
 			auth = auth.strip().decode('base64')
 			user['username'], user['password'] = auth.split(':')
 			if user['username']=='' or user['password']=='':
-				return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+				return Jsonify({"error":"1102", "error_message":"User not login", "status":False})
 			else:
 				_session_info = UserSession.objects.filter(session_password=user['password'])
+				_session_info = model_to_dict(_session_info[0])
 				if not _session_info:
-					 return Jsonify({"error":"1101", "error_message":"User not login", "status":False})
+					 return Jsonify({"error":"1102", "error_message":"User not login", "status":False})
 			 	else:
+					 print _session_info
 					 _uid = _session_info['uid']
 					 user = User.objects.filter(uid=_uid)
+					 user = model_to_dict(user[0])
 					 if not user:
-						 return Jsonify({"error":"1102", "error_message":"User has not sufficient info", "status":False})
+						 return Jsonify({"error":"1103", "error_message":"User has not sufficient info", "status":False})
 					 else:
 						 del(user['loginIp'])
 						 del(user['lastLogin'])

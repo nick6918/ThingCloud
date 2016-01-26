@@ -5,7 +5,12 @@ from AccountSystem.models import User
 
 class WareHouse(models.Model):
 	wid = models.AutoField(primary_key = True)
+	name = models.CharField(max_length = 50)
 	addr = models.CharField(max_length = 200)
+	typeid = models.IntegerField()
+
+	class Meta:
+		db_table = "warehouses"
 
 class Thing(models.Model):
 	tid = models.AutoField(primary_key = True)
@@ -14,13 +19,14 @@ class Thing(models.Model):
 	name = models.CharField(max_length = 100)
 	notes = models.CharField(max_length = 200)
 	time_saved = models.DateTimeField()
-	state = (('IN', 'in_the_warehouse'), ('OUT', 'out_of_warehouse'))
+	state = models.IntegerField()
 	typeid = models.IntegerField()
 	#0 for books, 1 for clothes, 2 for pants and dress, 3 for shoes
-	#4 for tools, 5 for electronics, 6 for others
+	#4 for tools, 5 for electronics, 6 for bags and boxes, 7 for others
 	subtype_name = models.CharField(max_length = 100)
 	#0 for female, 1 for male, 2 for suiting for both
 	gender = models.IntegerField()
-
+	avatar = models.IntegerField()
+	
 	class Meta:
 		db_table = 'things'

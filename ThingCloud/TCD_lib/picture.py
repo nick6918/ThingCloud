@@ -1,9 +1,11 @@
 from TCD_lib import settings
 from TCD_lib.upyun.upyun import UpYun
+STATIC_IMAGE_PATH = ""
 # from multiprocessing import Process
 import logging
 logger= logging.getLogger('appserver')
 
+UPYUNURL = "thingcloud-master.b0.upaiyun.com"
 
 class Picture(object):
 	def __init__(self, _conn=None):
