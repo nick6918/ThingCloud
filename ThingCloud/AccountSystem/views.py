@@ -6,9 +6,8 @@ from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture, UPYUNURL
-from models import User, UserSession
-import time,math, logging
-import logging
+from models import User, UserSession, Code
+import time,math, logging, random
 logger = logging.getLogger('appserver')
 
 # Create your views here.
@@ -45,22 +44,26 @@ def register(request):
 		@result: Http Response in JSON.
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
+	user['phone'] = request.POST.get("phone", None)
 	user['nickname'] = request.POST.get("nickname", None)
+	user['password'] = request.POST.get("password", None)
+	_code = request.POST.get('code', None)
+	if not (user['nickname'] and user['password'] and user['phone'] and _code):
+		return Jsonify({"status":False, "error":"1101", "error_message":"Not enough infomation"})
+	code = Code.objects.filter(phone=user['phone'])
+	if not code or (_code != unicode(code[0].code)):
+		return Jsonify({"status":False, "error":"1104", "error_message":"Security code error"})
 	userList = User.objects.filter(nickname = user['nickname'])
 	if userList:
 		return Jsonify({"status":False, "error":"1108", "error_message":"nickname Already Taken"})
-	user['phone'] = request.POST.get("phone", None)
 	userList = User.objects.filter(phone=user['phone'])
 	if userList:
 		return Jsonify({"status":False, "error":"1105", "error_message":"phone number Already Taken"})
 	user['loginIp'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
 	user['birthday'] = request.POST.get("birthday", "")
-	user['password'] = request.POST.get("password", None)
 	gender = request.POST.get("gender", 2)
 	user['gender'] = int(gender)
-	if not (user['nickname'] and user['password'] and user['phone']):
-		return Jsonify({"status":False, "error":"1101", "error_message":"Not enough infomation"})
 	avatar = request.FILES.get("avatar", None)
 	if avatar:
 		user['hasAvatar'] = 1
@@ -104,17 +107,31 @@ def register(request):
 	del(user['password'])
 	return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
 
-def verifyCode(request):
+def sendCode(request):
+	"""
+		Generate and save code, send by message to user.
+		This code can never be sent or saved by client.
+	"""
 	phone = request.GET.get("phone", None)
-	code = request.GET.get("code", None)
-	if not (phone and code):
-		return Jsonify({"status":False, "error":"1101", "error_message":"Not enough message"})
+	if not phone:
+		return Jsonify({"status":False, "error":1101, "error_message":"Not enough message"})
+	phone=int(phone)
+	print phone
 	user = User.objects.filter(phone=phone)
 	if user:
-		return Jsonify({"status":False, "error":"1105", "error_message":"Phone number already registered"})
+		return Jsonify({"status":False, "error":1105, "error_message":"Phone number already registered"})
 	else:
+		#code = random.randint(100000, 1000000)
+		code = 123456
+		current_code = Code.objects.filter(phone=phone)
+		if current_code:
+			current_code=current_code[0]
+			current_code.code=code
+		else:
+			current_code = Code(phone=phone, code=code)
+		current_code.save()
 		#iMessage.send(phone, code)
-		return Jsonify({"status":True})
+		return Jsonify({"status":True, "error":"", "error_message":"", "message":True})
 
 def loginByPhone(request):
 	"""
@@ -134,6 +151,9 @@ def loginByPhone(request):
 		#some info is not allowed to be known by clients
 		del user['salt']
 		del user['password']
+		del user['register']
+		del user['loginIp']
+		del user['lastLogin']
 		return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
 	else:
 		return Jsonify({"status":False, "error":"1106", "error_message":"Password error, login failed"})

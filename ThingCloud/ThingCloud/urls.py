@@ -16,13 +16,13 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
-from AccountSystem.views import loginByPhone, register, verifyCode
+from AccountSystem.views import loginByPhone, register, sendCode
 from CloudList.views import addNewItem, getItemList, modifyNotes
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r"^index$", index),
-    url(r"^account/verifycode$", verifyCode),
+    url(r"^account/sendcode$", sendCode),
     url(r"^account/register$", register),
     url(r"^account/login$", loginByPhone),
     url(r"^cloudlist/additem$", addNewItem),
