@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import math
 from Crypto.Hash import MD5,SHA
 from django.forms.models import model_to_dict
