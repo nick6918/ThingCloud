@@ -49,16 +49,16 @@ def register(request):
 	user['password'] = request.POST.get("password", None)
 	_code = request.POST.get('code', None)
 	if not (user['nickname'] and user['password'] and user['phone'] and _code):
-		return Jsonify({"status":False, "error":"1101", "error_message":"Not enough infomation"})
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	code = Code.objects.filter(phone=user['phone'])
 	if not code or (_code != unicode(code[0].code)):
-		return Jsonify({"status":False, "error":"1104", "error_message":"Security code error"})
+		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
 	userList = User.objects.filter(nickname = user['nickname'])
 	if userList:
-		return Jsonify({"status":False, "error":"1108", "error_message":"nickname Already Taken"})
+		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
 	userList = User.objects.filter(phone=user['phone'])
 	if userList:
-		return Jsonify({"status":False, "error":"1105", "error_message":"phone number Already Taken"})
+		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录。"})
 	user['loginIp'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
 	user['birthday'] = request.POST.get("birthday", "")
@@ -97,11 +97,11 @@ def register(request):
 				except Exception,e:
 					logger.error(e)
 					logger.error("1109 User Acquirement Fail")
-			return Jsonify({"status":False, "error":"1109", "error_message":"Picture upload error, replaced by default.", "user":user})
+			return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 使用默认图片。", "user":user})
 		except Exception, e:
 			logger.error("upload error")
 			logger.error(e)
-			return Jsonify({"status":False, "error":"1109", "error_message":"Picture upload error, replaced by default."})
+			return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 使用默认图片。"})
 	del(user['registerTime'])
 	del(user['loginIp'])
 	del(user['password'])
@@ -114,12 +114,12 @@ def sendCode(request):
 	"""
 	phone = request.GET.get("phone", None)
 	if not phone:
-		return Jsonify({"status":False, "error":1101, "error_message":"Not enough message"})
+		return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入手机号"})
 	phone=int(phone)
 	print phone
 	user = User.objects.filter(phone=phone)
 	if user:
-		return Jsonify({"status":False, "error":1105, "error_message":"Phone number already registered"})
+		return Jsonify({"status":False, "error":1105, "error_message":"手机号已注册, 请直接登录"})
 	else:
 		#code = random.randint(100000, 1000000)
 		code = 123456
@@ -137,14 +137,14 @@ def loginByPhone(request):
 	"""
 	login by phone, return dynamic session.
 	"""
-	phone = request.GET.get('phone', None)
-	user_password = request.GET.get('password', None)
+	phone = request.POST.get('phone', None)
+	user_password = request.POST.get('password', None)
 	if not (phone and user_password):
-		return Jsonify({"status":False, "error":"1101", "error_message":"Not enough message"})
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入手机号和密码"})
 	user = User.objects.filter(phone = phone)
 	salt = Salt()
 	if not user:
-		return Jsonify({"status":False, "error":"1107", "error_message":"Phone number is not registered"})
+		return Jsonify({"status":False, "error":"1107", "error_message":"手机号已注册, 请直接登录"})
 	user = model_to_dict(user[0])
 	if user['password'] == salt.md5(user['salt']+salt.md5(user_password)):
 		user['session'] = updateSession(user)
@@ -156,4 +156,4 @@ def loginByPhone(request):
 		del user['lastLogin']
 		return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
 	else:
-		return Jsonify({"status":False, "error":"1106", "error_message":"Password error, login failed"})
+		return Jsonify({"status":False, "error":"1106", "error_message":"密码有误, 请重新输入"})

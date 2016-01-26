@@ -29,7 +29,7 @@ def addNewItem(request):
     wh_in_id = request.POST.get("whid", None)
     _name = TYPECONSTANT[typeid] + "-" + subtype_name + "-" + character
     if not user_belong_to_id or not wh_in_id:
-        return Jsonify({"status":False, "error":1101, "error_message":"Not enough message"})
+        return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入用户id以及仓库id。"})
     thing = Thing(avatar=_hasAvatar, name=_name, time_saved=timeAdd, typeid=typeid, gender=gender, subtype_name= subtype_name, user_belong_to_id= user_belong_to_id, wh_in_id=wh_in_id, state=1)
     thing.save()
     _tid = thing.tid
@@ -55,11 +55,11 @@ def addNewItem(request):
 				except Exception,e:
 					logger.error(e)
 					logger.error("1109 User Acquirement Fail")
-			return Jsonify({"status":False, "error":"1109", "error_message":"Picture upload error, replaced by default.", "thing":thing})
+			return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 使用默认图片。", "thing":thing})
 		except Exception, e:
 			logger.error("upload error")
 			logger.error(e)
-			return Jsonify({"status":False, "error":"1109", "error_message":"Picture upload error, replaced by default."})
+			return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 使用默认图片。"})
     return Jsonify({"status":True, "thing":thing, "error":"", "error_message":""})
 
 @UserAuthorization
@@ -68,7 +68,7 @@ def modifyNotes(request):
     tid = request.POST.get("tid", None)
     _user = request.user
     if not _notes or not tid:
-        return Jsonify({"status":False, "error":1101, "error_message":"Not enough message"})
+        return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入备注。"})
     else:
         thing = Thing.objects.filter(user_belong_to_id=_user['uid']).filter(tid=tid)
         if thing:
@@ -76,7 +76,7 @@ def modifyNotes(request):
             thing.notes=_notes
             thing.save()
         else:
-            return Jsonify({"status":False, "error":1201, "error_message":"Thing not existed"})
+            return Jsonify({"status":False, "error":1201, "error_message":"商品不存在。"})
     return Jsonify({"status":True, "error":"", "error_message":""})
 
 
