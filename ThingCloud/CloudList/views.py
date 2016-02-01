@@ -102,6 +102,7 @@ def getItemList(request):
             item = model_to_dict(item)
             item['wh_id']=wh_id
             item['wh_name']=wh_name
+            print item
             del(item['wh_in'])
             del(item['user_belong_to'])
             del(item['time_saved'])
