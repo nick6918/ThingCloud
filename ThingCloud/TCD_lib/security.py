@@ -71,10 +71,10 @@ def UserAuthorization(func):
 				return Jsonify({"error":"1102", "error_message":"用户未登录。", "status":False})
 			else:
 				_session_info = UserSession.objects.filter(session_password=user['password'])
-				_session_info = model_to_dict(_session_info[0])
 				if not _session_info:
 					 return Jsonify({"error":"1102", "error_message":"用户未登录。", "status":False})
 			 	else:
+					 _session_info = model_to_dict(_session_info[0])
 					 print _session_info
 					 _uid = _session_info['uid']
 					 user = User.objects.filter(uid=_uid)

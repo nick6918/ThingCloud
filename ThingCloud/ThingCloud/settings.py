@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'TCD_lib',
     'MainSystem',
     'AccountSystem',
-    'CloudList', 
+    'CloudList',
+    'OrderSystem',
 )
 
 MIDDLEWARE_CLASSES = (

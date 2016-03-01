@@ -18,6 +18,7 @@ from django.contrib import admin
 from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, sendCode
 from CloudList.views import addNewItem, getItemList, modifyNotes
+from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -28,4 +29,11 @@ urlpatterns = [
     url(r"^cloudlist/additem$", addNewItem),
     url(r"^cloudlist/getlist$", getItemList),
     url(r"^cloudlist/modifynotes$", modifyNotes),
+    url(r"^order/generate$", generateOrder),
+    url(r"^order/address$", modifyOrder),
+    url(r"^order/confirm$", confirmOrder),
+    url(r"^order/checkpayment$", checkPayment),
+    url(r"^order/orderlist$", getOrderList),
+    url(r"^order/cancel$", cancel),
+    url(r"^order/complain$", complain),
 ]

@@ -41,14 +41,15 @@ class Code(models.Model):
 	class Meta:
 		db_table = 'code_by_phone'
 
-class Address:
-	adid = AutoField(primary_key=True)
-	user = ForeignKey(User)
-	addr = CharField(max_length=200)
-	phone = CharField(max_length=50)
-	name = CharField(max_length=100)
-	is_default = IntegerField()
-	tagid = IntegerField()
+class Address(models.Model):
+	adid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User)
+	addr = models.CharField(max_length=200)
+	phone = models.CharField(max_length=50)
+	name = models.CharField(max_length=100)
+	gender = models.IntegerField()
+	is_default = models.IntegerField()
+	tagid = models.IntegerField()
 
 	class Meta:
-		user_address
+		db_table = 'user_address'

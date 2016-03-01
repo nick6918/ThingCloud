@@ -1,23 +1,32 @@
 from django.db import models
+from AccountSystem.models import Address, User
 
 # Create your models here.
 class Order(models.Model):
 
-    oid = models.IntegerField(primary_key=True)
-    addr = ForeignKey(Address)
-    phone = CharField(max_length=50)
-    gender = IntegerField(max_length=50)
-    name = CharField(max_length=100)
-    notes = CharField(max_length=300)
-    fee = IntegerField()
-    typeid = IntegerField()
-    itemList = CharField(max_length=200)
-    state = IntegerField()
-    pay_state = IntegerField()
-    create_time = DateTimeField()
-    paid_time = DateTimeField()
-    finish_time = DateTimeField()
+    oid = models.AutoField(primary_key=True)
+    addr = models.ForeignKey(Address)
+    user = models.ForeignKey(User)
+    notes = models.CharField(max_length=300)
+    fee = models.IntegerField()
+    typeid = models.IntegerField()
+    itemList = models.CharField(max_length=200)
+    state = models.IntegerField()
+    create_time = models.DateTimeField()
+    paid_time = models.DateTimeField()
+    finish_time = models.DateTimeField()
+    prepayid = models.CharField(max_length=50)
 
     class Meta:
 
-        db_table = order
+        db_table = "orders"
+
+class Complaint(models.Model):
+    cmpid = models.AutoField(primary_key=True)
+    state = models.IntegerField()
+    notes = models.CharField(max_length=300)
+    user = models.ForeignKey(User)
+    order = models.ForeignKey(Order)
+
+    class Meta:
+        db_table = "Complaints"
