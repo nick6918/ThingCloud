@@ -6,7 +6,7 @@ from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture, UPYUNURL
-from models import User, UserSession, Code
+from models import User, UserSession, Code, Address
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
 logger = logging.getLogger('appserver')
@@ -170,14 +170,14 @@ def address(request):
 		tag = request.POST.get("tag", None)
 		is_default = request.POST.get("isdefault", 0)
 		addrid = request.POST.get("addrid", None)
-		def_address = Adress.objects.filter(user_id=_user['uid']).filter(is_default=1)
+		def_address = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
 		if def_address:
 			def_address = def_address[0]
 		else:
 			def_address = None
 		if not addrid:
 			#生成新的地址信息
-			if not addr or not name or not gender or phone:
+			if not addr or not name or not gender or not phone:
 				return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
 			if not def_address:
 				is_default=1
@@ -187,7 +187,7 @@ def address(request):
 			address.save()
 		else:
 			#修改id为addrid的地址的部分信息
-			address = Address.objects.filter(addrid=addrid)
+			address = Address.objects.filter(adid=addrid)
 			if not address:
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
@@ -202,8 +202,9 @@ def address(request):
 					address.tag = tag
 				if addr:
 					address.addr = addr
-				if is_default==1:
+				if is_default=="1":
 					def_address.is_default=0
+					def_address.save()
 					address.is_default=1
 				address.save()
 		return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
@@ -213,7 +214,7 @@ def address(request):
 			return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
 		else:
 			addrid = int(addrid)
-			address = Adress.objects.filter(adid=addrid)
+			address = Address.objects.filter(adid=addrid)
 			if not address:
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
@@ -223,7 +224,7 @@ def address(request):
 @UserAuthorization
 def addressList(request):
 	_user = request.user
-	addressList = Adress.objects.filter(user_id=_user['uid'])
+	addressList = Address.objects.filter(user_id=_user['uid'])
 	resultList = []
 	for address in addressList:
 		address = model_to_dict(address)
