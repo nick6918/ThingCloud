@@ -8,6 +8,7 @@ from TCD_lib.security import Salt
 from TCD_lib.picture import Picture, UPYUNURL
 from models import User, UserSession, Code
 import time,math, logging, random
+from TCD_lib.security import UserAuthorization
 logger = logging.getLogger('appserver')
 
 # Create your views here.
@@ -157,3 +158,74 @@ def loginByPhone(request):
 		return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
 	else:
 		return Jsonify({"status":False, "error":"1106", "error_message":"密码有误, 请重新输入"})
+
+@UserAuthorization
+def address(request):
+	_user = request.user
+	if request.method == 'POST':
+		addr = request.POST.get("addr", None)
+		name = request.POST.get("name", None)
+		gender = request.POST.get("gender", None)
+		phone = request.POST.get("phone", None)
+		tag = request.POST.get("tag", None)
+		is_default = request.POST.get("isdefault", 0)
+		addrid = request.POST.get("addrid", None)
+		def_address = Adress.objects.filter(user_id=_user['uid']).filter(is_default=1)
+		if def_address:
+			def_address = def_address[0]
+		else:
+			def_address = None
+		if not addrid:
+			#生成新的地址信息
+			if not addr or not name or not gender or phone:
+				return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
+			if not def_address:
+				is_default=1
+			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'])
+			if tag:
+				address.tagid = tag
+			address.save()
+		else:
+			#修改id为addrid的地址的部分信息
+			address = Address.objects.filter(addrid=addrid)
+			if not address:
+				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
+			else:
+				address = address[0]
+				if phone:
+					address.phone = phone
+				if name:
+					address.name = name
+				if gender:
+					address.gender = gender
+				if tag:
+					address.tag = tag
+				if addr:
+					address.addr = addr
+				if is_default==1:
+					def_address.is_default=0
+					address.is_default=1
+				address.save()
+		return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
+	if request.method == 'GET':
+		addrid = request.GET.get("addrid")
+		if not addrid:
+			return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
+		else:
+			addrid = int(addrid)
+			address = Adress.objects.filter(adid=addrid)
+			if not address:
+				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
+			else:
+				address = address[0]
+				return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
+
+@UserAuthorization
+def addressList(request):
+	_user = request.user
+	addressList = Adress.objects.filter(user_id=_user['uid'])
+	resultList = []
+	for address in addressList:
+		address = model_to_dict(address)
+		resultList.append(address)
+	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":resultList})
