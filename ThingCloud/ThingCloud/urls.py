@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
-from AccountSystem.views import loginByPhone, register, sendCode, address, addressList
+from AccountSystem.views import loginByPhone, register, sendCode, address, addressList, changePassword, changeNickname
 from CloudList.views import addNewItem, getItemList, modifyNotes
 from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain
 
@@ -28,6 +28,8 @@ urlpatterns = [
     url(r"^account/login$", loginByPhone),
     url(r"^account/address$", address),
     url(r"^account/addresslist$", addressList),
+    url(r"^account/password$", changePassword),
+    url(r"^account/nickname$", changeNickname),
     url(r"^cloudlist/additem$", addNewItem),
     url(r"^cloudlist/getlist$", getItemList),
     url(r"^cloudlist/modifynotes$", modifyNotes),

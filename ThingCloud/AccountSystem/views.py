@@ -72,6 +72,7 @@ def register(request):
 	else:
 		user['hasAvatar'] = 0
 	salt = Salt()
+	#username在注册时确定， 此后不再改变。
 	user['username'] = "USER"+salt.generateSalt(10) +"@sharecloud.com"
 	timestamp = str(int(math.floor(time.time())))
 	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
@@ -230,3 +231,36 @@ def addressList(request):
 		address = model_to_dict(address)
 		resultList.append(address)
 	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":resultList})
+
+@UserAuthorization
+def changeNickname(request):
+	_user = request.user
+	nickname = request.POST.get("nickname", None)
+	if not nickname:
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	userList = User.objects.filter(nickname = nickname)
+	if userList:
+		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
+	_user.nickname = nickname
+	_user.save()
+	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":model_to_dict(_user)})
+
+@UserAuthorization
+def changePassword(request):
+	_user = request.user
+	password = request.POST.get("password", None)
+	if not nickname:
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	if password == _user.password:
+		return Jsonify({"status":False, "error":"1112", "error_message":"密码未改变， 请重新输入。"})
+	#重新生成password和salt存入数据库， 并将新的session发给客户端。
+	salt = Salt()
+	timestamp = str(int(math.floor(time.time())))
+	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
+	password = salt.md5(_hash+salt.md5(user['password']))
+	_user.password = password
+	_user.salt = _hash
+	_user.save()
+	user = model_to_dict(_user)
+	user["session"] = updateSession(user)
+	return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
