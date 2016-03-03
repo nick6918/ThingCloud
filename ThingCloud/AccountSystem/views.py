@@ -118,7 +118,6 @@ def sendCode(request):
 	if not phone:
 		return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入手机号"})
 	phone=int(phone)
-	print phone
 	user = User.objects.filter(phone=phone)
 	if user:
 		return Jsonify({"status":False, "error":1105, "error_message":"手机号已注册, 请直接登录"})
@@ -241,15 +240,20 @@ def changeNickname(request):
 	userList = User.objects.filter(nickname = nickname)
 	if userList:
 		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
-	_user.nickname = nickname
-	_user.save()
-	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":model_to_dict(_user)})
+	user = User.objects.filter(uid=_user['uid'])
+	if user:
+		user = user[0]
+		user.nickname = nickname
+		user.save()
+		return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":model_to_dict(user)})
+	else:
+		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 
 @UserAuthorization
 def changePassword(request):
 	_user = request.user
 	password = request.POST.get("password", None)
-	if not nickname:
+	if not password:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	if password == _user.password:
 		return Jsonify({"status":False, "error":"1112", "error_message":"密码未改变， 请重新输入。"})
