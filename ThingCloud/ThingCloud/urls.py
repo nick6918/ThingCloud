@@ -19,6 +19,7 @@ from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, sendCode, address, addressList, changePassword, changeNickname
 from CloudList.views import addNewItem, getItemList, modifyNotes
 from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain
+from AssistSystem.views import feedback
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -40,4 +41,5 @@ urlpatterns = [
     url(r"^order/orderlist$", getOrderList),
     url(r"^order/cancel$", cancel),
     url(r"^order/complain$", complain),
+    url(r"^assist/feedback$", feedback),
 ]
