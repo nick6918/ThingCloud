@@ -69,7 +69,7 @@ def confirmOrder(request):
             return Jsonify({"status":False, "error":"1303", "error_message":u"订单价格有误， 请重新下单。"})
         ##wechat order
         if fee==0:
-            _order.paytime=datetime.now()
+            _order.paid_time=datetime.now()
             _order.state=1
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
@@ -163,7 +163,7 @@ def complain(request):
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
     else:
         _order = _order[0]
-        if _order.state!=6:
+        if _order.state!=5:
             return Jsonify({"status":False, "error":"1303", "error_message":u"用户无权进行此操作。"})
         else:
             comp = Complaint(order_id=oid, user_id=_user["uid"], notes=notes, state=0)
@@ -171,3 +171,59 @@ def complain(request):
             _order.state = 9
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":"", "state":9})
+
+@UserAuthorization
+def update(request):
+    """
+    Crucial interface.
+    need user group check. @1: User @0:Engineer
+    include PATH I：1(已支付)/2（支付处理中）->3(取/送件中)[->4（处理中)]->5(已送达)->6(已完成)
+    include PATH II: 9(已申诉)->6(已完成)
+    """
+
+    STATE_ALLOWED = [[1, 3, 4, 5, 9], [5,9], [1, 3, 4]]
+
+    _user = request.user
+    oid = request.POST.get("oid", None)
+    origin = request.POST.get("origin", None)
+    if not oid or not origin:
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+    oid = int(oid)
+    origin = int(origin)
+    _order = Order.objects.filter(oid=oid)
+    if not _order:
+        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
+    _order = _order[0]
+    current_state=_order.state
+    if origin!=current_state:
+        return Jsonify({"status":False, "error":"1305", "order":model_to_dict(_order), "error_message":u"订单状态不一致, 请首先更新。"})
+    gid = _user['gid']
+    if origin not in STATE_ALLOWED[gid]:
+        return Jsonify({"status":False, "error":"1110", "order":model_to_dict(_order), "error_message":u"用户无权进行此操作。"})
+    state = 11
+    if current_state == 1:
+        _order.state = 3
+    if current_state == 3:
+        _order.state = 4
+    if current_state == 4:
+        _order.state = 5
+    if current_state == 5 or current_state == 9:
+        _order.state = 6
+        _order.finish_time = datetime.now()
+    _order.save()
+    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+
+def orderCallback(request):
+    oid = request.POST.get("oid", None)
+    _order = Order.objects.filter(oid=oid)
+    if not _order:
+        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
+    _order = _order[0]
+    current_state = _order.state
+    if current_state == 0 or current_state == 2:
+        _order.state = 1
+        _order.paid_time = datetime.now()
+        _order.save()
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+    else:
+        return Jsonify({"status":False, "error":"1110", "order":model_to_dict(_order), "error_message":u"用户无权进行此操作。"})

@@ -48,6 +48,9 @@ def register(request):
 	user['phone'] = request.POST.get("phone", None)
 	user['nickname'] = request.POST.get("nickname", None)
 	user['password'] = request.POST.get("password", None)
+	gid = request.POST.get("gid", None)
+	if gid:
+		user['gid']=gid
 	_code = request.POST.get('code', None)
 	if not (user['nickname'] and user['password'] and user['phone'] and _code):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
