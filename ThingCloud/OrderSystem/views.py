@@ -46,6 +46,7 @@ def modifyOrder(request):
     else:
         _order = _order[0]
         _order.addr_id = addrid
+        _order.fee=6
         _order.save()
         return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
 
