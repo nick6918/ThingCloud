@@ -24,7 +24,7 @@ def generateOrder(request):
     if not _addr:
         order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=0, create_time=createtime)
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order, "address":""})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":""})
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
