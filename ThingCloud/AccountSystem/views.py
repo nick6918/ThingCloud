@@ -276,7 +276,7 @@ def changePassword(request):
 @UserAuthorization
 def updateAvatar(request):
 	logger.debug("GET HERE!!!!!!!!!!!!!!!!!!!!!!!")
-	avatar = request.POST.get('avatar', None)
+	avatar = request.FILES.get('avatar', None)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
 	if not user:
