@@ -7,7 +7,8 @@ from models import Thing
 from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify
 from TCD_lib.constants import TYPECONSTANT, PAGECOUNT
-from TCD_lib.picture import Picture, UPYUNURL
+from TCD_lib.picture import Picture
+from TCD_lib.settings import UPYUNURL
 
 AVATARPATH = UPYUNURL+"/thingavatar/"
 

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
+from TCD_lib.picture import Picture
+from TCD_lib.settings import UPYUNURL, image_user, image_password, image_bucket
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify
 from TCD_lib.security import Salt
-from TCD_lib.picture import Picture, UPYUNURL
+from TCD_lib.picture import Picture
 from models import User, UserSession, Code, Address
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
@@ -271,3 +272,25 @@ def changePassword(request):
 	user = model_to_dict(_user)
 	user["session"] = updateSession(user)
 	return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
+
+@UserAuthorization
+def updateAvatar(request):
+	avatar = request.FILES.get('avatar', None)
+	_user = request.user
+	user = User.objects.filter(uid=_user['uid'])
+	if not user:
+		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
+	if not avatar:
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	user = user[0]
+	currentPath = AVATARPATH+str(_user['uid'])+".png"
+	data=""
+	for chunk in listPic.chunks():
+		data+=chunk
+	state = Picture().uploadPicture(currentPath, data)
+	if state:
+		user.avatar=1
+		user.save()
+		return Jsonify({"status":True, "error":"", "error_message":"", "avatar":1})
+	else:
+		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
