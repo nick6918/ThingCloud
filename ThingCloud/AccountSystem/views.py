@@ -275,7 +275,8 @@ def changePassword(request):
 
 @UserAuthorization
 def updateAvatar(request):
-	avatar = request.FILES.get('avatar', None)
+	logger.debug("GET HERE!!!!!!!!!!!!!!!!!!!!!!!")
+	avatar = request.POST.get('avatar', None)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
 	if not user:
@@ -285,7 +286,7 @@ def updateAvatar(request):
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
-	for chunk in listPic.chunks():
+	for chunk in avatar.chunks():
 		data+=chunk
 	state = Picture().uploadPicture(currentPath, data)
 	if state:
