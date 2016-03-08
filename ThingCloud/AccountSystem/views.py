@@ -282,16 +282,20 @@ def updateAvatar(request):
 	avatar = request.FILES.get('avatar', None)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
+	logger.debug("GET HERE1")
 	if not user:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 	if not avatar:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	logger.debug("GET HERE4")
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
+	logger.debug("GET HERE2")
 	for chunk in avatar.chunks():
 		data+=chunk
 	state = Picture().uploadPicture(currentPath, data)
+	logger.debug("GET HERE3")
 	if state:
 		user.avatar=1
 		user.save()
