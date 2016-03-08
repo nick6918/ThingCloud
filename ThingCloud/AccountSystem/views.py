@@ -299,8 +299,8 @@ def updateAvatar(request):
 		state = Picture().uploadPicture(currentPath, data)
 	except Exception, e:
 		logger.debug("FAIL PICTURE SERVER")
-		logger.debug("e")
-		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})		
+		logger.debug(e)
+		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
 	logger.debug("GET HERE4")
 	if state:
 		user.avatar=1

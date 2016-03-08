@@ -10,5 +10,6 @@ class Picture(object):
 		super(Picture, self).__init__()
 	def uploadPicture(self,path, data, callback=None):
 		upyun = UpYun(settings.image_bucket, settings.image_user, settings.image_password,timeout=4)
+		logger.debug("GET HERE9")
 		result=upyun.put(path, data, True)
 		return result
