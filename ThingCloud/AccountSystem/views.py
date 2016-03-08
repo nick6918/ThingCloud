@@ -232,6 +232,9 @@ def addressList(request):
 	resultList = []
 	for address in addressList:
 		address = model_to_dict(address)
+		address["addrid"]=address["adid"]
+		del(address["user"])
+		del(address["adid"])
 		resultList.append(address)
 	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":resultList})
 
