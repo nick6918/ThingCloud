@@ -287,15 +287,21 @@ def updateAvatar(request):
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 	if not avatar:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-	logger.debug("GET HERE4")
+	logger.debug("GET HERE0")
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
 	logger.debug("GET HERE2")
 	for chunk in avatar.chunks():
 		data+=chunk
-	state = Picture().uploadPicture(currentPath, data)
 	logger.debug("GET HERE3")
+	try:
+		state = Picture().uploadPicture(currentPath, data)
+	except Exception, e:
+		logger.debug("FAIL PICTURE SERVER")
+		logger.debug("e")
+		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})		
+	logger.debug("GET HERE4")
 	if state:
 		user.avatar=1
 		user.save()
