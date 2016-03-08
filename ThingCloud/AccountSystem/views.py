@@ -295,6 +295,9 @@ def updateAvatar(request):
 	for chunk in avatar.chunks():
 		data+=chunk
 	logger.debug("GET HERE3")
+	fp＝ open("ava.png", "w+")
+	fp.write(data)
+	fp.close()
 	try:
 		state = Picture().uploadPicture(currentPath, data)
 	except Exception, e:
