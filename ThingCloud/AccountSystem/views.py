@@ -53,12 +53,8 @@ def register(request):
 	gid = request.POST.get("gid", None)
 	if gid:
 		user['gid']=gid
-	_code = request.POST.get('code', None)
-	if not (user['nickname'] and user['password'] and user['phone'] and _code):
+	if not (user['nickname'] and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-	code = Code.objects.filter(phone=user['phone'])
-	if not code or (_code != unicode(code[0].code)):
-		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
 	userList = User.objects.filter(nickname = user['nickname'])
 	if userList:
 		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
@@ -138,7 +134,15 @@ def sendCode(request):
 		current_code.save()
 		#iMessage.send(phone, code)
 		return Jsonify({"status":True, "error":"", "error_message":"", "message":True})
+
 def checkCode(request):
+	_code = request.GET.get('code', None)
+	if not _code:
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入验证码。"})
+	code = Code.objects.filter(phone=user['phone'])
+	if not code or (_code != unicode(code[0].code)):
+		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
+	return Jsonify({"status":True, "error":"", "error_message":""})
 
 def loginByPhone(request):
 	"""
