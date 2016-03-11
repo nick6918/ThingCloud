@@ -138,6 +138,7 @@ def sendCode(request):
 		current_code.save()
 		#iMessage.send(phone, code)
 		return Jsonify({"status":True, "error":"", "error_message":"", "message":True})
+def checkCode(request):
 
 def loginByPhone(request):
 	"""
