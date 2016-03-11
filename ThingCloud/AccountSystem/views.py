@@ -120,11 +120,11 @@ def sendCode(request):
 	"""
 	phone = request.GET.get("phone", None)
 	if not phone:
-		return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入手机号"})
+		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入手机号"})
 	phone=int(phone)
 	user = User.objects.filter(phone=phone)
 	if user:
-		return Jsonify({"status":False, "error":1105, "error_message":"手机号已注册, 请直接登录"})
+		return Jsonify({"status":False, "error":"1107", "error_message":"手机号已注册, 请直接登录"})
 	else:
 		#code = random.randint(100000, 1000000)
 		code = 123456
@@ -149,7 +149,7 @@ def loginByPhone(request):
 	user = User.objects.filter(phone = phone)
 	salt = Salt()
 	if not user:
-		return Jsonify({"status":False, "error":"1107", "error_message":"手机号已注册, 请直接登录"})
+		return Jsonify({"status":False, "error":"1107", "error_message":"手机号未注册, 请首先注册。"})
 	user = model_to_dict(user[0])
 	if user['password'] == salt.md5(user['salt']+salt.md5(user_password)):
 		user['session'] = updateSession(user)
