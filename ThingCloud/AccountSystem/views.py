@@ -125,7 +125,7 @@ def sendCode(request):
 	phone=int(phone)
 	user = User.objects.filter(phone=phone)
 	if user:
-		return Jsonify({"status":False, "error":"1107", "error_message":"手机号已注册, 请直接登录"})
+		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
 	else:
 		#code = random.randint(100000, 1000000)
 		code = 123456
