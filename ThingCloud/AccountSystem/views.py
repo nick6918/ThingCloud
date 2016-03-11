@@ -137,9 +137,10 @@ def sendCode(request):
 
 def checkCode(request):
 	_code = request.GET.get('code', None)
-	if not _code:
+	_phone = request.GET.get('phone', None)
+	if not _code or not _phone:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入验证码。"})
-	code = Code.objects.filter(phone=user['phone'])
+	code = Code.objects.filter(phone=_phone)
 	if not code or (_code != unicode(code[0].code)):
 		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
 	return Jsonify({"status":True, "wait":1, "error":"", "error_message":""})
