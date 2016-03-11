@@ -142,7 +142,7 @@ def checkCode(request):
 	code = Code.objects.filter(phone=user['phone'])
 	if not code or (_code != unicode(code[0].code)):
 		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
-	return Jsonify({"status":True, "error":"", "error_message":""})
+	return Jsonify({"status":True, "wait":1, "error":"", "error_message":""})
 
 def loginByPhone(request):
 	"""
