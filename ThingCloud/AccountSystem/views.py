@@ -2,6 +2,7 @@
 from TCD_lib.picture import Picture
 from TCD_lib.settings import UPYUNURL, image_user, image_password, image_bucket
 from django.shortcuts import render
+
 from django.forms.models import model_to_dict
 from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify
@@ -296,7 +297,7 @@ def updateAvatar(request):
 	except Exception, e:
 		logger.debug("FAIL PICTURE SERVER")
 		logger.debug(e)
-		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
+		return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
 	logger.debug("GET HERE4")
 	if state:
 		user.avatar=1
