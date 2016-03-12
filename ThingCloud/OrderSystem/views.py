@@ -125,8 +125,12 @@ def getOrder(request):
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
     _order = Order.objects.filter(oid=oid)
-    return sonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
-
+    if _order:
+        _order = _order[0]
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+    else:
+        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
+        
 @UserAuthorization
 def cancel(request):
     oid = request.GET.get("oid", None)

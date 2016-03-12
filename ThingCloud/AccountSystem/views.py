@@ -252,7 +252,7 @@ def deleteAddress(request):
 	if not addrid:
 		return Jsonify({"status":False, "error":"1101", "error_message":"输入信息不足, 请重新输入。"})
 	addrid = int(addrid)
-	_address = Address.Objects.filter(user_id=_user['uid']).filter(adid=addrid)
+	_address = Address.objects.filter(user_id=_user['uid']).filter(adid=addrid)
 	if not _address:
 		return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 	else:
