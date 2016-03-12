@@ -121,18 +121,24 @@ def getOrderList(request):
 @UserAuthorization
 def getOrder(request):
     oid = request.GET.get("oid", None)
+    _user = request.user
     if not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
     _order = Order.objects.filter(oid=oid)
     if _order:
         _order = _order[0]
-        order = model_to_dict(order)
-        order['addr']=_order.order.addr
-        order['name']=_order.order.name
-        order['gender']=_order.order.gender
-        order['phone']=_order.order.phone
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order})
+        order = model_to_dict(_order)
+        address = Address.objects.filter(adid=_order.addr_id)
+        if address:
+            address=address[0]
+            order['addr']=address.addr
+            order['name']=address.name
+            order['gender']=address.gender
+            order['phone']=address.phone
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":order})
+        else:
+            return Jsonify({"status":False, "error":"1312", "error_message":"订单地址不存在。", "order":order})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
