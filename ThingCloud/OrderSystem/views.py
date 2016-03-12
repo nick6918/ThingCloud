@@ -30,7 +30,7 @@ def generateOrder(request):
         _addr = model_to_dict(_addr_object)
         order = Order(user_id=_user['uid'], notes="", fee=6, typeid=typeid, itemList=itemlist, state=0, create_time=createtime, addr=_addr_object)
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":{"addrid":_addr["adid"], "name":_addr["name"], "gender":_addr["gender"], "address":_addr["addr"], "tagid":_addr["tagid"], "is_default":_addr["is_default"], "phone":_addr["phone"]},})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":model_to_dict(_addr_object)},})
 
 @UserAuthorization
 def modifyOrder(request):
