@@ -262,6 +262,7 @@ def deleteAddress(request):
 		curAddress = Address.objects.filter(user_id=_user['uid'])
 		orderList = Order.objects.filter(user_id=_user['uid']).filter(addr_id=adid)
 		logger.debug(info)
+		#未完成。
 		return Jsonify({"status":True, "error":"", "error_message":""})
 
 @UserAuthorization
