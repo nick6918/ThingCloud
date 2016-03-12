@@ -260,7 +260,7 @@ def deleteAddress(request):
 		defaultstate = int(_address.is_default)
 		info = _address.delete()
 		if defaultstate:
-			curAddress = Address.Objects.filter(user_id=_user['uid'])
+			curAddress = Address.objects.filter(user_id=_user['uid'])
 			if curAddress:
 				curAddress = addrList[0]
 				curAddress.is_default=1

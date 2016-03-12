@@ -127,10 +127,15 @@ def getOrder(request):
     _order = Order.objects.filter(oid=oid)
     if _order:
         _order = _order[0]
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+        order = model_to_dict(_model)
+        order['addr']=_order.order.addr
+        order['name']=_order.order.name
+        order['gender']=_order.order.gender
+        order['phone']=_order.order.phone
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
-        
+
 @UserAuthorization
 def cancel(request):
     oid = request.GET.get("oid", None)
