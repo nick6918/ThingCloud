@@ -41,9 +41,9 @@ INSTALLED_APPS = (
     'TCD_lib',
     'MainSystem',
     'AccountSystem',
-    'CloudList',
+    'CloudList', 
     'OrderSystem',
-    'AssistSystem',
+    'AssistSystem'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,8 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'thingcloud',#os.path.join(BASE_DIR, 'db.sqlite3'),
         'USER':'root',
-        'PASSWORD':'',
-        #'HOST':'192.168.3.188',
+        'PASSWORD':'123456',
         'HOST':'127.0.0.1',
         'PORT':'3306',
 

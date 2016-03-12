@@ -1,0 +1,61 @@
+
+
+<uwsgi>
+  <socket>0.0.0.0:8001</socket>
+  <listen>20</listen>
+  <chdir>/home/weifanding/ThingCloud/ThingCloud</chdir>
+  <master>true</master>
+  <pidfile>/home/weifanding/ThingCloud/ThingCloud/uwsgi.pid</pidfile>
+  <pythonpath>/home/weifanding/ThingCloud/ThingCloud</pythonpath>
+  <processes>2</processes>
+  <wsgi-file>/home/weifanding/Thingcloud/ThingCloud/ThingCloud/wsgi.py</wsgi-file>
+  <profiler>true</profiler>
+  <memory-report>true</memory-report>
+  <enable-threads>true</enable-threads>
+  <logdate>true</logdate>
+  <limit-as>6048</limit-as>
+</uwsgi>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
