@@ -11,6 +11,7 @@ from TCD_lib.picture import Picture
 from TCD_lib.settings import UPYUNURL
 
 AVATARPATH = UPYUNURL+"/thingavatar/"
+PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 
 # Create your views here.
 def addNewItem(request):
@@ -103,6 +104,10 @@ def getItemList(request):
             item = model_to_dict(item)
             item['wh_id']=wh_id
             item['wh_name']=wh_name
+            if item['avatar']=="1":
+                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".jpg"
+            else:
+                item['avatarurl'] = PICURL+"thing/default.jpg"
             print item
             del(item['wh_in'])
             del(item['user_belong_to'])
