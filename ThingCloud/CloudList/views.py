@@ -9,6 +9,7 @@ from TCD_lib.utils import Jsonify
 from TCD_lib.constants import TYPECONSTANT, PAGECOUNT
 from TCD_lib.picture import Picture
 from TCD_lib.settings import UPYUNURL
+import logging
 
 logger = logging.getLogger('appserver')
 
