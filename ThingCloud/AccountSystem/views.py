@@ -262,7 +262,7 @@ def deleteAddress(request):
 		if defaultstate:
 			curAddress = Address.objects.filter(user_id=_user['uid'])
 			if curAddress:
-				curAddress = addrList[0]
+				curAddress = curAddress[0]
 				curAddress.is_default=1
 				curAddress.save()
 		logger.debug(info)

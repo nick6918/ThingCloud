@@ -127,7 +127,7 @@ def getOrder(request):
     _order = Order.objects.filter(oid=oid)
     if _order:
         _order = _order[0]
-        order = model_to_dict(_model)
+        order = model_to_dict(order)
         order['addr']=_order.order.addr
         order['name']=_order.order.name
         order['gender']=_order.order.gender
