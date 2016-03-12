@@ -125,6 +125,8 @@ def getOrderList(request):
         if current_address:
             current_address = current_address[0]
             current_item["address"]=model_to_dict(current_address)
+        else:
+            current_item["address"] = ""
         resultList.append(current_item)
     print resultList
     return Jsonify({"status":True, "error":"", "error_message":"", "orderlist":resultList})
