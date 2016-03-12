@@ -120,7 +120,12 @@ def getOrderList(request):
         stateid=int(stateid)
         itemList = itemList.filter(stateid)
     for item in itemList:
-        resultList.append(model_to_dict(item))
+        current_item = model_to_dict(item)
+        current_address = Address.objects.filter(adid=item.addr_id)
+        if current_address:
+            current_address = current_address[0]
+            current_item["address"]=model_to_dict(current_address)
+        resultList.append(current_item)
     print resultList
     return Jsonify({"status":True, "error":"", "error_message":"", "orderlist":resultList})
 
