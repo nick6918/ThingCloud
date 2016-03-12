@@ -3,12 +3,14 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from models import Order, Complaint
+from CloudList.models import Thing
 from AccountSystem.models import Address
 from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify
 from datetime import datetime
 
 PAGECOUNT = 8
+PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 
 @UserAuthorization
 def generateOrder(request):
@@ -138,14 +140,27 @@ def getOrder(request):
             _order.state=2
             _order.save()
         itemList = _order.itemList
+        thingList = []
         if itemList:
+            print itemList
+            itemList = itemList.split(",")
+            for item in itemList:
+                current_item = Thing.objects.filter(tid=item)
+                if current_item:
+                    current_item = model_to_dict(current_item[0])
+                    if int(current_item['avatar'])==1:
+                        current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".jpg"
+                    else:
+                        current_item['avatarurl'] = PICURL+"thing/default.jpg"
+                    thingList.append(current_item)
+        else:
             pass
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
             address=address[0]
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":model_to_dict(address)})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":model_to_dict(address), "thinglist":thingList})
         else:
-            return Jsonify({"status":False, "error":"1312", "error_message":"订单地址不存在。", "order":order, "address":""})
+            return Jsonify({"status":False, "error":"1312", "error_message":u"订单地址不存在。", "order":model_to_dict(_order), "address":"", "thinglist":thingList})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
