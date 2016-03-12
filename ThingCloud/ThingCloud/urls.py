@@ -16,9 +16,9 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
-from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, changePassword, changeNickname, updateAvatar
+from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
 from CloudList.views import addNewItem, getItemList, modifyNotes
-from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain, update, orderCallback
+from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain, update, orderCallback, getOrder
 from AssistSystem.views import feedback
 
 urlpatterns = [
@@ -30,6 +30,7 @@ urlpatterns = [
     url(r"^account/code$", checkCode),
     url(r"^account/avatar$", updateAvatar),
     url(r"^account/address$", address),
+    url(r"^account/addressdelete$", deleteAddress),
     url(r"^account/addresslist$", addressList),
     url(r"^account/password$", changePassword),
     url(r"^account/nickname$", changeNickname),
@@ -40,6 +41,7 @@ urlpatterns = [
     url(r"^order/address$", modifyOrder),
     url(r"^order/confirm$", confirmOrder),
     url(r"^order/checkpayment$", checkPayment),
+    url(r"^order/order$", getOrder),
     url(r"^order/orderlist$", getOrderList),
     url(r"^order/cancel$", cancel),
     url(r"^order/complain$", complain),
