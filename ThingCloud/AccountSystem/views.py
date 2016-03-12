@@ -259,9 +259,9 @@ def deleteAddress(request):
 		_address=_address[0]
 		defaultstate = int(_address.is_default)
 		info = _address.delete()
+		curAddress = Address.objects.filter(user_id=_user['uid'])
 		if defaultstate:
 			#此地址时默认地址
-			curAddress = Address.objects.filter(user_id=_user['uid'])
 			if curAddress:
 				#除默认地址外， 此用户还有其他地址
 				curAddress = curAddress[0]
@@ -269,9 +269,10 @@ def deleteAddress(request):
 				curAddress.save()
 			else:
 				#用户此时无地址
-				
+			pass
 		else:
 			 #此订单不是默认地址
+			 pass
 		logger.debug(info)
 		return Jsonify({"status":True, "error":"", "error_message":""})
 
