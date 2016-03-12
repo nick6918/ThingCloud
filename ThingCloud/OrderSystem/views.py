@@ -121,6 +121,8 @@ def getOrderList(request):
 @UserAuthorization
 def getOrder(request):
     oid = request.GET.get("oid", None)
+    checkPayment = request.GET.get("checkpayment", 0)
+    checkPayment = int(checkPayment)
     _user = request.user
     if not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
@@ -128,6 +130,9 @@ def getOrder(request):
     _order = Order.objects.filter(oid=oid)
     if _order:
         _order = _order[0]
+        if checkPayment==1 and int(_order.state)==0:
+            _order.state=2
+            _order.save()
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
             address=address[0]
