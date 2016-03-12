@@ -269,7 +269,7 @@ def deleteAddress(request):
 				curAddress.save()
 			else:
 				#用户此时无地址
-			pass
+				pass
 		else:
 			 #此订单不是默认地址
 			 pass
