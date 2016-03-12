@@ -128,17 +128,12 @@ def getOrder(request):
     _order = Order.objects.filter(oid=oid)
     if _order:
         _order = _order[0]
-        order = model_to_dict(_order)
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
             address=address[0]
-            order['addr']=address.addr
-            order['name']=address.name
-            order['gender']=address.gender
-            order['phone']=address.phone
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":order})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":model_to_dict(address)})
         else:
-            return Jsonify({"status":False, "error":"1312", "error_message":"订单地址不存在。", "order":order})
+            return Jsonify({"status":False, "error":"1312", "error_message":"订单地址不存在。", "order":order, "address":""})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
