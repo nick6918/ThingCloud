@@ -81,32 +81,34 @@ def confirmOrder(request):
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
 
-@UserAuthorization
-def checkPayment(request):
-    oid = request.GET.get("oid", None)
-    if not oid:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
-    oid = int(oid)
-    _order = Order.objects.filter(oid=oid)
-    if not _order:
-        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
-    else:
-        _order = _order[0]
-        state = _order.state
-        if state==1:
-            return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
-        else:
-            _order.state=2
-            _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
+# @UserAuthorization
+# def checkPayment(request):
+#     oid = request.GET.get("oid", None)
+#     if not oid:
+#         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+#     oid = int(oid)
+#     _order = Order.objects.filter(oid=oid)
+#     if not _order:
+#         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
+#     else:
+#         _order = _order[0]
+#         state = _order.state
+#         if state==1:
+#             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
+#         else:
+#             _order.state=2
+#             _order.save()
+#             return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
 
 @UserAuthorization
 def getOrderList(request):
     typeid = request.GET.get("typeid", None)
     stateid = request.GET.get("stateid", None)
+    page = reqiest.GET.get("page", 0)
+    page = int(page)
     _user = request.user
     resultList = []
-    itemList = Order.objects.filter(user_id=_user['uid'])
+    itemList = Order.objects.filter(user_id=_user['uid'])[PAGECOUNT*page:PAGECOUNT*(page+1)]
     if typeid:
         typeid=int(typeid)
         itemList = itemList.filter(typeid)
@@ -133,6 +135,9 @@ def getOrder(request):
         if checkPayment==1 and int(_order.state)==0:
             _order.state=2
             _order.save()
+        itemList = _order.itemList
+        if itemList:
+            pass
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
             address=address[0]
