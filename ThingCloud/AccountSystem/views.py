@@ -246,6 +246,29 @@ def addressList(request):
 	return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":resultList})
 
 @UserAuthorization
+def deleteAddress(request):
+	addrid = request.GET.get("addrid", None)
+	_user = request.user
+	if not addrid:
+		return Jsonify({"status":False, "error":"1101", "error_message":"输入信息不足, 请重新输入。"})
+	addrid = int(addrid)
+	_address = Address.Objects.filter(user_id=_user['uid']).filter(adid=addrid)
+	if not _address:
+		return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
+	else:
+		_address=_address[0]
+		defaultstate = int(_address.is_default)
+		info = _address.delete()
+		if defaultstate:
+			curAddress = Address.Objects.filter(user_id=_user['uid'])
+			if curAddress:
+				curAddress = addrList[0]
+				curAddress.is_default=1
+				curAddress.save()
+		logger.debug(info)
+		return Jsonify({"status":True, "error":"", "error_message":""})
+
+@UserAuthorization
 def changeNickname(request):
 	_user = request.user
 	nickname = request.POST.get("nickname", None)
