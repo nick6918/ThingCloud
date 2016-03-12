@@ -8,6 +8,8 @@ from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify
 from datetime import datetime
 
+PAGECOUNT = 8
+
 @UserAuthorization
 def generateOrder(request):
     _user = request.user
@@ -104,7 +106,7 @@ def confirmOrder(request):
 def getOrderList(request):
     typeid = request.GET.get("typeid", None)
     stateid = request.GET.get("stateid", None)
-    page = reqiest.GET.get("page", 0)
+    page = request.GET.get("page", 0)
     page = int(page)
     _user = request.user
     resultList = []
