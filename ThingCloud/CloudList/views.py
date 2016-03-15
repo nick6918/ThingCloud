@@ -107,7 +107,6 @@ def getItemList(request):
             item = model_to_dict(item)
             item['wh_id']=wh_id
             item['wh_name']=wh_name
-            logger.debug(item['avatar'])
             if int(item['avatar'])==1:
                 item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".jpg"
             else:
