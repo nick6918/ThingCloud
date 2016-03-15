@@ -1,4 +1,5 @@
 from django.db import models
+from VIPSystem.models import VIP
 
 # Create your models here.
 
@@ -19,6 +20,7 @@ class User(models.Model):
 	phone = models.CharField(max_length = 100)
 	avatar = models.BooleanField(default = False)
 	username = models.CharField(max_length = 100, default = "WEIRDUSER")
+	vip = models.ForeignKey(VIP)
 
 	class Meta:
 		db_table = 'user'

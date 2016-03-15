@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'CloudList',
     'OrderSystem',
     'AssistSystem',
+    'VIPSystem',
 )
 
 MIDDLEWARE_CLASSES = (

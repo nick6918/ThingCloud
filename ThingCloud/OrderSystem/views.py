@@ -11,6 +11,7 @@ from datetime import datetime
 
 PAGECOUNT = 8
 PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
+ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 @UserAuthorization
 def generateOrder(request):
@@ -68,6 +69,10 @@ def confirmOrder(request):
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
     else:
         _order = _order[0]
+        _sign = ""
+        for i in range(8):
+            _sign = _sign + ALPHABET[random.randint(0, 62)]
+        _order.signature = _sign
         if notes:
             _order.notes = notes
         if fee != _order.fee:
