@@ -235,6 +235,7 @@ def update(request):
     include PATH II: 9(已申诉)->6(已完成)
     """
 
+    #工程师， 一般用户， 管理员
     STATE_ALLOWED = [[1, 3, 4, 5, 9], [5,9], [1, 3, 4]]
 
     _user = request.user
