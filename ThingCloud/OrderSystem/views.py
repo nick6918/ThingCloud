@@ -113,7 +113,7 @@ def getOrderList(request):
     page = int(page)
     _user = request.user
     resultList = []
-    itemList = Order.objects.filter(user_id=_user['uid']).exclude(oid=12)[PAGECOUNT*page:PAGECOUNT*(page+1)]
+    itemList = Order.objects.filter(user_id=_user['uid']).exclude(state=12)[PAGECOUNT*page:PAGECOUNT*(page+1)]
     if typeid:
         typeid=int(typeid)
         itemList = itemList.filter(typeid)
