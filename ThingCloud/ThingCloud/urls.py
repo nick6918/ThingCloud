@@ -20,6 +20,7 @@ from AccountSystem.views import loginByPhone, register, sendCode, checkCode, add
 from CloudList.views import addNewItem, getItemList, modifyNotes
 from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, getOrderList, cancel, complain, update, orderCallback, getOrder
 from AssistSystem.views import feedback
+from VIPSystem.views import vip
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -47,4 +48,5 @@ urlpatterns = [
     url(r"^order/update$", update),
     url(r"^order/callback$", orderCallback),
     url(r"^assist/feedback$", feedback),
+    url(r"^vip/vip$", feedback),
 ]
