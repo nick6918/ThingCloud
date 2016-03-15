@@ -26,13 +26,13 @@ def generateOrder(request):
     _user = request.user
     _addr = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
     if not _addr:
-        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=0, create_time=createtime)
+        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime)
         order.save()
         return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":""})
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
-        order = Order(user_id=_user['uid'], notes="", fee=6, typeid=typeid, itemList=itemlist, state=0, create_time=createtime, addr=_addr_object)
+        order = Order(user_id=_user['uid'], notes="", fee=6, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
         return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":model_to_dict(_addr_object)})
 
@@ -79,6 +79,7 @@ def confirmOrder(request):
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
         else:
+            _order.state=0
             #申请微信订单
             prepayid=10001
             _order.prepayid = prepayid
@@ -112,7 +113,7 @@ def getOrderList(request):
     page = int(page)
     _user = request.user
     resultList = []
-    itemList = Order.objects.filter(user_id=_user['uid'])[PAGECOUNT*page:PAGECOUNT*(page+1)]
+    itemList = Order.objects.filter(user_id=_user['uid']).exclude(oid=12)[PAGECOUNT*page:PAGECOUNT*(page+1)]
     if typeid:
         typeid=int(typeid)
         itemList = itemList.filter(typeid)
