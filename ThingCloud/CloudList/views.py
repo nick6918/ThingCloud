@@ -96,9 +96,9 @@ def getItemList(request):
     print user['uid']
     if typeid:
         typeid = int(typeid)
-        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid)[PAGECOUNT*page:PAGECOUNT*(page+1)]
+        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     else:
-        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1)[PAGECOUNT*page:PAGECOUNT*(page+1)]
+        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     resultList = []
     if itemList:
         for item in itemList:

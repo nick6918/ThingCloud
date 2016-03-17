@@ -135,7 +135,7 @@ def getOrderList(request):
     page = int(page)
     _user = request.user
     resultList = []
-    itemList = Order.objects.filter(user_id=_user['uid']).exclude(state=12)[PAGECOUNT*page:PAGECOUNT*(page+1)]
+    itemList = Order.objects.filter(user_id=_user['uid']).exclude(state=12).exclude(state=13).order_by('-oid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     if typeid:
         typeid=int(typeid)
         itemList = itemList.filter(typeid)
@@ -297,9 +297,26 @@ def update(request):
     _order.save()
     return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
 
+@UserAuthorization
+def delete(request):
+    oid=request.POST.get("oid", None)
+    _user = request.user
+    if not oid:
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+    oid = int(oid)
+    _order = Order.objects.filter(oid=oid).filter(user_id=_user['uid'])
+    if not _order:
+        return Jsonify({"status":False, "error":"1110", "error_message":u"订单不存在或用户无权对此订单操作。"})
+    _order = _order[0]
+    _order.state=13
+    _order.save()
+    return Jsonify({"status":True, "error":"", "error_message":""})
+
 def orderCallback(request):
     oid = request.POST.get("oid", None)
     _order = Order.objects.filter(oid=oid)
+    if not oid:
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     if not _order:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
     _order = _order[0]
