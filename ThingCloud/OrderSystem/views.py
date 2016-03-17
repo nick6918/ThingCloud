@@ -13,6 +13,23 @@ PAGECOUNT = 8
 PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+def getThingList(itemList):
+    thingList = []
+    if itemList:
+        print itemList
+        itemList = itemList.split(",")
+        for item in itemList:
+            current_item = Thing.objects.filter(tid=item)
+            if current_item:
+                current_item = model_to_dict(current_item[0])
+                if int(current_item['avatar'])==1:
+                    current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".jpg"
+                else:
+                    current_item['avatarurl'] = PICURL+"thing/default.jpg"
+                thingList.append(current_item)
+    return thingList
+
+
 @UserAuthorization
 def generateOrder(request):
     _user = request.user
@@ -153,33 +170,19 @@ def getOrder(request):
             _order.state=2
             _order.save()
         itemList = _order.itemList
-        thingList = []
-        if itemList:
-            print itemList
-            itemList = itemList.split(",")
-            for item in itemList:
-                current_item = Thing.objects.filter(tid=item)
-                if current_item:
-                    current_item = model_to_dict(current_item[0])
-                    if int(current_item['avatar'])==1:
-                        current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".jpg"
-                    else:
-                        current_item['avatarurl'] = PICURL+"thing/default.jpg"
-                    thingList.append(current_item)
-        else:
-            pass
+        thingList = getThingList(itemList)
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
-            address=address[0]
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":model_to_dict(address), "thinglist":thingList})
+            address=model_to_dict(address[0])
         else:
-            return Jsonify({"status":False, "error":"1312", "error_message":u"订单地址不存在。", "order":model_to_dict(_order), "address":"", "thinglist":thingList})
+            address=""
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":address, "thinglist":thingList})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
 @UserAuthorization
 def cancel(request):
-    oid = request.GET.get("oid", None)
+    oid = request.POST.get("oid", None)
     if not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
@@ -191,6 +194,13 @@ def cancel(request):
         state = _order.state
         if state <= 2:
             _order.state = 7
+            itemList = _order.itemList
+            thingList = getThingList(itemList)
+            address = Address.objects.filter(adid=_order.addr_id)
+            if address:
+                address=model_to_dict(address[0])
+            else:
+                address=""
             if _order.fee != 0:
 
                 #微信退款
@@ -200,13 +210,13 @@ def cancel(request):
                 if refundstate:
                     _order.state=8
                     _order.save()
-                    return Jsonify({"status":True, "error":"", "error_message":"", "state":8})
+                    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
                 else:
                     _order.save()
                     return Jsonify({"status":False, "error":"1304", "error_message":u"微信退款失败，请联系客服。"})
             else:
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":"", "state":7})
+                return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
         else:
             return Jsonify({"status":False, "error":"1303", "error_message":u"用户无权进行此操作。"})
 
@@ -229,8 +239,15 @@ def complain(request):
             comp = Complaint(order_id=oid, user_id=_user["uid"], notes=notes, state=0)
             comp.save()
             _order.state = 9
+            itemList = _order.itemList
+            thingList = getThingList(itemList)
+            address = Address.objects.filter(adid=_order.addr_id)
+            if address:
+                address=model_to_dict(address[0])
+            else:
+                address=""
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "state":9})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
 
 @UserAuthorization
 def update(request):
@@ -255,12 +272,18 @@ def update(request):
     if not _order:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
     _order = _order[0]
+    thingList = getThingList(_order.itemList)
+    address = Address.objects.filter(adid=_order.addr_id)
+    if address:
+        address=model_to_dict(address[0])
+    else:
+        address=""
     current_state=_order.state
     if origin!=current_state:
-        return Jsonify({"status":False, "error":"1305", "order":model_to_dict(_order), "error_message":u"订单状态不一致, 请首先更新。"})
+        return Jsonify({"status":False, "error":"1305", "error_message":u"订单状态不一致, 已重新刷新该订单。", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
     gid = _user['gid']
     if origin not in STATE_ALLOWED[gid]:
-        return Jsonify({"status":False, "error":"1110", "order":model_to_dict(_order), "error_message":u"用户无权进行此操作。"})
+        return Jsonify({"status":False, "error":"1110", "error_message":u"用户无权进行此操作。"})
     state = 11
     if current_state == 1:
         _order.state = 3
@@ -272,7 +295,7 @@ def update(request):
         _order.state = 6
         _order.finish_time = datetime.now()
     _order.save()
-    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
 
 def orderCallback(request):
     oid = request.POST.get("oid", None)
