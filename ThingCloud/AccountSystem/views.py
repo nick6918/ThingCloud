@@ -308,7 +308,7 @@ def updateAvatar(request):
 	logger.debug("weifanding")
 	avatar = request.FILES.get('avatar', None)
 	picType = request.POST.get('pictype', None)
-	logger.debug(pictype)
+	logger.debug(picType)
 	logger.debug(avatar)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
