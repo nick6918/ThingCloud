@@ -329,12 +329,8 @@ def updateAvatar(request):
 		logger.debug(e)
 		return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
 	if state:
-		try:
-			user.avatar=1
-			user.save()
-		except Exception, e:
-			logger.debug("DB ERROR")
-			logger.debug(e)
+		user.avatar=1
+		user.save()
 		return Jsonify({"status":True, "error":"", "error_message":"", "avatar":1})
 	else:
 		logger.debug("hello from here2")
