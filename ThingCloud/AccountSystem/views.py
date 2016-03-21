@@ -306,6 +306,7 @@ def changePassword(request):
 @UserAuthorization
 def updateAvatar(request):
 	logger.debug("GET HERE!!!!!!!!!!!!!!!!!!!!!!!")
+	logger.debug(request.POST)
 	avatar = request.POST.get('avatar', None)
 	picType = request.POST.get('pictype', None)
 	_user = request.user
