@@ -319,17 +319,18 @@ def updateAvatar(request):
 	logger.debug("GET HERE WITH PICTURE!!!!!!!!!!!!!!!!!!!!!!!")
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+"."+picType
-	data=""
-	for chunk in avatar.chunks():
-		data+=chunk
-	try:
-		logger.debug("GET HERE WITH chUNK!!!!!!!!!!!!!!!!!!!!!!!")
-		state = Picture().uploadPicture(currentPath, data)
-	except Exception, e:
-		logger.debug("FAIL PICTURE SERVER")
-		logger.debug(e)
-		return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
-	logger.debug("GET HERE WITH SUCESSFUL RETURN")
+	# data=""
+	# for chunk in avatar.chunks():
+	# 	data+=chunk
+	# try:
+	# 	logger.debug("GET HERE WITH chUNK!!!!!!!!!!!!!!!!!!!!!!!")
+	# 	state = Picture().uploadPicture(currentPath, data)
+	# except Exception, e:
+	# 	logger.debug("FAIL PICTURE SERVER")
+	# 	logger.debug(e)
+	# 	return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
+	# logger.debug("GET HERE WITH SUCESSFUL RETURN")
+	state = 0
 	if state:
 		user.avatar=1
 		user.save()
