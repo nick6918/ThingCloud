@@ -306,10 +306,10 @@ def changePassword(request):
 @UserAuthorization
 def updateAvatar(request):
 	logger.debug("weifanding")
-	logger.debug(request.POST)
 	avatar = request.Files.get('avatar', None)
-	logger.debug(avatar)
 	picType = request.POST.get('pictype', None)
+	logger.debug(pictype)
+	logger.debug(avatar)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
 	if not user:
