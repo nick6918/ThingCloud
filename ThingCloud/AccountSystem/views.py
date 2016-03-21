@@ -314,9 +314,9 @@ def updateAvatar(request):
 	user = User.objects.filter(uid=_user['uid'])
 	if not user:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
-	if not avatar or picType:
+	if not avatar or not picType:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-		logger.debug("GET HERE WITH PICTURE!!!!!!!!!!!!!!!!!!!!!!!")
+	logger.debug("GET HERE WITH PICTURE!!!!!!!!!!!!!!!!!!!!!!!")
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+"."+picType
 	data=""
