@@ -307,14 +307,15 @@ def changePassword(request):
 def updateAvatar(request):
 	logger.debug("GET HERE!!!!!!!!!!!!!!!!!!!!!!!")
 	avatar = request.POST.get('avatar', None)
+	picType = request.POST.get('pictype', None)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
 	if not user:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
-	if not avatar:
+	if not avatar or picType:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	user = user[0]
-	currentPath = AVATARPATH+str(_user['uid'])+".png"
+	currentPath = AVATARPATH+str(_user['uid'])+"."+picType
 	data=""
 	for chunk in avatar.chunks():
 		data+=chunk
