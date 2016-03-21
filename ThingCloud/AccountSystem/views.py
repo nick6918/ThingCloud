@@ -333,6 +333,8 @@ def updateAvatar(request):
 	if state:
 		user.avatar=1
 		user.save()
+		logger.debug("hello from here")
 		return Jsonify({"status":True, "error":"", "error_message":"", "avatar":1})
 	else:
-		return Jsonify({"status":True, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
+		logger.debug("hello from here2")
+		return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
