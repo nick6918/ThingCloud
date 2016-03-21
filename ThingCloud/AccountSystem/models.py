@@ -18,7 +18,7 @@ class User(models.Model):
 	password = models.CharField(max_length = 200)
 	salt = models.CharField(max_length = 200)
 	phone = models.CharField(max_length = 100)
-	avatar = models.BooleanField(default = False)
+	avatar = models.IntegerField()
 	username = models.CharField(max_length = 100, default = "WEIRDUSER")
 	vip = models.ForeignKey(VIP)
 
