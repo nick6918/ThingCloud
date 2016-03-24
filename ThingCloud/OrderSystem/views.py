@@ -11,8 +11,20 @@ from datetime import datetime
 import random
 
 PAGECOUNT = 8
-PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
+#PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
+PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+def orderPolish(order):
+    result = {}
+    for item in order.keys():
+        if type(order[item])==datetime:
+            result[item]=order[item].strftime('%Y/%m/%d %T')
+        elif order[item]==None:
+            result[item]=""
+        else:
+            result[item]=order[item]
+    return result
 
 def getThingList(itemList):
     thingList = []
@@ -47,13 +59,13 @@ def generateOrder(request):
     if not _addr:
         order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime)
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":""})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(order)), "address":""})
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
         order = Order(user_id=_user['uid'], notes="", fee=6, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(order), "address":model_to_dict(_addr_object)})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(order)), "address":model_to_dict(_addr_object), "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def modifyOrder(request):
@@ -71,7 +83,7 @@ def modifyOrder(request):
         _order.addr_id = addrid
         _order.fee=6
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def confirmOrder(request):
@@ -100,14 +112,14 @@ def confirmOrder(request):
             _order.paid_time=datetime.now()
             _order.state=1
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "detail":u"会员免运费: 0元。"})
         else:
             _order.state=0
             #申请微信订单
             prepayid=10001
             _order.prepayid = prepayid
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
 
 # @UserAuthorization
 # def checkPayment(request):
@@ -177,7 +189,8 @@ def getOrder(request):
             address=model_to_dict(address[0])
         else:
             address=""
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "address":address, "thinglist":thingList})
+        orderPolish(model_to_dict(_order))
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "address":address, "thinglist":thingList, "detail":u"同仓存取快递费: 6元。"})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
@@ -211,13 +224,13 @@ def cancel(request):
                 if refundstate:
                     _order.state=8
                     _order.save()
-                    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
+                    return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
                 else:
                     _order.save()
                     return Jsonify({"status":False, "error":"1304", "error_message":u"微信退款失败，请联系客服。"})
             else:
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
+                return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
         else:
             return Jsonify({"status":False, "error":"1303", "error_message":u"用户无权进行此操作。"})
 
@@ -248,7 +261,7 @@ def complain(request):
             else:
                 address=""
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def update(request):
@@ -281,7 +294,7 @@ def update(request):
         address=""
     current_state=_order.state
     if origin!=current_state:
-        return Jsonify({"status":False, "error":"1305", "error_message":u"订单状态不一致, 已重新刷新该订单。", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
+        return Jsonify({"status":False, "error":"1305", "error_message":u"订单状态不一致, 已重新刷新该订单。", "order":orderPolish(model_to_dict(_order)), "thinglist":thingList, "address":address})
     gid = _user['gid']
     if origin not in STATE_ALLOWED[gid]:
         return Jsonify({"status":False, "error":"1110", "error_message":u"用户无权进行此操作。"})
@@ -296,7 +309,7 @@ def update(request):
         _order.state = 6
         _order.finish_time = datetime.now()
     _order.save()
-    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "thinglist":thingList, "address":address})
+    return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def delete(request):
@@ -326,6 +339,6 @@ def orderCallback(request):
         _order.state = 1
         _order.paid_time = datetime.now()
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":orderPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
     else:
-        return Jsonify({"status":False, "error":"1110", "order":model_to_dict(_order), "error_message":u"用户无权进行此操作。"})
+        return Jsonify({"status":False, "error":"1110", "order":orderPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
