@@ -2,12 +2,13 @@
 
 from django.shortcuts import render
 from django.forms.models import model_to_dict
-from models import Order, Complaint
+from models import Order, Complaint, VIPOrder
 from CloudList.models import Thing
-from AccountSystem.models import Address
+from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify, dictPolish
-from datetime import datetime
+from VIPSystem.models import VIP
+from datetime import datetime, timedelta
 import random
 
 PAGECOUNT = 8
@@ -331,3 +332,37 @@ def orderCallback(request):
         return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
     else:
         return Jsonify({"status":False, "error":"1110", "order":dictPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
+
+def vipCallback(request):
+    void = request.GET.get("void", None)
+    if not void:
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+    void = int(void)
+    viporder = VIPOrder.objects.filter(void=void)
+    if not viporder:
+        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。"})
+    else:
+        viporder = viporder[0]
+        month = viporder.month
+        _user = User.objects.filter(uid=viporder.user.uid)
+        if not _user:
+            return Jsonify({"status":False, "error":"1502", "error_message":u"该订单不属于任何用户。"})
+        else:
+            _user = _user[0]
+            if not _user.vip_id:
+                _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(31*month), level=0)
+                _vip.save()
+                _user.vip_id=_vip.vid
+                _user.save()
+                viporder.state=1
+                viporder.save()
+                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
+            else:
+                _vip = _user.vip
+                enddate = _vip.end_date
+                newend = enddate + timedelta(31*month)
+                _vip.end_date = newend
+                _vip.save()
+                viporder.state=1
+                viporder.save()
+                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
