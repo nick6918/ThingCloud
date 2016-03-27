@@ -22,7 +22,7 @@ def vip(request):
     if not _user["vip"]:
         pOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
         if pOrder:
-            return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":1})
+            return Jsonify({"status":True, "error":"", "error_message":"", "processing":1})
         else:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":0})
     _vip = VIP.objects.filter(vid=_user["vip"])
