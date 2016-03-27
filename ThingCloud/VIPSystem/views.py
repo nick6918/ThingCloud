@@ -5,6 +5,7 @@ from OrderSystem.models import VIPOrder
 from django.forms.models import model_to_dict
 from TCD_lib.security import UserAuthorization
 from datetime import datetime
+from TCD_lib.utils import Jsonify, dictPolish
 
 def getFee(month, level):
     discount = 1
@@ -23,7 +24,7 @@ def vip(request):
     _vip = VIP.objects.filter(vid=_user["vip_id"])
     if _vip:
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":"", "vip":model_to_dict(_vip)})
+        return Jsonify({"status":True, "error":"", "error_message":"", "vip":dictPolish(model_to_dict(_vip))})
     else:
         return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
 
@@ -65,7 +66,7 @@ def vipConfirm(request):
         if not _vip:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":model_to_dict(_vip)})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":dictPolish(model_to_dict(_vip))})
 
 def vipCallback(request):
     void = request.POST.get("void", None)
@@ -87,10 +88,10 @@ def vipCallback(request):
             if not _vip:
                 _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(31*month), level=0)
                 _vip.save()
-                return Jsonify({"status":True, "vip":model_to_dict(_vip)})
+                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
             else:
                 enddate = _vip.end_date
                 newend = enddate + timedelta(31*month)
                 _vip.end_date = newend
                 _vip.save()
-                return Jsonify({"status":True, "vip":model_to_dict(_vip)})
+                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})

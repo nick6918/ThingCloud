@@ -19,3 +19,14 @@ class Jsonify(HttpResponse):
 		self['Content-Type']='application/json; charset=utf-8'
 		self['Vary']= 'Accept-Encoding'
 		self['Content-Length'] = len(self.content)
+
+def dictPolish(jDict):
+    result = {}
+    for item in jDict.keys():
+        if type(jDict[item])==datetime:
+            result[item]=jDict[item].strftime('%Y/%m /%d %T')
+        elif jDict[item]==None:
+            result[item]=""
+        else:
+            result[item]=jDict[item]
+    return result
