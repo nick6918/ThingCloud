@@ -72,4 +72,4 @@ def vipConfirm(request):
         if not _vip:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip))})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
