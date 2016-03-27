@@ -19,9 +19,9 @@ def getFee(month, level):
 @UserAuthorization
 def vip(request):
     _user = request.user
-    if not _user["vip_id"]:
+    if not _user["vip"]:
         return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
-    _vip = VIP.objects.filter(vid=_user["vip_id"])
+    _vip = VIP.objects.filter(vid=_user["vip"])
     if _vip:
         _vip = _vip[0]
         return Jsonify({"status":True, "error":"", "error_message":"", "vip":dictPolish(model_to_dict(_vip))})
@@ -62,38 +62,10 @@ def vipConfirm(request):
         _order.save()
         return Jsonify({"status":True, "error":"", "error_message":u"", "state":2})
     else:
-        if not _user['vip_id']:
+        if not _user['vip']:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = VIP.objects.filter(vid=_user['vip_id'])
         if not _vip:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = _vip[0]
         return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":dictPolish(model_to_dict(_vip))})
-
-def vipCallback(request):
-    void = request.POST.get("void", None)
-    if not void:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
-    void = int(void)
-    viporder = VIPOrder.objects.filter(void=void)
-    if not viporder:
-        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。"})
-    else:
-        viporder = viporder[0]
-        month = viporder.month
-        _user = User.objects.filter(uid=viporder.user_id)
-        if not _user:
-            return Jsonify({"status":False, "error":"1502", "error_message":u"该订单不属于任何用户。"})
-        else:
-            _user = _user[0]
-            _vip = _user.vip
-            if not _vip:
-                _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(31*month), level=0)
-                _vip.save()
-                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
-            else:
-                enddate = _vip.end_date
-                newend = enddate + timedelta(31*month)
-                _vip.end_date = newend
-                _vip.save()
-                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})

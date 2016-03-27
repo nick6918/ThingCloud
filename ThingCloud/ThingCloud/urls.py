@@ -18,9 +18,9 @@ from django.contrib import admin
 from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
 from CloudList.views import addNewItem, getItemList, modifyNotes
-from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, getOrderList, cancel, complain, update, orderCallback, getOrder, delete
+from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, getOrderList, cancel, complain, update, orderCallback, getOrder, delete, vipCallback
 from AssistSystem.views import feedback
-from VIPSystem.views import vip, vipOrder, vipConfirm, vipCallback
+from VIPSystem.views import vip, vipOrder, vipConfirm
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
