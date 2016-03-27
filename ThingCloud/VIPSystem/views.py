@@ -60,7 +60,7 @@ def vipConfirm(request):
     if state==0:
         _order.state=2
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":dictPolish(model_to_dict(_vip))})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":""})
     else:
         if not _user['vip']:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
