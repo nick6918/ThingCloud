@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from django.forms.models import model_to_dict
 from datetime import datetime
-from TCD_lib.utils import get_client_ip, Jsonify
+from TCD_lib.utils import get_client_ip, Jsonify, dictPolish
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
 from models import User, UserSession, Code, Address
