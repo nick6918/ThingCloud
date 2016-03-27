@@ -82,7 +82,7 @@ def register(request):
 	currentUser.save()
 	user['uid'] = currentUser.uid
 	user['session'] = createSession(user)
-	if False:
+	if avatar:
 		currentPath = AVATARPATH + str(user['uid']) + ".png"
 		data = ""
 		for chunk in avatar.chunks():
@@ -108,7 +108,7 @@ def register(request):
 	del(user['registerTime'])
 	del(user['loginIp'])
 	del(user['password'])
-	return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
+	return Jsonify({"status":True, "error":"", "error_message":"", "user":dictPolish(user)})
 
 def sendCode(request):
 	"""
@@ -166,7 +166,7 @@ def loginByPhone(request):
 		del user['register']
 		del user['loginIp']
 		del user['lastLogin']
-		return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
+		return Jsonify({"status":True, "error":"", "error_message":"", "user":dictPolish(user)})
 	else:
 		return Jsonify({"status":False, "error":"1106", "error_message":"密码有误, 请重新输入"})
 
@@ -279,7 +279,7 @@ def changeNickname(request):
 		user = user[0]
 		user.nickname = nickname
 		user.save()
-		return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":model_to_dict(user)})
+		return Jsonify({"status":True, "error":"", "error_message":"", "addresslist":dictPolish(model_to_dict(user))})
 	else:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 
@@ -301,7 +301,7 @@ def changePassword(request):
 	_user.save()
 	user = model_to_dict(_user)
 	user["session"] = updateSession(user)
-	return Jsonify({"status":True, "error":"", "error_message":"", "user":user})
+	return Jsonify({"status":True, "error":"", "error_message":"", "user":dictPolish(user)})
 
 @UserAuthorization
 def updateAvatar(request):
@@ -313,7 +313,6 @@ def updateAvatar(request):
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 	if not avatar:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-	logger.debug("GET HERE WITH PICTURE!!!!!!!!!!!!!!!!!!!!!!!")
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
