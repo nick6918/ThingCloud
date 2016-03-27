@@ -42,7 +42,7 @@ def vipOrder(request):
     ##TODO
     prepayid = 123456
     ##Generate new vip order
-    _order = VIPOrder(month=month, fee=fee, prepayid=prepayid, user=_user, level=level, state=0)
+    _order = VIPOrder(month=month, fee=fee, prepayid=prepayid, user_id=_user['uid'], level=level, state=0)
     _order.save()
     return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
 
