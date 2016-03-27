@@ -68,10 +68,10 @@ def register(request):
 	user['gender'] = int(gender)
 	avatar = request.FILES.get("avatar", None)
 	if avatar:
-		user['hasAvatar'] = 1
+		user['avatar'] = 1
 		#Upload the avatar here.
 	else:
-		user['hasAvatar'] = 0
+		user['avatar'] = 0
 	salt = Salt()
 	#username在注册时确定， 此后不再改变。
 	user['username'] = "USER"+salt.generateSalt(10) +"@sharecloud.com"
