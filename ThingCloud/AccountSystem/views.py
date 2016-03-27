@@ -192,6 +192,9 @@ def address(request):
 				return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
 			if not def_address:
 				is_default=1
+			if is_default==u"1" and def_address:
+				def_address.is_default=0
+				def_address.save()
 			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'])
 			if tag:
 				address.tagid = tag
@@ -214,8 +217,9 @@ def address(request):
 				if addr:
 					address.addr = addr
 				if is_default=="1":
-					def_address.is_default=0
-					def_address.save()
+					if def_address:
+						def_address.is_default=0
+						def_address.save()
 					address.is_default=1
 				address.save()
 		return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
