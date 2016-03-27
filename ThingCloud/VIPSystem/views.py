@@ -62,6 +62,8 @@ def vipConfirm(request):
         _order.save()
         return Jsonify({"status":True, "error":"", "error_message":u"", "state":2})
     else:
+        if not _user['vip)id']:
+            return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = VIP.objects.filter(vid=_user['vip_id'])
         if not _vip:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
