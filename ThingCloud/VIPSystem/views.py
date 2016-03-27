@@ -22,13 +22,13 @@ def vip(request):
     if not _user["vip"]:
         pOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
         if pOrder:
-            return Jsonify({"status":True, "error":"", "error_message":"", "processing":1})
+            return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
         else:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":0})
     _vip = VIP.objects.filter(vid=_user["vip"])
     if _vip:
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":"", "processing":0, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
     else:
         return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
 
@@ -64,7 +64,7 @@ def vipConfirm(request):
     if state==0:
         _order.state=2
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":""})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "state":2, "vip":""})
     else:
         if not _user['vip']:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
@@ -72,4 +72,4 @@ def vipConfirm(request):
         if not _vip:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":u"", "order":model_to_dict(_order), "vip":dictPolish(model_to_dict(_vip))})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip))})
