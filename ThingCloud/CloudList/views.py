@@ -69,10 +69,10 @@ def addNewItem(request):
 
 @UserAuthorization
 def modifyNotes(request):
-    _notes = request.POST.get("notes", None)
+    _notes = request.POST.get("notes", "")
     tid = request.POST.get("tid", None)
     _user = request.user
-    if not _notes or not tid:
+    if not tid:
         return Jsonify({"status":False, "error":1101, "error_message":"信息不足, 请输入备注。"})
     else:
         thing = Thing.objects.filter(user_belong_to_id=_user['uid']).filter(tid=tid)
