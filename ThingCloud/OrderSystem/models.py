@@ -19,6 +19,7 @@ class Order(models.Model):
     finish_time = models.DateTimeField()
     prepayid = models.CharField(max_length=50)
     signature = models.CharField(max_length=50)
+    showid = models.CharField(max_length=50)
 
     class Meta:
 
