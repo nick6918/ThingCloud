@@ -21,8 +21,9 @@ def feedback(request):
 def checkDiscount(request):
     _user = request.user
     discount = request.GET.get("discount", None)
-    discount
+    discount = discount.upper()
     disc = Discount.objects.filter(showcode==discount).filter(state==1)
     if not disc:
         return Jsonify({"status":False, "error":1601, "error_message":"优惠码不存在或优惠已过期, 请关注其它活动。"})
-    return Jsonify({"status":True, "error":"", "error_message":"恭喜, 奖品兑换成功。"})
+    disc = disc[0]
+    return Jsonify({"status":True, "error":"", "error_message":disc.message})
