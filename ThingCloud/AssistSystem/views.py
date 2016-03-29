@@ -16,3 +16,12 @@ def feedback(request):
     fdback = Feedback(notes=notes, user_id=_user['uid'], state=0)
     fdback.save()
     return Jsonify({"status":True, "feedback":model_to_dict(fdback), "error":"", "error_message":""})
+
+@UserAuthorization
+def checkDiscount(request):
+    _user = request.user
+    discount = request.GET.get("discound", None)
+    disc = Discount.objects.filter(code==discount).filter(state==1)
+    if not disc:
+        return Jsonify({"status":False, "error":1601, "error_message":"优惠码不存在或优惠已过期, 请关注其它活动。"})
+    return Jsonify({"status":True, "message":"恭喜, 奖品兑换成功。"})
