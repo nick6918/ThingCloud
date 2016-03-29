@@ -16,6 +16,7 @@ class Discount(models.Model):
     dsid = models.AutoField(primary_key=True)
     detail = models.CharField(max_length=300)
     code = models.CharField(max_length=50)
+    showcode = models.CharField(max_length=50)
     state = models.IntegerField()
 
     class Meta:
