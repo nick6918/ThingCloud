@@ -7,12 +7,12 @@ from TCD_lib.security import UserAuthorization
 from datetime import datetime
 from TCD_lib.utils import Jsonify, dictPolish
 
-def getFee(month, level):
+def getFee(days, level):
     discount = 1
     base = 30
-    if month >= 12:
+    if days >= 360:
         discount = 0.8
-    fee = int(base * month * discount)
+    fee = int(base * (days/31) * discount)
     return fee
 
 # Create your views here.
@@ -37,16 +37,16 @@ def vipOrder(request):
     _user = request.user
     level=request.POST.get("level", 0)
     level = int(level)
-    month = request.POST.get("month", None)
-    if not month:
+    days = request.POST.get("days", None)
+    if not days:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
-    month = int(month)
-    fee = getFee(month, level)
+    days = int(days)
+    fee = getFee(days, level)
     ##Generate wechat preorder
     ##TODO
     prepayid = 123456
     ##Generate new vip order
-    _order = VIPOrder(month=month, fee=fee, prepayid=prepayid, user_id=_user['uid'], level=level, state=0)
+    _order = VIPOrder(days=days, fee=fee, prepayid=prepayid, user_id=_user['uid'], level=level, state=0)
     _order.save()
     return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
 
