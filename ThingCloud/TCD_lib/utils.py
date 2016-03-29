@@ -25,7 +25,7 @@ def dictPolish(jDict):
     result = {}
     for item in jDict.keys():
         if type(jDict[item])==datetime:
-            result[item]=jDict[item].strftime('%Y/%m /%d %T')
+            result[item]=jDict[item].strftime('%Y/%m/%d %T')
         elif jDict[item]==None:
             result[item]=""
         else:
