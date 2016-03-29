@@ -349,14 +349,14 @@ def vipCallback(request):
         return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。"})
     else:
         viporder = viporder[0]
-        month = viporder.month
+        days = viporder.days
         _user = User.objects.filter(uid=viporder.user.uid)
         if not _user:
             return Jsonify({"status":False, "error":"1502", "error_message":u"该订单不属于任何用户。"})
         else:
             _user = _user[0]
             if not _user.vip_id:
-                _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(31*month), level=0)
+                _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(days), level=0)
                 _vip.save()
                 _user.vip_id=_vip.vid
                 _user.save()
@@ -366,7 +366,7 @@ def vipCallback(request):
             else:
                 _vip = _user.vip
                 enddate = _vip.end_date
-                newend = enddate + timedelta(31*month)
+                newend = enddate + timedelta(days)
                 _vip.end_date = newend
                 _vip.save()
                 viporder.state=1
