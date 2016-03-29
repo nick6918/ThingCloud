@@ -22,7 +22,7 @@ def checkDiscount(request):
     _user = request.user
     discount = request.GET.get("discount", None)
     discount = discount.upper()
-    disc = Discount.objects.filter(showcode==discount).filter(state==1)
+    disc = Discount.objects.filter(showcode=discount).filter(state=1)
     if not disc:
         return Jsonify({"status":False, "error":1601, "error_message":"优惠码不存在或优惠已过期, 请关注其它活动。"})
     disc = disc[0]
