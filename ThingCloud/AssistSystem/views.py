@@ -25,4 +25,4 @@ def checkDiscount(request):
     disc = Discount.objects.filter(showcode==discount).filter(state==1)
     if not disc:
         return Jsonify({"status":False, "error":1601, "error_message":"优惠码不存在或优惠已过期, 请关注其它活动。"})
-    return Jsonify({"status":True, "message":"恭喜, 奖品兑换成功。"})
+    return Jsonify({"status":True, "error":"", "error_message":"恭喜, 奖品兑换成功。"})
