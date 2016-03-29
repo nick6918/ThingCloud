@@ -309,7 +309,8 @@ def changePassword(request):
 
 @UserAuthorization
 def updateAvatar(request):
-	logger.debug("weifanding")
+	logger.debug("#####TIMESTAMP1#####")
+	logger.debug(datetime.now().strftime("%T"))
 	avatar = request.FILES.get('avatar', None)
 	_user = request.user
 	user = User.objects.filter(uid=_user['uid'])
@@ -320,6 +321,8 @@ def updateAvatar(request):
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
+	logger.debug("#####TIMESTAMP2#####")
+	logger.debug(datetime.now().strftime("%T"))
 	try:
 		for chunk in avatar.chunks():
 			data+=chunk
@@ -328,6 +331,8 @@ def updateAvatar(request):
 		logger.debug("FAIL PICTURE SERVER")
 		logger.debug(e)
 		return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
+	logger.debug("#####TIMESTAMP3#####")
+	logger.debug(datetime.now().strftime("%T"))
 	if state:
 		try:
 			user.avatar=1
@@ -336,5 +341,4 @@ def updateAvatar(request):
 			logger.debug(e)
 		return Jsonify({"status":True, "error":"", "error_message":"", "avatar":1})
 	else:
-		logger.debug("hello from here2")
 		return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
