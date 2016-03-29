@@ -41,7 +41,7 @@ class VIPOrder(models.Model):
     """
 
     void = models.AutoField(primary_key=True)
-    days = models.IntegerField()
+    month = models.IntegerField()
     level = models.IntegerField()
     user = models.ForeignKey(User)
     prepayid = models.CharField(max_length=50)
