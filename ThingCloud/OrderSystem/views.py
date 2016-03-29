@@ -47,8 +47,9 @@ def generateOrder(request):
     _user = request.user
     _addr = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
     if not _addr:
-        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime)
+        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, showid="0")
         order.save()
+        newid = createtime.strftime("%Y%m%d")+str(order.oid)
         return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(order)), "address":""})
     else:
         _addr_object = _addr[0]
