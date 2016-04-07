@@ -26,9 +26,9 @@ def getThingList(itemList):
             if current_item:
                 current_item = model_to_dict(current_item[0])
                 if int(current_item['avatar'])==1:
-                    current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".jpg"
+                    current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".png"
                 else:
-                    current_item['avatarurl'] = PICURL+"thing/default.jpg"
+                    current_item['avatarurl'] = PICURL+"thing/default.png"
                 thingList.append(current_item)
     return thingList
 
