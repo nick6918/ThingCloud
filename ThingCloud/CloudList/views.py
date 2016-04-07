@@ -108,9 +108,9 @@ def getItemList(request):
             item['wh_id']=wh_id
             item['wh_name']=wh_name
             if int(item['avatar'])==1:
-                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".jpg"
+                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".png"
             else:
-                item['avatarurl'] = PICURL+"thing/default.jpg"
+                item['avatarurl'] = PICURL+"thing/default.png"
             print item
             del(item['wh_in'])
             del(item['user_belong_to'])
