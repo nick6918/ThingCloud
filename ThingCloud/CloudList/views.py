@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger('appserver')
 
 AVATARPATH = UPYUNURL+"/thingavatar/"
-PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
+PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 
 # Create your views here.
 def addNewItem(request):
