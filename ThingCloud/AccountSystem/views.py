@@ -260,6 +260,7 @@ def deleteAddress(request):
 	if not _address:
 		return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 	else:
+		return Jsonify({"status":False, "error":"1100", "error_message":"接口未完成。"})
 		_address=_address[0]
 		defaultstate = int(_address.is_default)
 		info = _address.delete()
