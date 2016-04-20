@@ -35,3 +35,17 @@ class Activity(models.Model):
 
     class Meta:
 		db_table = 'activity'
+
+class Version(models.Model):
+    vrid = models.AutoField(primary_key=True)
+    version = models.CharField(max_length=50)
+    state = models.IntegerField()
+    typeid = models.IntegerField()
+    compulsorylist = models.CharField(max_length=300)
+    selectlist = models.CharField(max_length=300)
+    compulsorynotes = models.CharField(max_length=300)
+    notes = models.CharField(max_length=300)
+    devnotes = models.CharField(max_length=300)
+
+    class Meta:
+		db_table = 'meta_version'
