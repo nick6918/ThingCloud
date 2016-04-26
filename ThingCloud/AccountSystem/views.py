@@ -195,14 +195,14 @@ def address(request):
 			if is_default==u"1" and def_address:
 				def_address.is_default=0
 				def_address.save()
-			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'])
+			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'], state=1)
 			if tag:
 				address.tagid = tag
 			address.save()
 		else:
 			#修改id为addrid的地址的部分信息
 			address = Address.objects.filter(adid=addrid)
-			if not address:
+			if not address or address.state==0:
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
 				address = address[0]
@@ -239,7 +239,7 @@ def address(request):
 @UserAuthorization
 def addressList(request):
 	_user = request.user
-	addressList = Address.objects.filter(user_id=_user['uid'])
+	addressList = Address.objects.filter(user_id=_user['uid']).filter(state=1)
 	resultList = []
 	for address in addressList:
 		address = model_to_dict(address)
@@ -256,18 +256,23 @@ def deleteAddress(request):
 	if not addrid:
 		return Jsonify({"status":False, "error":"1101", "error_message":"输入信息不足, 请重新输入。"})
 	addrid = int(addrid)
-	_address = Address.objects.filter(user_id=_user['uid']).filter(adid=addrid)
+	_address = Address.objects.filter(adid=addrid).filter(user_id=_user['uid']).filter(state=1)
 	if not _address:
 		return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 	else:
-		return Jsonify({"status":False, "error":"1100", "error_message":"接口未完成。"})
-		_address=_address[0]
-		defaultstate = int(_address.is_default)
-		info = _address.delete()
-		curAddress = Address.objects.filter(user_id=_user['uid'])
-		orderList = Order.objects.filter(user_id=_user['uid']).filter(addr_id=adid)
-		logger.debug(info)
-		#未完成。
+		_address = _address[0]
+		if _address.is_default==1:
+			_address.is_default=0
+			_address.state=0
+			_address.save()
+			_backup = Address.objects.filter(user_id=_user['uid']).filter(state=1).exclude(adid=addrid).order_by("-adid")
+			if _backup:
+				_backup = _backup[0]
+				_backup.is_default=1
+				_backup.save()
+		else:
+			_address.state=0
+			_address.save()
 		return Jsonify({"status":True, "error":"", "error_message":""})
 
 @UserAuthorization
