@@ -174,8 +174,6 @@ def loginByPhone(request):
 def address(request):
 	_user = request.user
 	if request.method == 'POST':
-		logger.debug("Address log")
-		logger.debug(request.POST)
 		addr = request.POST.get("addr", None)
 		name = request.POST.get("name", None)
 		gender = request.POST.get("gender", None)
