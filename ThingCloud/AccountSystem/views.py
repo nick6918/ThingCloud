@@ -213,7 +213,7 @@ def address(request):
 				if gender:
 					address.gender = gender
 				if tag:
-					address.tag = tag
+					address.tagid = tag
 				if addr:
 					address.addr = addr
 				if is_default=="1":
