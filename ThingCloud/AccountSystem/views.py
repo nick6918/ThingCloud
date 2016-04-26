@@ -174,6 +174,8 @@ def loginByPhone(request):
 def address(request):
 	_user = request.user
 	if request.method == 'POST':
+		logger.debug("Address log")
+		logger.debug(request.POST)
 		addr = request.POST.get("addr", None)
 		name = request.POST.get("name", None)
 		gender = request.POST.get("gender", None)
@@ -213,7 +215,7 @@ def address(request):
 				if gender:
 					address.gender = gender
 				if tag:
-					address.tag = tag
+					address.tagid = tag
 				if addr:
 					address.addr = addr
 				if is_default=="1":
@@ -310,7 +312,6 @@ def changePassword(request):
 
 @UserAuthorization
 def updateAvatar(request):
-	logger.debug("#####TIMESTAMP1#####")
 	logger.debug(datetime.now().strftime("%T"))
 	avatar = request.FILES.get('avatar', None)
 	_user = request.user
@@ -322,7 +323,7 @@ def updateAvatar(request):
 	user = user[0]
 	currentPath = AVATARPATH+str(_user['uid'])+".png"
 	data=""
-	logger.debug("#####TIMESTAMP2#####")
+	logger.debug("#####TIMESTAMP1#####")
 	logger.debug(datetime.now().strftime("%T"))
 	try:
 		for chunk in avatar.chunks():
@@ -332,7 +333,7 @@ def updateAvatar(request):
 		logger.debug("FAIL PICTURE SERVER")
 		logger.debug(e)
 		return Jsonify({"status":True, "error":"1111", "error_message":"上传图片超时。", "avatar":1})
-	logger.debug("#####TIMESTAMP3#####")
+	logger.debug("#####TIMESTAMP2#####")
 	logger.debug(datetime.now().strftime("%T"))
 	if state:
 		try:
