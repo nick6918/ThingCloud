@@ -309,6 +309,9 @@ def update(request):
 
 @UserAuthorization
 def delete(request):
+
+    FINISH_STATE = [0, 6, 7, 8, 10, 11]
+
     oid=request.POST.get("oid", None)
     _user = request.user
     if not oid:
@@ -318,9 +321,12 @@ def delete(request):
     if not _order:
         return Jsonify({"status":False, "error":"1110", "error_message":u"订单不存在或用户无权对此订单操作。"})
     _order = _order[0]
-    _order.state=13
-    _order.save()
-    return Jsonify({"status":True, "error":"", "error_message":""})
+    if _order.state in FINISH_STATE:
+        _order.state=13
+        _order.save()
+        return Jsonify({"status":True, "error":"", "error_message":""})
+    else:
+        return Jsonify({"status":False, "error":"1306", "error_message":u"订单正在处理中, 暂不能删除。 如遇特殊情况, 请直接联系客服。"})
 
 def orderCallback(request):
     oid = request.POST.get("oid", None)
