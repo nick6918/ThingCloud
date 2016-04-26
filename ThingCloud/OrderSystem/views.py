@@ -310,7 +310,7 @@ def update(request):
 @UserAuthorization
 def delete(request):
 
-    FINISH_STATE = [0, 6, 7, 8, 10, 11]
+    FINISH_STATE = [0, 6, 7, 8, 10, 11, 12]
 
     oid=request.POST.get("oid", None)
     _user = request.user

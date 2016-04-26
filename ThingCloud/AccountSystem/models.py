@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from VIPSystem.models import VIP
 
@@ -52,6 +54,8 @@ class Address(models.Model):
 	gender = models.IntegerField()
 	is_default = models.IntegerField()
 	tagid = models.IntegerField()
+	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
+	state = models.IntegerField()
 
 	class Meta:
 		db_table = 'user_address'
