@@ -201,8 +201,8 @@ def address(request):
 			address.save()
 		else:
 			#修改id为addrid的地址的部分信息
-			address = Address.objects.filter(adid=addrid)
-			if not address or address.state==0:
+			address = Address.objects.filter(adid=addrid).filter(state=1)
+			if not address:
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
 				address = address[0]
