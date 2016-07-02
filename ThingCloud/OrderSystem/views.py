@@ -24,14 +24,14 @@ def unifyOrder(order, body, detail, userip):
 
 	info = {}
 	info['mch_id'] = MCHID
-	info['app_id']  = APPID
+	info['appid']  = APPID
 	info['device_info']  = "WEB"
 	info['nonce_str']  = generateRandomString(32)
 	info['body']  = body
 	info['detail']  = detail
 	info['out_trade_no']  = order["oid"]
 	info['fee_type']  = "CNY"
-	info['fee']  = order["fee"]*100
+	info['total_fee']  = order["fee"]*100
 	info['spbill_create_ip']  = userip
 	info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
 	info['trade_type']  = "APP"
@@ -47,8 +47,8 @@ def unifyOrder(order, body, detail, userip):
 	sign=md5(result).upper()
 	xml = '<xml>/n'
 	for key in keylist:
-		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">/n"
-	xml += '</xml>'
+		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
+	xml = xml + "   <sign>"+str(sign)+"</sign>\n</xml>"
 	print xml
 	fp=open("xml.txt", "w+")
 	fp.write(xml)
