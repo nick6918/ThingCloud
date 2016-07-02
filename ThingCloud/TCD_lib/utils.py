@@ -31,3 +31,13 @@ def dictPolish(jDict):
         else:
             result[item]=jDict[item]
     return result
+
+def generateRandomString(size):
+
+    ALPHABET = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
+    result = ""
+    for k in range(0, size):
+        index = random.randint(0, 61)
+        result += ALPHABET[index]
+    return result
+
