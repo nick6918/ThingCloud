@@ -46,7 +46,7 @@ def unifyOrder(order, body, detail, userip):
 	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
 	result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
 	sign=md5(result).upper()
-	fp = open("sign.txt")
+	fp = open("sign.txt", "w+")
 	fp.write(sign)
 	fp.close()
 	xml = '<xml>\n'
