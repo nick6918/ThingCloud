@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.db import connection
 from datetime import datetime
+from Crypto.Hash import MD5
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
@@ -41,3 +42,6 @@ def generateRandomString(size):
         result += ALPHABET[index]
     return result
 
+def md5(string):
+    p=MD5.new()
+    p.update(string)
