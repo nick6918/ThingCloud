@@ -38,15 +38,18 @@ def unifyOrder(order, body, detail, userip):
 	result = ""
 	for item in keylist:
 		if info[item]:
-			current = item+"=" +info[item] + "&"
+			current = item+"=" +str(info[item]) + "&"
 			result += current
 	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
 	sign=md5(result).toUpperCase()
 	xml = '<xml>/n'
 	for key in keylist:
-		xml = xml + "   <" + key + ">" + info[key] + "</" + key +">/n"
+		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">/n"
 	xml += '</xml>'
 	print xml
+	fp=open("xml.txt", "w+")
+	fp.write(xml)
+	fp.close()
 	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
 	response = urllib2.urlopen(request)
 	content = response.read()
@@ -151,6 +154,9 @@ def confirmOrder(request):
         else:
             _order.state=0
             result = unifyOrder(model_to_dict(_order), body, detail, ipaddr)
+            fp = open("result.txt", "w+")
+            fp.write(result)
+            fp.close()
             prepayid=10001
             _order.prepayid = prepayid
             _order.save()
