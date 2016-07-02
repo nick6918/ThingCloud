@@ -122,7 +122,7 @@ def confirmOrder(request):
     oid = request.POST.get("oid", None)
     fee = request.POST.get("fee", None)
     notes = request.POST.get("notes", "")
-    ipaddr = reuqest.POST.get("ipaddr", "127.0.0.1")
+    ipaddr = request.POST.get("ipaddr", "127.0.0.1")
     body = request.POST.get("body", "Unknown")
     detail = request.POST.get("detail", "Unknown")
     if not fee or not oid:
