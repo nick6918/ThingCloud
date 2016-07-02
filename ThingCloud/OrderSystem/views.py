@@ -18,7 +18,7 @@ PAGECOUNT = 8
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-def unifyOrder(order, body, userip, detail):
+def unifyOrder(order, body, detail, userip):
 	info = {}
 	info['mch_id'] = MCHID
 	info['app_id']  = APPID
@@ -122,6 +122,9 @@ def confirmOrder(request):
     oid = request.POST.get("oid", None)
     fee = request.POST.get("fee", None)
     notes = request.POST.get("notes", "")
+    ipaddr = reuqest.POST.get("ipaddr", "127.0.0.1")
+    body = request.POST.get("body", "Unknown")
+    detail = request.POST.get("detail", "Unknown")
     if not fee or not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
@@ -147,7 +150,7 @@ def confirmOrder(request):
             return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"会员免运费: 0元。"})
         else:
             _order.state=0
-            #申请微信订单
+            result = unifyOrder(model_to_dict(_order), body, detail, ipaddr)
             prepayid=10001
             _order.prepayid = prepayid
             _order.save()
