@@ -41,7 +41,7 @@ def unifyOrder(order, body, detail, userip):
 			current = item+"=" +str(info[item]) + "&"
 			result += current
 	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
-	sign=md5(result).toUpperCase()
+	sign=md5(result).upper()
 	xml = '<xml>/n'
 	for key in keylist:
 		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">/n"
