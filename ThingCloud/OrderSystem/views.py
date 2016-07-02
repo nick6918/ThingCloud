@@ -19,6 +19,9 @@ PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 def unifyOrder(order, body, detail, userip):
+
+	url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+
 	info = {}
 	info['mch_id'] = MCHID
 	info['app_id']  = APPID
