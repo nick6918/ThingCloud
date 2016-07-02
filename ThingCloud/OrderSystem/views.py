@@ -6,15 +6,52 @@ from models import Order, Complaint, VIPOrder
 from CloudList.models import Thing
 from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
-from TCD_lib.utils import Jsonify, dictPolish
+from TCD_lib.utils import Jsonify, dictPolish, generateRandomString
+from TCD_lib.settings import APPID, MCHID
 from VIPSystem.models import VIP
 from datetime import datetime, timedelta
+from Crypto.Hash import MD5
 import random
+import urllib2
 
 PAGECOUNT = 8
 #PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+def unifyOrder(order, body, userip, detail):
+	info = {}
+	info['mch_id'] = MCHID
+	info['app_id']  = APPID
+	info['device_info']  = "WEB"
+	info['nonce_str']  = generateRandomString(32)
+	info['body']  = body
+	info['detail']  = detail
+	info['out_trade_no']  = order.oid
+	info['fee_type']  = "CNY"
+	info['fee']  = order.fee*100
+	info['spbill_create_ip']  = userip
+	info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
+	info['trade_type']  = "APP"
+
+	keylist = info.keys()
+	keylist.sort()
+	result = ""
+	for item in keylist:
+		if info[item]:
+			current = item+"=" +info[item] + "&"
+			result += current
+	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
+	sign=MD5(result).toUpperCase()
+	xml = '<xml>/n'
+	for key in keylist:
+		xml = xml + "   <" + key + ">" + info[key] + "</" + key +">/n"
+	xml += '</xml>'
+	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
+	response = urllib2.urlopen(request)
+	content = response.read()
+	return content
+
 
 def getThingList(itemList):
     thingList = []
