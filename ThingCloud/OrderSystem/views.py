@@ -44,6 +44,9 @@ def unifyOrder(order, body, detail, userip):
 			current = item+"=" +str(info[item]) + "&"
 			result += current
 	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
+	fp=open("sign.txt", "w+")
+	fp.write(result)
+	fp.close()
 	sign=md5(result).upper()
 	xml = '<xml>\n'
 	for key in keylist:
