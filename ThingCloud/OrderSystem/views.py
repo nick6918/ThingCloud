@@ -10,13 +10,33 @@ from TCD_lib.utils import Jsonify, dictPolish, generateRandomString, md5
 from TCD_lib.settings import APPID, MCHID
 from VIPSystem.models import VIP
 from datetime import datetime, timedelta
-import random
+import random, time
 import urllib2
+import xml.etree.ElementTree as ET 
 
 PAGECOUNT = 8
 #PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+def iosOrder(prepayid):
+	data = {
+		"appid":APPID,
+		"noncestr":generateRandomString(32),
+		"package":"Sign=WXPay",
+		"partnerid":MCHID,
+		"prepayid":prepayid,
+		"timestamp": int(time.time())
+	}
+	keylist = data.keys()
+	keylist.sort()
+	signString = ""
+	for key in keylist:
+		signString = signString + key + "=" + data[key]+"&"
+	signString += "key=sharecloud885677sharecloud885677"
+	sign = md5(signString).upper()
+	data["sign"]=sign
+	return data
 
 def unifyOrder(order, body, detail, userip):
 
@@ -48,20 +68,17 @@ def unifyOrder(order, body, detail, userip):
 	#result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
 	#code: "9A0A8659F005D6984697E2CA0A9CF3B7"
 	sign=md5(result).upper()
-	fp = open("string.txt", "w+")
-	fp.write(result)
-	fp.close()
-	fp = open("sign.txt", "w+")
-	fp.write(sign)
-	fp.close()
+	
+	#统一下单接口xml表单
 	xml = '<xml>\n'
 	for key in keylist:
 		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
 	xml = xml + "   <sign>"+str(sign)+"</sign>\n</xml>"
-	print xml
+	
 	fp=open("xml.txt", "w+")
 	fp.write(xml)
 	fp.close()
+
 	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
 	response = urllib2.urlopen(request)
 	content = response.read()
@@ -166,13 +183,27 @@ def confirmOrder(request):
         else:
             _order.state=0
             result = unifyOrder(model_to_dict(_order), body, detail, ipaddr)
-            fp = open("result.txt", "w+")
+            pattern = re.compile("<prepay_id><!\[CDATA\[([a-zA-Z0-9]*)\]\]><\/prepayid>")
+            rs = pattern.match(result)
+            prepayid = rs.group(1)
+            prepayid = 
+            fp = open("result.xml", "w+")
             fp.write(result)
             fp.close()
-            prepayid=10001
+            try:
+            	tree = ET.parse("result.xml")
+				root = tree.getroot()
+				if root[0].text == "SUCCESS":
+					prepayid = root[8].text
+				else:
+					return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})
+			except:
+				return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             _order.prepayid = prepayid
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
+            #为iOS准备调起支付所需的参数
+            data = iosOrder(prepayid)
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order), "data":data, "detail":u"同仓存取快递费: 6元。"})
 
 # @UserAuthorization
 # def checkPayment(request):
