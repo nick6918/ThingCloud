@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.db import connection
 from datetime import datetime
 import random
+import hashlib
 from Crypto.Hash import MD5
 from django.core.serializers.json import DjangoJSONEncoder
 import json
