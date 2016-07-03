@@ -190,8 +190,8 @@ def confirmOrder(request):
             try:
             	tree = ET.parse("result.xml")
             	root = tree.getroot()
-				if root[0].text == "SUCCESS":
-					prepayid = root[8].text
+            	if root[0].text == "SUCCESS":
+            		prepayid = root[8].text
 				else:
 					return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})
 			except:
