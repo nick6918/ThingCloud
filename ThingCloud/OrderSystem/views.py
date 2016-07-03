@@ -43,7 +43,7 @@ def unifyOrder(order, body, detail, userip):
 		if info[item]:
 			current = item+"=" +str(info[item]) + "&"
 			result += current
-	result = result + "key=dfa3c2228afde6d006782cd901cc843c"
+	result = result + "key=sharecloud885677sharecloud885677"
 	#wechat sign example
 	#result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
 	#code: "9A0A8659F005D6984697E2CA0A9CF3B7"
