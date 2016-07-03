@@ -173,7 +173,7 @@ def confirmOrder(request):
         if notes:
             _order.notes = notes
         if fee != _order.fee:
-            return Jsonify({"status":False, "error":"1303", "order":dictPolish(model_to_dict(_order), "error_message":u"订单价格有误， 请重新下单。"})
+            return Jsonify({"status":False, "error":"1303", "fee":fee, "order":dictPolish(model_to_dict(_order), "error_message":u"订单价格有误， 请重新下单。"})
         ##wechat order
         if fee==0:
             _order.paid_time=datetime.now()
