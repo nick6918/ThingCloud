@@ -160,7 +160,7 @@ def confirmOrder(request):
     if not fee or not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
-    fee = int(fee)
+    fee = float(fee)
     _order = Order.objects.filter(oid=oid)
     if not _order:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
