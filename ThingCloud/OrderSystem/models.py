@@ -10,7 +10,7 @@ class Order(models.Model):
     addr = models.ForeignKey(Address)
     user = models.ForeignKey(User)
     notes = models.CharField(max_length=300)
-    fee = models.IntegerField()
+    fee = models.FloatField()
     typeid = models.IntegerField()
     itemList = models.CharField(max_length=200)
     state = models.IntegerField()
