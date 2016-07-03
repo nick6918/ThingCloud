@@ -43,7 +43,7 @@ def generateRandomString(size):
         result += ALPHABET[index]
     return result
 
-def md5(string):
-    p=MD5.new()
-    p.update(string)
-    return p.hexdigest()
+def md5(m2)
+    m2 = hashlib.md5()
+    m2.update(src)
+    return m2.hexdigest()
