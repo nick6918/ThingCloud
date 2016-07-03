@@ -186,9 +186,10 @@ def confirmOrder(request):
             fp = open("result.xml", "w+")
             fp.write(result)
             fp.close()
+            prepayid = ""
             try:
             	tree = ET.parse("result.xml")
-				root = tree.getroot()
+            	root = tree.getroot()
 				if root[0].text == "SUCCESS":
 					prepayid = root[8].text
 				else:
