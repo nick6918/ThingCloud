@@ -51,7 +51,7 @@ def unifyOrder(order, body, detail, userip):
 	info['detail']  = detail
 	info['out_trade_no']  = order["oid"]
 	info['fee_type']  = "CNY"
-	info['total_fee']  = order["fee"]*100
+	info['total_fee']  = int(order["fee"]*100)
 	info['spbill_create_ip']  = userip
 	info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
 	info['trade_type']  = "APP"
