@@ -32,7 +32,7 @@ def iosOrder(prepayid):
 	keylist.sort()
 	signString = ""
 	for key in keylist:
-		signString = signString + key + "=" + data[key]+"&"
+		signString = signString + key + "=" + str(data[key])+"&"
 	signString += "key=sharecloud885677sharecloud885677"
 	sign = md5(signString).upper()
 	data["sign"]=sign
