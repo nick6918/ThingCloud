@@ -62,7 +62,7 @@ def UserAuthorization(func):
 		print request.META
 		user = {}
 		if not 'HTTP_AUTHORIZATION' in request.META:
-			return Jsonify({"error":"1102", "error_message":"用户未登录。", "status":False})
+			return Jsonify({"error":"1102", "error_message":"用户未登录, 无session。", "status":False})
 		else:
 			auth = request.META['HTTP_AUTHORIZATION']
 			auth = auth.strip().decode('base64')
