@@ -183,10 +183,6 @@ def confirmOrder(request):
         else:
             _order.state=0
             result = unifyOrder(model_to_dict(_order), body, detail, ipaddr)
-            pattern = re.compile("<prepay_id><!\[CDATA\[([a-zA-Z0-9]*)\]\]><\/prepayid>")
-            rs = pattern.match(result)
-            prepayid = rs.group(1)
-            prepayid = 
             fp = open("result.xml", "w+")
             fp.write(result)
             fp.close()
