@@ -62,8 +62,7 @@ def unifyOrder(order, body, detail, userip):
 	fp=open("xml.txt", "w+")
 	fp.write(xml)
 	fp.close()
-	fm = "dlkhf"
-	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = fm)
+	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
 	response = urllib2.urlopen(request)
 	content = response.read()
 	return content
