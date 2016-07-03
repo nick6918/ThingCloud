@@ -46,4 +46,4 @@ def generateRandomString(size):
 def md5(string):
     p=MD5.new()
     p.update(string)
-    return p.hexdigest()
+    return p
