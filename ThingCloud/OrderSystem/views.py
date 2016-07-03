@@ -201,7 +201,7 @@ def confirmOrder(request):
             _order.save()
             #为iOS准备调起支付所需的参数
             data = iosOrder(prepayid)
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order), "data":data, "detail":u"同仓存取快递费: 6元。"})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "data":data, "detail":u"同仓存取快递费: 6元。"})
 
 # @UserAuthorization
 # def checkPayment(request):
