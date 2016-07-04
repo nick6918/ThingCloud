@@ -7,5 +7,4 @@ UPYUNURL = "thingcloud"
 
 APPID = 'wxc07a46ae58282528'
 MCHID = '1361409502'
-PARTNERID = ""
 

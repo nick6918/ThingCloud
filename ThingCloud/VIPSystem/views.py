@@ -4,16 +4,9 @@ from models import VIP
 from OrderSystem.models import VIPOrder
 from django.forms.models import model_to_dict
 from TCD_lib.security import UserAuthorization
+from TCD_lib.fee import getVIPfee
 from datetime import datetime
-from TCD_lib.utils import Jsonify, dictPolish
-
-def getFee(month, level):
-    discount = 1
-    base = 30
-    if month >= 12:
-        discount = 0.8
-    fee = int(base * month * discount)
-    return fee
+from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder 
 
 # Create your views here.
 @UserAuthorization
@@ -37,18 +30,36 @@ def vipOrder(request):
     _user = request.user
     level=request.POST.get("level", 0)
     level = int(level)
+    ipaddr = request.POST.get("ipaddr", "127.0.0.1")
+    body = request.POST.get("body", "Unknown")
+    detail = request.POST.get("detail", "Unknown")
     month = request.POST.get("month", None)
     if not month:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     month = int(month)
-    fee = getFee(month, level)
+    fee = getVIPfee(month, level)
     ##Generate wechat preorder
-    ##TODO
-    prepayid = 123456
-    ##Generate new vip order
-    _order = VIPOrder(month=month, fee=fee, prepayid=prepayid, user_id=_user['uid'], level=level, state=0)
+    _order = VIPOrder(month=month, fee=fee, user_id=_user['uid'], level=level, state=0)
     _order.save()
-    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order)})
+    result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 1)
+    fp = open("result.xml", "w+")
+    fp.write(result)
+    fp.close()
+    prepayid = ""
+    try:
+        tree = ET.parse("result.xml")
+        root = tree.getroot()
+        if root[0].text == "SUCCESS":
+            prepayid = root[8].text
+        else:
+            return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
+        except:
+            return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
+    _order.prepayid = prepayid
+    _order.save()
+    #为iOS准备调起支付所需的参数
+    data = iosOrder(prepayid)
+    return Jsonify({"status":True, "error":"", "error_message":"", "order":model_to_dict(_order), "data":data})
 
 @UserAuthorization
 def vipConfirm(request):

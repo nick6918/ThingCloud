@@ -6,83 +6,17 @@ from models import Order, Complaint, VIPOrder
 from CloudList.models import Thing
 from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
-from TCD_lib.utils import Jsonify, dictPolish, generateRandomString, md5
-from TCD_lib.settings import APPID, MCHID
+from TCD_lib.fee import getDeliveryfee
+from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder
 from VIPSystem.models import VIP
 from datetime import datetime, timedelta
-import random, time
-import urllib2
+import random
 import xml.etree.ElementTree as ET 
 
 PAGECOUNT = 8
 #PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-def iosOrder(prepayid):
-	data = {
-		"appid":APPID,
-		"noncestr":generateRandomString(32),
-		"package":"Sign=WXPay",
-		"partnerid":MCHID,
-		"prepayid":prepayid,
-		"timestamp": int(time.time())
-	}
-	keylist = data.keys()
-	keylist.sort()
-	signString = ""
-	for key in keylist:
-		signString = signString + key + "=" + str(data[key])+"&"
-	signString += "key=sharecloud885677sharecloud885677"
-	sign = md5(signString).upper()
-	data["sign"]=sign
-	return data
-
-def unifyOrder(order, body, detail, userip):
-
-	url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
-
-	info = {}
-	info['mch_id'] = MCHID
-	info['appid']  = APPID
-	info['device_info']  = "WEB"
-	info['nonce_str']  = generateRandomString(32)
-	info['body']  = body
-	info['detail']  = detail
-	info['out_trade_no']  = order["oid"]
-	info['fee_type']  = "CNY"
-	info['total_fee']  = int(order["fee"]*100)
-	info['spbill_create_ip']  = userip
-	info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
-	info['trade_type']  = "APP"
-
-	keylist = info.keys()
-	keylist.sort()
-	result = ""
-	for item in keylist:
-		if info[item]:
-			current = item+"=" +str(info[item]) + "&"
-			result += current
-	result = result + "key=sharecloud885677sharecloud885677"
-	#wechat sign example
-	#result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
-	#code: "9A0A8659F005D6984697E2CA0A9CF3B7"
-	sign=md5(result).upper()
-	
-	#统一下单接口xml表单
-	xml = '<xml>\n'
-	for key in keylist:
-		xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
-	xml = xml + "   <sign>"+str(sign)+"</sign>\n</xml>"
-	
-	fp=open("xml.txt", "w+")
-	fp.write(xml)
-	fp.close()
-
-	request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
-	response = urllib2.urlopen(request)
-	content = response.read()
-	return content
 
 def getThingList(itemList):
     thingList = []
@@ -124,7 +58,8 @@ def generateOrder(request):
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
-        order = Order(user_id=_user['uid'], notes="", fee=0.1, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
+     	fee = getDeliveryfee()
+        order = Order(user_id=_user['uid'], notes="", fee=fee, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
@@ -182,20 +117,20 @@ def confirmOrder(request):
             return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"会员免运费: 0元。"})
         else:
             _order.state=0
-            result = unifyOrder(model_to_dict(_order), body, detail, ipaddr)
+            result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 0)
             fp = open("result.xml", "w+")
             fp.write(result)
             fp.close()
             prepayid = ""
             try:
-            	tree = ET.parse("result.xml")
-            	root = tree.getroot()
-            	if root[0].text == "SUCCESS":
-            		prepayid = root[8].text
-            	else:
-			return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
-	    except:
-		return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
+                tree = ET.parse("result.xml")
+                root = tree.getroot()
+                if root[0].text == "SUCCESS":
+                    prepayid = root[8].text
+                else:
+                    return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
+                except:
+                    return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             _order.prepayid = prepayid
             _order.save()
             #为iOS准备调起支付所需的参数
