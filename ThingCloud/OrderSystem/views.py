@@ -132,12 +132,8 @@ def confirmOrder(request):
                 else:
                     return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
             except Exception, e:
-            	fp = open("test.txt", "w+")
-            	fp.write(e)
-            	fp.close()
-            	
-            	logger.error(e)
-            	logger.error("1311 微信预支付失败， 未知错误")
+                logger.error(e)
+                logger.error("1311 微信预支付失败， 未知错误")
                 return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             _order.prepayid = prepayid
             _order.save()

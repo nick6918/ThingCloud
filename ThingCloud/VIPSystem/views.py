@@ -7,6 +7,8 @@ from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getVIPfee
 from datetime import datetime
 from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder 
+import logging
+logger = logging.getLogger('appserver')
 
 # Create your views here.
 @UserAuthorization
@@ -54,6 +56,8 @@ def vipOrder(request):
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
     except:
+        logger.error(e)
+        logger.error("1311 wechat order failed")
         return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
     _order.prepayid = prepayid
     _order.save()
