@@ -12,6 +12,8 @@ from VIPSystem.models import VIP
 from datetime import datetime, timedelta
 import random
 import xml.etree.ElementTree as ET 
+import logging
+logger = logging.getLogger('appserver')
 
 PAGECOUNT = 8
 #PICURL = "http://staticimage.thingcloud.net/thingcloud-master.b0.upaiyun.com/"
@@ -129,7 +131,9 @@ def confirmOrder(request):
                     prepayid = root[8].text
                 else:
                     return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
-            except:
+            except Exception, e:
+            	logger.error(e)
+            	logger.error("1311 微信预支付失败， 未知错误")
                 return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             _order.prepayid = prepayid
             _order.save()
