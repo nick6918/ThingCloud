@@ -157,7 +157,7 @@ def checkPayment(request):
             #支付成功， 且已经收到微信回调
             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
         else:
-            result = checkWechatOrder(model_to_dict(_order))
+            result = checkWechatOrder(model_to_dict(_order), 0)
 
             #payState check
             fp = open("result.txt", "w+")

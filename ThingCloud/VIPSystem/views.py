@@ -89,7 +89,7 @@ def vipConfirm(request):
         _vip = _vip[0]
         return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
     else:
-        result = checkWechatOrder(model_to_dict(_order))
+        result = checkWechatOrder(model_to_dict(_order), 1)
 
         #TODO: payState check
         fp = open("result.txt", "w+")
