@@ -137,24 +137,36 @@ def confirmOrder(request):
             data = iosOrder(prepayid)
             return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "data":data, "detail":u"同仓存取快递费: 6元。"})
 
-# @UserAuthorization
-# def checkPayment(request):
-#     oid = request.GET.get("oid", None)
-#     if not oid:
-#         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
-#     oid = int(oid)
-#     _order = Order.objects.filter(oid=oid)
-#     if not _order:
-#         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
-#     else:
-#         _order = _order[0]
-#         state = _order.state
-#         if state==1:
-#             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
-#         else:
-#             _order.state=2
-#             _order.save()
-#             return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
+@UserAuthorization
+def checkPayment(request):
+    oid = request.GET.get("oid", None)
+    if not oid:
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+    oid = int(oid)
+    _order = Order.objects.filter(oid=oid)
+    if not _order:
+        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
+    else:
+        _order = _order[0]
+        state = _order.state
+        if state==1:
+        	#支付成功， 且已经收到微信回调
+            return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
+        else:
+        	prepayid = _order.prepayid
+        	result = checkWechatOrder(prepayid)
+
+        	#payState check
+        	
+
+        	if payState:
+        		_order.state = 1
+        		_order.save()
+        		return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
+        	else:
+            	_order.state=2
+            	_order.save()
+            	return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
 
 @UserAuthorization
 def getOrderList(request):

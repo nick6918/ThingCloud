@@ -51,6 +51,38 @@ def md5(src):
     m2.update(src)
     return m2.hexdigest()
 
+def signRequest(info):
+    keylist = info.keys()
+    keylist.sort()
+    result = ""
+    for item in keylist:
+        if info[item]:
+            current = item+"=" +str(info[item]) + "&"
+            result += current
+    result = result + "key=sharecloud885677sharecloud885677"
+    #wechat sign example
+    #result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
+    #code: "9A0A8659F005D6984697E2CA0A9CF3B7"
+    sign=md5(result).upper()
+    return sign
+
+def generateXmlForm(info):
+    xml = '<xml>\n'
+    for key in keylist:
+        xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
+    xml = xml + "   <sign>"+str(sign)+"</sign>\n</xml>"
+    
+    fp=open("xml.txt", "w+")
+    fp.write(xml)
+    fp.close()
+    return xml
+
+def deliverRequest(url, data):
+    request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = data)
+    response = urllib2.urlopen(request)
+    content = response.read()
+    return content
+
 def iosOrder(prepayid):
     data = {
         "appid":APPID,
@@ -60,14 +92,7 @@ def iosOrder(prepayid):
         "prepayid":prepayid,
         "timestamp": int(time.time())
     }
-    keylist = data.keys()
-    keylist.sort()
-    signString = ""
-    for key in keylist:
-        signString = signString + key + "=" + str(data[key])+"&"
-    signString += "key=sharecloud885677sharecloud885677"
-    sign = md5(signString).upper()
-    data["sign"]=sign
+    data["sign"]=signRequest(data)
     return data
 
 def unifyOrder(order, body, detail, userip, ordertype):
@@ -94,30 +119,23 @@ def unifyOrder(order, body, detail, userip, ordertype):
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
 
-    keylist = info.keys()
-    keylist.sort()
-    result = ""
-    for item in keylist:
-        if info[item]:
-            current = item+"=" +str(info[item]) + "&"
-            result += current
-    result = result + "key=sharecloud885677sharecloud885677"
-    #wechat sign example
-    #result = "appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA&key=192006250b4c09247ec02edce69f6a2d"
-    #code: "9A0A8659F005D6984697E2CA0A9CF3B7"
-    sign=md5(result).upper()
-    
+    info['sign'] = signRequest(info)
+    xml = generateXmlForm(info)
     #统一下单接口xml表单
-    xml = '<xml>\n'
-    for key in keylist:
-        xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
-    xml = xml + "   <sign>"+str(sign)+"</sign>\n</xml>"
-    
-    fp=open("xml.txt", "w+")
-    fp.write(xml)
-    fp.close()
+    content = deliverRequest(url, xml)
+    return content
 
-    request = urllib2.Request(url = url, headers = {'content-type':'text/xml'}, data = xml)
-    response = urllib2.urlopen(request)
-    content = response.read()
+def checkWechatOrder(order):
+    url = "https://api.mch.weixin.qq.com/pay/orderquery"
+
+    info = {}
+    info['appid']  = APPID
+    info['mch_id'] = MCHID
+    info['nonce_str']  = generateRandomString(32)
+    info['out_trade_no']  = order["oid"]
+
+    info['sign'] = signRequest(info)
+    xml = generateXmlForm(info)
+    #查询订单接口xml表单
+    content = deliverRequest(url, xml)
     return content
