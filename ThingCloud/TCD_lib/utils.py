@@ -73,7 +73,7 @@ def generateXmlForm(info):
     xml = '<xml>\n'
     for key in keylist:
         xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
-    xml = += "</xml>"
+    xml += "</xml>"
     
     fp=open("xml.txt", "w+")
     fp.write(xml)
