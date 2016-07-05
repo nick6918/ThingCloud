@@ -41,9 +41,6 @@ def vipOrder(request):
     ##Generate wechat preorder
     _order = VIPOrder(month=month, fee=fee, user_id=_user['uid'], level=level, state=0)
     _order.save()
-    fp = open("test.txt", "w+")
-    fp.write(model_to_dict(_order))
-    fp.close()
     result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 1)
     fp = open("result.xml", "w+")
     fp.write(result)

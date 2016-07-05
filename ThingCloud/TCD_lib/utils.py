@@ -107,16 +107,17 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info['nonce_str']  = generateRandomString(32)
     info['body']  = body
     info['detail']  = detail
-    info['out_trade_no']  = order["oid"]
     info['fee_type']  = "CNY"
     info['total_fee']  = int(order["fee"]*100)
     info['spbill_create_ip']  = userip
     info["notify_url"]  = ""
     if ordertype == 0:
         #delivery order
+        info['out_trade_no']  = "0"+order["oid"]
         info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
     else:
         #vip order
+        info['out_trade_no']  = "1"+order["void"]
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
 
@@ -126,14 +127,19 @@ def unifyOrder(order, body, detail, userip, ordertype):
     content = deliverRequest(url, xml)
     return content
 
-def checkWechatOrder(order):
+def checkWechatOrder(order, ordertype):
     url = "https://api.mch.weixin.qq.com/pay/orderquery"
 
     info = {}
     info['appid']  = APPID
     info['mch_id'] = MCHID
     info['nonce_str']  = generateRandomString(32)
-    info['out_trade_no']  = order["oid"]
+    if ordertype == 0:
+        #delivery order
+        info['out_trade_no']  = "0"+order["oid"]
+    else:
+        #vip order
+        info['out_trade_no']  = "1"+order["void"]
 
     info['sign'] = signRequest(info)
     xml = generateXmlForm(info)
