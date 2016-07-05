@@ -4,7 +4,7 @@ from django.db import connection
 from datetime import datetime
 import random, hashlib, time
 from Crypto.Hash import MD5
-from TCD_lib.settings import APPID, MCHI
+from TCD_lib.settings import APPID, MCHID
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 import urllib2
