@@ -20,7 +20,6 @@ class Discount(models.Model):
     state = models.IntegerField()
 
     class Meta:
-    dsid = models.AutoField(primary_key=True)
         db_table="discount"
 
 class Activity(models.Model):
