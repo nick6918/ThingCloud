@@ -13,7 +13,6 @@ class Feedback(models.Model):
         db_table="feedbacks"
 
 class Discount(models.Model):
-    dsid = models.AutoField(primary_key=True)
     detail = models.CharField(max_length=300)
     code = models.CharField(max_length=50)
     showcode = models.CharField(max_length=50)
@@ -21,6 +20,7 @@ class Discount(models.Model):
     state = models.IntegerField()
 
     class Meta:
+    dsid = models.AutoField(primary_key=True)
         db_table="discount"
 
 class Activity(models.Model):
@@ -68,7 +68,7 @@ class District(models.Model):
 class Community(models.Model):
     cmid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    district_belong = models.ForeignKey(Districts)
+    district_belong = models.ForeignKey(District)
 
     class Meta:
         db_table = 'meta_commuties'
