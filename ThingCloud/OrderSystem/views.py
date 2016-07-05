@@ -161,6 +161,9 @@ def checkPayment(request):
             result = checkWechatOrder(model_to_dict(_order))
 
             #payState check
+            fp = open("result.txt", "w+")
+            fp.write(result)
+            fp.close()
 
 
             if payState:
