@@ -14,6 +14,23 @@ logger = logging.getLogger('appserver')
 # Create your views here.
 
 @UserAuthorization
+def vip(request):
+    _user = request.user
+    unfinishedOrder = Order.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 1
+    else:
+        orderstate = 0
+    if not _user["vip"]:
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
+    _vip = VIP.objects.filter(vid=_user["vip"])
+    if _vip:
+        _vip = _vip[0]
+        return Jsonify({"status":True, "error":"", "error_message":"", "state":orderstate, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+    else:
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
+
+@UserAuthorization
 def vipOrder(request):
     _user = request.user
     level=request.POST.get("level", 0)
