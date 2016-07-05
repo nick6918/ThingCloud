@@ -8,4 +8,4 @@ def getVIPfee(month, level):
 
 def getDeliveryfee():
 	#TODO
-	return 01
+	return 0.1

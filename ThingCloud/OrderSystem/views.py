@@ -157,7 +157,6 @@ def checkPayment(request):
             #支付成功， 且已经收到微信回调
             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
         else:
-            prepayid = _order.prepayid
             result = checkWechatOrder(model_to_dict(_order))
 
             #payState check
