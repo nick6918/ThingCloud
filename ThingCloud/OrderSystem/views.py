@@ -150,23 +150,23 @@ def checkPayment(request):
         _order = _order[0]
         state = _order.state
         if state==1:
-        	#支付成功， 且已经收到微信回调
+            #支付成功， 且已经收到微信回调
             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
         else:
-        	prepayid = _order.prepayid
-        	result = checkWechatOrder(prepayid)
+            prepayid = _order.prepayid
+            result = checkWechatOrder(model_to_dict(_order))
 
-        	#payState check
+            #payState check
 
 
-        	if payState:
-        		_order.state = 1
-        		_order.save()
-        		return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
-        	else:
-            	_order.state=2
-            	_order.save()
-            	return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
+            if payState:
+                _order.state = 1
+                _order.save()
+                return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
+            else:
+                _order.state=2
+                _order.save()
+                return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
 
 @UserAuthorization
 def getOrderList(request):
