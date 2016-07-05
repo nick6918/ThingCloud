@@ -22,13 +22,13 @@ def vip(request):
     else:
         orderstate = 0
     if not _user["vip"]:
-        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
     _vip = VIP.objects.filter(vid=_user["vip"])
     if _vip:
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":"", "state":orderstate, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "processing":orderstate, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
     else:
-        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
 
 @UserAuthorization
 def vipOrder(request):
