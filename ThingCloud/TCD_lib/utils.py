@@ -111,7 +111,7 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info['total_fee']  = int(order["fee"]*100)
     info['spbill_create_ip']  = userip
     info["notify_url"]  = ""
-    if ordertype = 0:
+    if ordertype == 0:
         #delivery order
         info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
     else:
