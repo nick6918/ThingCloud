@@ -94,7 +94,7 @@ def vipConfirm(request):
         fp.write(result)
         fp.close()
 
-        if payState = 0:
+        if payState == 0:
             _order.state=2
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":u"", "state":2, "vip":""})
