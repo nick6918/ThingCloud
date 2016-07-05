@@ -55,7 +55,7 @@ def vipOrder(request):
             prepayid = root[8].text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
-    except:
+    except Exception, e:
         logger.error(e)
         logger.error("1311 wechat order failed")
         return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
