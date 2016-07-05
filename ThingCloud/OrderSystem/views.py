@@ -165,7 +165,8 @@ def checkPayment(request):
             fp.write(result)
             fp.close()
 
-
+            #TODO: Analyse wechat check result
+            payState = 0
             if payState:
                 _order.state = 1
                 _order.save()

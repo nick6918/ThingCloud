@@ -18,7 +18,7 @@ from django.contrib import admin
 from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
 from CloudList.views import addNewItem, getItemList, modifyNotes
-from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, getOrderList, cancel, complain, update, orderCallback, getOrder, delete, vipCallback
+from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain, update, orderCallback, getOrder, delete, vipCallback
 from AssistSystem.views import feedback, checkDiscount, activityList, versionInfo
 from VIPSystem.views import vip, vipOrder, vipConfirm
 
@@ -41,6 +41,7 @@ urlpatterns = [
     url(r"^order/generate$", generateOrder),
     url(r"^order/address$", modifyOrder),
     url(r"^order/confirm$", confirmOrder),
+    url(r"^order/checkpay$", checkPayment),
     url(r"^order/order$", getOrder),
     url(r"^order/orderlist$", getOrderList),
     url(r"^order/cancel$", cancel),
