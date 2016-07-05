@@ -7,7 +7,7 @@ from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getVIPfee
 from datetime import datetime
 import xml.etree.ElementTree as ET 
-from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder 
+from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder
 import logging
 logger = logging.getLogger('appserver')
 
