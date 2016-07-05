@@ -40,7 +40,8 @@ def vipOrder(request):
     if not month:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     month = int(month)
-    fee = getVIPfee(month, level)
+    #fee = getVIPfee(month, level)
+    fee=0.1
     ##Generate wechat preorder
     _order = VIPOrder(month=month, fee=fee, user_id=_user['uid'], level=level, state=0)
     _order.save()
@@ -77,11 +78,7 @@ def vipConfirm(request):
         return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。"})
     _order = _order[0]
     state=_order.state
-    if state==0:
-        _order.state=2
-        _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":u"", "state":2, "vip":""})
-    else:
+    if state == 1:
         if not _user['vip']:
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = VIP.objects.filter(vid=_user['vip_id'])
@@ -89,3 +86,25 @@ def vipConfirm(request):
             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
         _vip = _vip[0]
         return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+    else:
+        result = checkWechatOrder(model_to_dict(_order))
+
+        #TODO: payState check
+        fp = open("result.txt", "w+")
+        fp.write(result)
+        fp.close()
+
+        if payState = 0:
+            _order.state=2
+            _order.save()
+            return Jsonify({"status":True, "error":"", "error_message":u"", "state":2, "vip":""})
+        else:
+            _order.state = 1
+            _order.save()
+            if not _user['vip']:
+            return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
+            _vip = VIP.objects.filter(vid=_user['vip_id'])
+            if not _vip:
+                return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
+            _vip = _vip[0]
+            return Jsonify({"status":True, "error":"", "error_message":u"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
