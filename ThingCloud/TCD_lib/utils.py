@@ -68,6 +68,8 @@ def signRequest(info):
     return sign
 
 def generateXmlForm(info):
+    keylist = info.keys()
+    keylist.sort()
     xml = '<xml>\n'
     for key in keylist:
         xml = xml + "   <" + key + ">" + str(info[key]) + "</" + key +">\n"
