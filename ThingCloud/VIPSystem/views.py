@@ -12,21 +12,39 @@ import logging
 logger = logging.getLogger('appserver')
 
 # Create your views here.
+# @UserAuthorization
+# def vip(request):
+#     _user = request.user
+#     if not _user["vip"]:
+#         pOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+#         if pOrder:
+#             return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
+#         else:
+#             return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":0})
+#     _vip = VIP.objects.filter(vid=_user["vip"])
+#     if _vip:
+#         _vip = _vip[0]
+#         return Jsonify({"status":True, "error":"", "error_message":"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+#     else:
+#         return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
+
 @UserAuthorization
 def vip(request):
     _user = request.user
+    unfinishedOrder = Order.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 2
+    else:
+        orderstate = 1
     if not _user["vip"]:
-        pOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
-        if pOrder:
-            return Jsonify({"status":True, "error":"", "error_message":"", "state":2})
-        else:
-            return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":0})
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
     _vip = VIP.objects.filter(vid=_user["vip"])
     if _vip:
         _vip = _vip[0]
-        return Jsonify({"status":True, "error":"", "error_message":"", "state":1, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "state":orderstate, "vip":dictPolish(model_to_dict(_vip)), "user":_user})
     else:
-        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。"})
+        return Jsonify({"status":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "state":orderstate})
+
 
 @UserAuthorization
 def vipOrder(request):
