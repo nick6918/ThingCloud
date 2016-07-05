@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from models import Feedback, Discount, Activity, Version
+from models import Feedback, Discount, Activity, Version, City, District, Community
 from TCD_lib.utils import Jsonify
 from TCD_lib.security import UserAuthorization
 from django.forms.models import model_to_dict
@@ -53,3 +53,17 @@ def versionInfo(request):
         return Jsonify({"status":True, "error":"", "version":model_to_dict(version)})
     else:
         return Jsonify({"status":False, "error":1602, "error_message":"当前系统无可用版本。"})
+
+def communityList(request):
+    result = {}
+    for item in Community.objects:
+        district = item.district_belong
+        city = district.city_belong
+        if result[city.name]:
+            if result[city.name][district.name]:
+                result[city.name][district.name].append(model_to_dict(item.name))
+            else:
+                result[city.name][district.name] = [model_to_dict(item), ]
+        else:
+            result[city.name] = {district.name: [model_to_dict(item), ], }
+    return Jsonify({"status":True, "error":"", "data":model_to_dict(result)})

@@ -53,6 +53,7 @@ urlpatterns = [
     url(r"^assist/discount$", checkDiscount),
     url(r"^assist/activitylist", activityList),
     url(r"^assist/version", versionInfo),
+    url(r"^assist/communities", communityList),
     url(r"^vip/vip$", vip),
     url(r"^vip/order$", vipOrder),
     url(r"^vip/confirm$", vipConfirm),
