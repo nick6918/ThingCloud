@@ -7,7 +7,7 @@ from CloudList.models import Thing
 from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
-from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder
+from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder
 from VIPSystem.models import VIP
 from datetime import datetime, timedelta
 import random
