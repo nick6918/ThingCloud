@@ -16,7 +16,7 @@ logger = logging.getLogger('appserver')
 @UserAuthorization
 def vip(request):
     _user = request.user
-    unfinishedOrder = Order.objects.filter(user_id=_user['uid']).filter(state=2)
+    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
     if unfinishedOrder:
         orderstate = 1
     else:
