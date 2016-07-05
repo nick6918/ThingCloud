@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getVIPfee
 from datetime import datetime
+import xml.etree.ElementTree as ET 
 from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder 
 import logging
 logger = logging.getLogger('appserver')
