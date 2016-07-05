@@ -53,8 +53,8 @@ def vipOrder(request):
             prepayid = root[8].text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
-        except:
-            return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
+    except:
+        return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
     _order.prepayid = prepayid
     _order.save()
     #为iOS准备调起支付所需的参数
