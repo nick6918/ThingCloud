@@ -49,31 +49,3 @@ class Version(models.Model):
 
     class Meta:
 		db_table = 'meta_version'
-
-class City(models.Model):
-    ctid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-
-    class Meta:
-        db_table = 'meta_city'
-
-class District(models.Model):
-    dsid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    city_belong = models.ForeignKey(City)
-
-    class Meta:
-        db_table = 'meta_districts'
-
-class Community(models.Model):
-    cmid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    state = models.IntegerField()
-    district_belong = models.ForeignKey(District)
-
-    class Meta:
-        db_table = 'meta_commuties'
-
-
-
-

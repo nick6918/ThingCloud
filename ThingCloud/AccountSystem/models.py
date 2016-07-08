@@ -45,22 +45,6 @@ class Code(models.Model):
 	class Meta:
 		db_table = 'code_by_phone'
 
-class Address(models.Model):
-	adid = models.AutoField(primary_key=True)
-	user = models.ForeignKey(User)
-	addr = models.CharField(max_length=200)
-	phone = models.CharField(max_length=50)
-	name = models.CharField(max_length=100)
-	gender = models.IntegerField()
-	community_belong = models.ForeignKey(Community)
-	is_default = models.IntegerField()
-	tagid = models.IntegerField()
-	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
-	state = models.IntegerField()
-
-	class Meta:
-		db_table = 'user_address'
-
 class City(models.Model):
     ctid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -84,4 +68,20 @@ class Community(models.Model):
 
     class Meta:
         db_table = 'meta_commuties'
+
+class Address(models.Model):
+	adid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User)
+	addr = models.CharField(max_length=200)
+	phone = models.CharField(max_length=50)
+	name = models.CharField(max_length=100)
+	gender = models.IntegerField()
+	community_belong = models.ForeignKey(Community)
+	is_default = models.IntegerField()
+	tagid = models.IntegerField()
+	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
+	state = models.IntegerField()
+
+	class Meta:
+		db_table = 'user_address'
 
