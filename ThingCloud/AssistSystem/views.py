@@ -56,7 +56,7 @@ def versionInfo(request):
 
 def communityList(request):
     result = {}
-    for item in Community.objects:
+    for item in Community.objects.filter(state=1):
         district = item.district_belong
         city = district.city_belong
         if result[city.name]:
