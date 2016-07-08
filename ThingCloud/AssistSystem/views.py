@@ -68,5 +68,5 @@ def communityList(request):
         else:
             meta_city = model_to_dict(city)
             meta_district = model_to_dict(district)
-            result[city.name] = [meta_city, {district.name: [meta_district, [model_to_dict(item), ]], }
+            result[city.name] = [meta_city, {district.name: [meta_district, [model_to_dict(item), ]], }]
     return Jsonify({"status":True, "error":"", "data":model_to_dict(result)})
