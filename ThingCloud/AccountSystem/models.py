@@ -67,7 +67,7 @@ class Community(models.Model):
     district_belong = models.ForeignKey(District)
 
     class Meta:
-        db_table = 'meta_commuties'
+        db_table = 'meta_communities'
 
 class Address(models.Model):
 	adid = models.AutoField(primary_key=True)
