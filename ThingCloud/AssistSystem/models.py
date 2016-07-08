@@ -68,6 +68,7 @@ class District(models.Model):
 class Community(models.Model):
     cmid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    state = models.IntegerField()
     district_belong = models.ForeignKey(District)
 
     class Meta:
