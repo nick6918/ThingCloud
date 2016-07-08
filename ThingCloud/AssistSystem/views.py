@@ -60,10 +60,13 @@ def communityList(request):
         district = item.district_belong
         city = district.city_belong
         if result[city.name]:
-            if result[city.name][district.name]:
-                result[city.name][district.name].append(model_to_dict(item.name))
+            if result[city.name][1][district.name]:
+                result[city.name][1][district.name][1].append(model_to_dict(item.name))
             else:
-                result[city.name][district.name] = [model_to_dict(item), ]
+                meta_district = model_to_dict(district)
+                result[city.name][1][district.name] = [meta_district, [model_to_dict(item), ]]
         else:
-            result[city.name] = {district.name: [model_to_dict(item), ], }
+            meta_city = model_to_dict(city)
+            meta_district = model_to_dict(district)
+            result[city.name] = [meta_city, {district.name: [meta_district, [model_to_dict(item), ]], }
     return Jsonify({"status":True, "error":"", "data":model_to_dict(result)})
