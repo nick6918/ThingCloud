@@ -19,7 +19,7 @@ from MainSystem.views import index
 from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
 from CloudList.views import addNewItem, getItemList, modifyNotes
 from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, checkPayment, getOrderList, cancel, complain, update, orderCallback, getOrder, delete, vipCallback
-from AssistSystem.views import feedback, checkDiscount, activityList, versionInfo
+from AssistSystem.views import feedback, checkDiscount, activityList, versionInfo, communitylist
 from VIPSystem.views import vip, vipOrder, vipConfirm
 
 urlpatterns = [
