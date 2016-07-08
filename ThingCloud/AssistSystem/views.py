@@ -59,8 +59,8 @@ def communityList(request):
     for item in Community.objects.filter(state=1):
         district = item.district_belong
         city = district.city_belong
-        if result[city.name]:
-            if result[city.name][1][district.name]:
+        if city.name in result.keys():
+            if district.name in result[city.name][1].keys():
                 result[city.name][1][district.name][1].append(model_to_dict(item.name))
             else:
                 meta_district = model_to_dict(district)
