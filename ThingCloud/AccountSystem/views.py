@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from django.forms.models import model_to_dict
 from datetime import datetime
-from TCD_lib.utils import get_client_ip, Jsonify, dictPolish
+from TCD_lib.utils import get_client_ip, Jsonify, dictPolish, polish_address
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
 from models import User, UserSession, Code, Address
@@ -181,6 +181,7 @@ def address(request):
 		tag = request.POST.get("tag", None)
 		is_default = request.POST.get("isdefault", 0)
 		addrid = request.POST.get("addrid", None)
+		cmid = request.POST.get("cmid", None)
 		def_address = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
 		if def_address:
 			def_address = def_address[0]
@@ -188,14 +189,14 @@ def address(request):
 			def_address = None
 		if not addrid:
 			#生成新的地址信息
-			if not addr or not name or not gender or not phone:
+			if not addr or not name or not gender or not cmid or not phone:
 				return Jsonify({"status":False, "error":"1101", "error_message":"信息不足。"})
 			if not def_address:
 				is_default=1
 			if is_default==u"1" and def_address:
 				def_address.is_default=0
 				def_address.save()
-			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'], state=1)
+			address = Address(phone=phone, addr=addr, name=name, gender=gender, is_default=is_default, user_id=_user['uid'], state=1, community_belong_id = cmid)
 			if tag:
 				address.tagid = tag
 			address.save()
@@ -216,13 +217,15 @@ def address(request):
 					address.tagid = tag
 				if addr:
 					address.addr = addr
+				if cmid:
+					address.community_belong_id = cmid
 				if is_default=="1":
 					if def_address:
 						def_address.is_default=0
 						def_address.save()
 					address.is_default=1
 				address.save()
-		return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
+		return Jsonify({"status":True, "error":"", "error_message":"", "address":polish_address(address)})
 	if request.method == 'GET':
 		addrid = request.GET.get("addrid")
 		if not addrid:
@@ -234,7 +237,7 @@ def address(request):
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
 				address = address[0]
-				return Jsonify({"status":True, "error":"", "error_message":"", "address":model_to_dict(address)})
+				return Jsonify({"status":True, "error":"", "error_message":"", "address":polish_address(address)})
 
 @UserAuthorization
 def addressList(request):
@@ -242,7 +245,7 @@ def addressList(request):
 	addressList = Address.objects.filter(user_id=_user['uid']).filter(state=1)
 	resultList = []
 	for address in addressList:
-		address = model_to_dict(address)
+		address = polish_address(address)
 		address["addrid"]=address["adid"]
 		del(address["user"])
 		del(address["adid"])

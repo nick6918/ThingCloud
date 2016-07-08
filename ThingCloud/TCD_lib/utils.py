@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
+from django.forms.models import model_to_dict
 from django.db import connection
 from datetime import datetime
 import random, hashlib, time
@@ -36,6 +37,13 @@ def dictPolish(jDict):
         else:
             result[item]=jDict[item]
     return result
+
+def polish_address(address):
+    _address = model_to_dict(address)
+    _address["city"] = address.community_belong.district_belong.city_belong.name
+    _address["district"] = address.community_belong.district_belong.name
+    _address["community"] = address.community_belong.name
+    return _address
 
 def generateRandomString(size):
 

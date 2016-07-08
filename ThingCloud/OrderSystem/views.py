@@ -7,7 +7,7 @@ from CloudList.models import Thing
 from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
-from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder
+from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder, polish_address
 from VIPSystem.models import VIP
 from datetime import datetime, timedelta
 import random
@@ -195,7 +195,7 @@ def getOrderList(request):
         current_address = Address.objects.filter(adid=item.addr_id)
         if current_address:
             current_address = current_address[0]
-            current_item["address"]=model_to_dict(current_address)
+            current_item["address"]=polish_address(current_address)
         else:
             current_item["address"] = ""
         resultList.append(current_item)
@@ -221,7 +221,7 @@ def getOrder(request):
         thingList = getThingList(itemList)
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
-            address=model_to_dict(address[0])
+            address=polish_address(address[0])
         else:
             address=""
         dictPolish(model_to_dict(_order))
