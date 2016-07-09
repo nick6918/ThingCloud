@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 def getVIPfee(month, level, typeid):
 	#typeid:
 	#1, 200Units
 	#2, 500Units
 	#3, Unlimited Units
 	#month:
-	
+
 	fee = 0.1
 	return fee
 
