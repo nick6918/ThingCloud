@@ -60,13 +60,13 @@ def generateOrder(request):
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
-     	fee = getDeliveryfee()
+     	fee, detail = getDeliveryfee()
         order = Order(user_id=_user['uid'], notes="", fee=fee, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(order)), "address":model_to_dict(_addr_object), "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(order)), "address":polish_address(_addr_object), "detail":detail})
 
 @UserAuthorization
 def modifyOrder(request):

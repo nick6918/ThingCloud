@@ -1,11 +1,12 @@
-def getVIPfee(month, level):
-    discount = 1
-    base = 30
-    if month >= 12:
-        discount = 0.8
-    fee = int(base * month * discount)
+def getVIPfee(month, level, typeid):
+	#typeid:
+	#1, 200Units
+	#2, 500Units
+	#3, Unlimited Units
+	#month:
+	fee = 0.1
     return fee
 
-def getDeliveryfee():
-	#TODO
-	return 0.1
+def getDeliveryfee(cmid):
+	detail = u"同仓物流费用 6元"
+	return (0.1, detail)
