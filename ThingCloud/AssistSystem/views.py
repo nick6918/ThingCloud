@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from models import Feedback, Discount, Activity, Version, City, District, Community
+from models import Feedback, Discount, Activity, Version
 from TCD_lib.utils import Jsonify
 from TCD_lib.security import UserAuthorization
 from django.forms.models import model_to_dict
