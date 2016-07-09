@@ -60,7 +60,7 @@ def generateOrder(request):
     else:
         _addr_object = _addr[0]
         _addr = model_to_dict(_addr_object)
-     	fee, detail = getDeliveryfee()
+     	fee, detail = getDeliveryfee(1)
         order = Order(user_id=_user['uid'], notes="", fee=fee, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
