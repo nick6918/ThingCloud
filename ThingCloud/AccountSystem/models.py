@@ -76,6 +76,7 @@ class Address(models.Model):
 	phone = models.CharField(max_length=50)
 	name = models.CharField(max_length=100)
 	gender = models.IntegerField()
+	community_belong = models.ForeignKey(Community)
 	is_default = models.IntegerField()
 	tagid = models.IntegerField()
 	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
