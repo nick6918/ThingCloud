@@ -24,6 +24,7 @@ class Thing(models.Model):
 	#0 for books, 1 for clothes, 2 for pants and dress, 3 for shoes
 	#4 for tools, 5 for electronics, 6 for bags and boxes, 7 for others
 	subtype_name = models.CharField(max_length = 100)
+	units = models.IntegerField()
 	#0 for female, 1 for male, 2 for suiting for both
 	gender = models.IntegerField()
 	avatar = models.IntegerField()
