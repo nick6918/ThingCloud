@@ -94,6 +94,7 @@ def confirmOrder(request):
     ipaddr = request.POST.get("ipaddr", "127.0.0.1")
     body = request.POST.get("body", "Unknown")
     detail = request.POST.get("detail", "Unknown")
+    prepayid = request.POST.get("prepayid", None)
     if not fee or not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
@@ -123,20 +124,20 @@ def confirmOrder(request):
             fp = open("result.xml", "w+")
             fp.write(result)
             fp.close()
-            prepayid = ""
-            try:
-                tree = ET.parse("result.xml")
-                root = tree.getroot()
-                if root[0].text == "SUCCESS":
-                    prepayid = root[8].text
-                else:
-                    return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
-            except Exception, e:
-                logger.error(e)
-                logger.error("1311 微信预支付失败， 未知错误")
-                return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
-            _order.prepayid = prepayid
-            _order.save()
+            if not prepayid:
+                try:
+                    tree = ET.parse("result.xml")
+                    root = tree.getroot()
+                    if root[0].text == "SUCCESS":
+                        prepayid = root[8].text
+                    else:
+                        return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
+                    _order.prepayid = prepayid
+                    _order.save()
+                except Exception, e:
+                    logger.error(e)
+                    logger.error("1311 微信预支付失败， 未知错误")
+                    return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             #为iOS准备调起支付所需的参数
             data = iosOrder(prepayid)
             return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "data":data, "detail":u"同仓存取快递费: 6元。"})
