@@ -21,23 +21,23 @@ def feeList():
 	    "1":{
 	        "data":1,
 	        "display":"一个月"
-	    }
+	    },
 	    "2":{
 	        "data":1,
 	        "display":"两个月"
-	    }
+	    },
 	    "3":{
 	        "data":1,
 	        "display":"三个月(八五折)"
-	    }
+	    },
 	    "6":{
 	        "data":1,
 	        "display":"六个月(八折)"
-	    }
+	    },
 	    "12":{
 	        "data":1,
 	        "display":"一年(七折)"
-	    }
+	    },
 	    "24":{
 	        "data":1,
 	        "display":"两年(六折)"
