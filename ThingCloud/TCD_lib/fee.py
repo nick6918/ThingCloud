@@ -41,7 +41,7 @@ def feeList():
 	    {
 	        "data":0.6,
 	        "display":"两年(六折)"
-	    }
+	    }]
 	}
 	return origin, current, discount
 
