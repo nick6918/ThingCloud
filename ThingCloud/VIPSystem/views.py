@@ -43,6 +43,7 @@ def vipOrder(request):
     month = request.POST.get("month", None)
     if not month or not typeid or not fee:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
+    fee = float(fee)
     month = int(month)
     typeid = int(typeid)
     server_fee = getVIPfee(month, level, typeid)
