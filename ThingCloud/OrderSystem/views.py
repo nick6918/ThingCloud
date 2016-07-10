@@ -215,8 +215,21 @@ def getOrder(request):
     if _order:
         _order = _order[0]
         if checkPayment==1 and int(_order.state)==0:
-            _order.state=2
-            _order.save()
+            result = checkWechatOrder(model_to_dict(_order), 0)
+
+            #payState check
+            fp = open("result.txt", "w+")
+            fp.write(result)
+            fp.close()
+
+            #TODO: Analyse wechat check result
+            payState = 0
+            if payState == 1:
+                _order.state =1
+                _order.save()
+            else:
+                _order.state = 2
+                _order.save()
         itemList = _order.itemList
         thingList = getThingList(itemList)
         address = Address.objects.filter(adid=_order.addr_id)
