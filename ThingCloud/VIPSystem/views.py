@@ -36,14 +36,18 @@ def vipOrder(request):
     level=request.POST.get("level", 0)
     level = int(level)
     ipaddr = request.POST.get("ipaddr", "127.0.0.1")
+    typeid = request.POST.get("typeid", None)
+    fee = request.POST.get("fee", None)
     body = request.POST.get("body", "Unknown")
     detail = request.POST.get("detail", "Unknown")
     month = request.POST.get("month", None)
-    if not month:
+    if not month or not typeid or not fee:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     month = int(month)
-    #fee = getVIPfee(month, level)
-    fee=0.1
+    typeid = int(typeid)
+    server_fee = getVIPfee(month, level, typeid)
+    if fee != server_fee:
+        return Jsonify({"status":False, "error":"1510", "error_message":u"费用有误，您的订单费用为"+str(server_fee)+u"元。", "fee":server_fee})
     ##Generate wechat preorder
     _order = VIPOrder(month=month, fee=fee, user_id=_user['uid'], level=level, state=0)
     _order.save()
