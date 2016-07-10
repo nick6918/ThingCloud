@@ -17,8 +17,8 @@ def getDeliveryfee(cmid):
 def feeList():
 	origin = [50, 100, 150]
 	current = [30, 50, 100]
-	discount = {
-	    [{
+	discount = [
+	    {
 	        "data":1,
 	        "display":"一个月"
 	    },
@@ -42,6 +42,5 @@ def feeList():
 	        "data":0.6,
 	        "display":"两年(六折)"
 	    }]
-	}
 	return origin, current, discount
 
