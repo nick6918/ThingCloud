@@ -18,12 +18,30 @@ def feeList():
 	origin = [50, 100, 150]
 	current = [30, 50, 100]
 	discount = {
-	    "1":(1, "原价"),
-	    "2":(1, "原价"),
-	    "3":(0.85, "15% OFF!"),
-	    "6":(0.8, "20% OFF!"),
-	    "12":(0.7, "30% OFF!"),
-	    "24":(0.6, "40% OFF!")
+	    "1":{
+	        "data":1,
+	        "display":"一个月"
+	    }
+	    "2":{
+	        "data":1,
+	        "display":"两个月"
+	    }
+	    "3":{
+	        "data":1,
+	        "display":"三个月(八五折)"
+	    }
+	    "6":{
+	        "data":1,
+	        "display":"六个月(八折)"
+	    }
+	    "12":{
+	        "data":1,
+	        "display":"一年(七折)"
+	    }
+	    "24":{
+	        "data":1,
+	        "display":"两年(六折)"
+	    }
 	}
 	return origin, current, discount
 
