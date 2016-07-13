@@ -4,7 +4,6 @@ from django.forms.models import model_to_dict
 from django.db import connection
 from datetime import datetime
 import random, hashlib, time
-from Crypto.Hash import MD5
 from TCD_lib.settings import APPID, MCHID
 from django.core.serializers.json import DjangoJSONEncoder
 import json

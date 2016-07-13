@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import math
+#Crypto.Hash belongs to library pycrypto
+#but the lib that is install by pip seems problematic,
+#instead, using easy_install pycrypto can solve this problem.
 from Crypto.Hash import MD5,SHA
 from django.forms.models import model_to_dict
 import time,random
