@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
-
 def feeList():
 	origin = [50, 100, 150]
 	current = [0.3, 0.5, 1]
