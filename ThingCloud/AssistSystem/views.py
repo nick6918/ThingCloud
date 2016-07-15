@@ -52,7 +52,16 @@ def versionInfo(request):
     version = Version.objects.filter(typeid=typeid).filter(state__gt=0).order_by("vrid")
     if version:
         version = version[0]
-        return Jsonify({"status":True, "error":"", "version":model_to_dict(version)})
+        keylist = {}
+        for item in version.compulsorylist.split(","):
+            keylist[item] = "F"
+        for item in version.selectlist.split(","):
+            keylist[item] = "S"
+        _version = model_to_dict(version)
+        del _version["compulsorylist"]
+        del _version["selectlist"]
+        _version["versionlist"] = keylist   
+        return Jsonify({"status":True, "error":"", "version":_version})
     else:
         return Jsonify({"status":False, "error":1602, "error_message":"当前系统无可用版本。"})
 
