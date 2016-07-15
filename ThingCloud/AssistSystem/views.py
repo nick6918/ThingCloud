@@ -49,7 +49,7 @@ def versionInfo(request):
         typeid = 0
     else:
         typeid = 3
-    version = Version.objects.filter(typeid=typeid).filter(state__gt=0).order_by("vrid")
+    version = Version.objects.filter(typeid=typeid).filter(state__gt=0).order_by('-vrid')
     if version:
         version = version[0]
         keylist = {}
