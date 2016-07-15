@@ -128,11 +128,11 @@ def sendCode(request):
 		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
 	else:
 		mobsms = MobSMS('148f6c0a15c12')
-    	status = mobsms.verify_sms_code(86, phone, code)
-    	fp = open("debug.txt", "w+")
-    	fp.write(status)
-    	fp.close()
-    	if status:
+		status = mobsms.verify_sms_code(86, phone, code)
+		fp = open("debug.txt", "w+")
+		fp.write(status)
+		fp.close()
+		if status:
 			return Jsonify({"status":True, "error":"", "error_message":""})
 		else:
 			return Jsonify({"status":True, "error":"1113", "error_message":"验证码验证失败。"})
