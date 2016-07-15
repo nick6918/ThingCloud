@@ -296,24 +296,37 @@ def changeNickname(request):
 	else:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 
-@UserAuthorization
 def changePassword(request):
-	_user = request.user
+	# _user = request.user
 	password = request.POST.get("password", None)
-	if not password:
+	phone = request.POST.get("phone", None)
+	if not password or not phone:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-	if password == _user.password:
-		return Jsonify({"status":False, "error":"1112", "error_message":"密码未改变， 请重新输入。"})
+	_user = User.objects.filter(phone=phone)
+	if _user:
+		_user = user[0]
+		salt = Salt()
+		timestamp = str(int(math.floor(time.time())))
+		_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
+		password = salt.md5(_hash+salt.md5(user['password']))
+		_user.password = password
+		_user.salt = _hash
+		_user.save()
+		return Jsonify({"status":True, "error":"", "error_message":""})
+	else:
+		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
+	# if password == _user.password:
+	# 	return Jsonify({"status":False, "error":"1112", "error_message":"密码未改变， 请重新输入。"})
 	#重新生成password和salt存入数据库， 并将新的session发给客户端。
-	salt = Salt()
-	timestamp = str(int(math.floor(time.time())))
-	_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
-	password = salt.md5(_hash+salt.md5(user['password']))
-	_user.password = password
-	_user.salt = _hash
-	_user.save()
-	user = model_to_dict(_user)
-	user["session"] = updateSession(user)
+	# salt = Salt()
+	# timestamp = str(int(math.floor(time.time())))
+	# _hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
+	# password = salt.md5(_hash+salt.md5(user['password']))
+	# _user.password = password
+	# _user.salt = _hash
+	# _user.save()
+	# user = model_to_dict(_user)
+	# user["session"] = updateSession(user)
 	return Jsonify({"status":True, "error":"", "error_message":"", "user":dictPolish(user)})
 
 @UserAuthorization
