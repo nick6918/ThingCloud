@@ -56,7 +56,7 @@ def versionInfo(request):
         if version.compulsorylist:
             for item in version.compulsorylist.strip(" ").split(","):
                 keylist[item] = "F"
-        if version.selectlist
+        if version.selectlist:
             for item in version.selectlist.strip(" ").split(","):
                 keylist[item] = "S"
         _version = model_to_dict(version)
