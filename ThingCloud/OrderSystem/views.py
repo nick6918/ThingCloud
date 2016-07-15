@@ -219,7 +219,7 @@ def getOrder(request):
             result = checkWechatOrder(model_to_dict(_order), 0)
 
             #payState check
-            fp = open("result.txt", "w+")
+            fp = open("payment.txt", "w+")
             fp.write(result)
             fp.close()
 
