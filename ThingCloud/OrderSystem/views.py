@@ -225,7 +225,7 @@ def getOrder(request):
 
             #TODO: Analyse wechat check result
             payState = 0
-            tree = ET.parse("result.xml")
+            tree = ET.parse("payment.xml")
             root = tree.getroot()
             if root[0].text == "SUCCESS":
                 if root[18].text == "SUCCESS":
