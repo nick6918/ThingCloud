@@ -227,6 +227,9 @@ def getOrder(request):
             payState = 0
             tree = ET.parse("payment.xml")
             root = tree.getroot()
+            fp = open("debug.txt", "w+")
+            fp.write(root[18].text)
+            fp.close()
             if root[0].text == "SUCCESS":
                 if root[18].text == "SUCCESS":
                     payState = 1
