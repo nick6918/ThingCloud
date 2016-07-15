@@ -41,11 +41,11 @@ def versionInfo(request):
     typeid = 0
     machine = request.GET.get("machine", "others")
     #machine = unicode(machine)
-    if machine == "Android":
+    if machine.upper() == "ANDROID":
         typeid = 1
-    elif machine == "web":
+    elif machine.upper() == "WEB":
         typeid = 2
-    elif machine == "iOS":
+    elif machine.upper() == "IOS":
         typeid = 0
     else:
         typeid = 3
