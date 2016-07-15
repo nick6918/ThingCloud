@@ -8,6 +8,7 @@ from datetime import datetime
 from TCD_lib.utils import get_client_ip, Jsonify, dictPolish, polish_address
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
+from TCD_lib.SMS import MobSMS
 from models import User, UserSession, Code, Address
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
@@ -55,6 +56,7 @@ def register(request):
 		user['gid']=gid
 	if not (user['nickname'] and user['password'] and user['phone']):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	
 	userList = User.objects.filter(nickname = user['nickname'])
 	if userList:
 		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
@@ -116,24 +118,24 @@ def sendCode(request):
 		This code can never be sent or saved by client.
 	"""
 	phone = request.GET.get("phone", None)
-	if not phone:
-		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入手机号"})
-	phone=int(phone)
+	phone = request.GET.get("code", None)
+	if not phone or not code:
+		return Jsonify({"status":False, "error":"1101", "error_message":"输入信息不足。"})
+	phone = int(phone)
+	code =  int(code)
 	user = User.objects.filter(phone=phone)
 	if user:
 		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
 	else:
-		#code = random.randint(100000, 1000000)
-		code = 123456
-		current_code = Code.objects.filter(phone=phone)
-		if current_code:
-			current_code=current_code[0]
-			current_code.code=code
+		mobsms = MobSMS('148f6c0a15c12')
+    	status = mobsms.verify_sms_code(86, phone, code)
+    	fp ＝ open("code.txt", "w+")
+    	fp.write(status)
+    	fp.close()
+    	if status:
+			return Jsonify({"status":True, "error":"", "error_message":""})
 		else:
-			current_code = Code(phone=phone, code=code)
-		current_code.save()
-		#iMessage.send(phone, code)
-		return Jsonify({"status":True, "error":"", "error_message":"", "message":True})
+			return Jsonify({"status":True, "error":"1113", "error_message":"验证码验证失败。"})
 
 def checkCode(request):
 	_code = request.GET.get('code', None)
@@ -363,3 +365,5 @@ def updateAvatar(request):
 		return Jsonify({"status":True, "error":"", "error_message":"", "avatar":1})
 	else:
 		return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
+
+
