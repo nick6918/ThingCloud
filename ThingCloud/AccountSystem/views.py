@@ -129,10 +129,7 @@ def sendCode(request):
 	else:
 		mobsms = MobSMS('148f6c0a15c12')
 		status = mobsms.verify_sms_code(86, phone, code)
-		fp = open("debug.txt", "w+")
-		fp.write(status)
-		fp.close()
-		if status:
+		if status==200:
 			return Jsonify({"status":True, "error":"", "error_message":""})
 		else:
 			return Jsonify({"status":True, "error":"1113", "error_message":"验证码验证失败。"})
