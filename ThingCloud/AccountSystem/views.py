@@ -118,7 +118,7 @@ def sendCode(request):
 		This code can never be sent or saved by client.
 	"""
 	phone = request.GET.get("phone", None)
-	phone = request.GET.get("code", None)
+	code = request.GET.get("code", None)
 	if not phone or not code:
 		return Jsonify({"status":False, "error":"1101", "error_message":"输入信息不足。"})
 	phone = int(phone)
