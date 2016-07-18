@@ -56,16 +56,10 @@ def vipOrder(request):
     _order = VIPOrder(month=month, fee=fee, user_id=_user['uid'], level=typeid, state=0)
     _order.save()
     result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 1)
-    fp = open("result.xml", "w+")
-    fp.write(result)
-    fp.close()
     prepayid = ""
     try:
         root = ET.fromstring(result)
-        fp = open("resultok.txt", "w+")
-        fp.write(root.find("return_code").text)
-        fp.close()
-        if and root.find("return_code").text == "SUCCESS":
+        if root.find("return_code").text == "SUCCESS":
             prepayid = root.find("prepay_id").text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
