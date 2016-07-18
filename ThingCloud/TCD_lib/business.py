@@ -29,7 +29,7 @@ def flushVip(vip):
 
 def addNewHeadPackage(vip, newPackage):
 	vip = flushVip(vip)
-	vip.headPackage.days = vip.headPackage.days - (timezone.now() - vip.headPackage.start_date)
+	vip.headPackage.days = vip.headPackage.days - (timezone.now() - vip.headPackage.start_date).days
 	vip.headPackage.save()
 	newPackage.nextPackage = vip.headPackage
 	newPackage.start_date = timezone.now()
