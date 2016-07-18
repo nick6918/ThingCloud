@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from MainSystem.views import index
-from AccountSystem.views import loginByPhone, register, sendCode, checkCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
+from AccountSystem.views import loginByPhone, register, sendCode, address, addressList, deleteAddress, changePassword, changeNickname, updateAvatar
 from CloudList.views import addNewItem, getItemList, modifyNotes
 from OrderSystem.views import generateOrder, modifyOrder, confirmOrder, getOrderList, cancel, complain, update, orderCallback, getOrder, delete, vipCallback
 from AssistSystem.views import feedback, checkDiscount, activityList, versionInfo, communityList,getFeeList
@@ -28,7 +28,6 @@ urlpatterns = [
     url(r"^account/sendcode$", sendCode),
     url(r"^account/register$", register),
     url(r"^account/login$", loginByPhone),
-    url(r"^account/code$", checkCode),
     url(r"^account/avatar$", updateAvatar),
     url(r"^account/address$", address),
     url(r"^account/addressdelete$", deleteAddress),

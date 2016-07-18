@@ -134,15 +134,15 @@ def sendCode(request):
 		else:
 			return Jsonify({"status":True, "error":"1113", "error_message":"验证码验证失败。"})
 
-def checkCode(request):
-	_code = request.GET.get('code', None)
-	_phone = request.GET.get('phone', None)
-	if not _code or not _phone:
-		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入验证码。"})
-	code = Code.objects.filter(phone=_phone)
-	if not code or (_code != unicode(code[0].code)):
-		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
-	return Jsonify({"status":True, "wait":1, "error":"", "error_message":""})
+# def checkCode(request):
+# 	_code = request.GET.get('code', None)
+# 	_phone = request.GET.get('phone', None)
+# 	if not _code or not _phone:
+# 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请输入验证码。"})
+# 	code = Code.objects.filter(phone=_phone)
+# 	if not code or (_code != unicode(code[0].code)):
+# 		return Jsonify({"status":False, "error":"1104", "error_message":"验证码输入有误, 请重新输入。"})
+# 	return Jsonify({"status":True, "wait":1, "error":"", "error_message":""})
 
 def loginByPhone(request):
 	"""
@@ -299,19 +299,25 @@ def changePassword(request):
 	# _user = request.user
 	password = request.POST.get("password", None)
 	phone = request.POST.get("phone", None)
-	if not password or not phone:
+	code = request.POST.get("code", None)
+	if not password or not phone or not code:
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	_user = User.objects.filter(phone=phone)
 	if _user:
 		_user = user[0]
-		salt = Salt()
-		timestamp = str(int(math.floor(time.time())))
-		_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
-		password = salt.md5(_hash+salt.md5(user['password']))
-		_user.password = password
-		_user.salt = _hash
-		_user.save()
-		return Jsonify({"status":True, "error":"", "error_message":""})
+		mobsms = MobSMS('148f6c0a15c12')
+		status = mobsms.verify_sms_code(86, phone, code)
+		if status==200:
+			salt = Salt()
+			timestamp = str(int(math.floor(time.time())))
+			_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
+			password = salt.md5(_hash+salt.md5(user['password']))
+			_user.password = password
+			_user.salt = _hash
+			_user.save()
+			return Jsonify({"status":True, "error":"", "error_message":""})
+		else:
+			return Jsonify({"status":False, "error":"1119", "error_message":"验证码验证失败。"})
 	else:
 		return Jsonify({"status":False, "error":"1113", "error_message":"用户不存在。"})
 	# if password == _user.password:

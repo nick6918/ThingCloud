@@ -103,16 +103,16 @@ def vipConfirm(request):
         result = checkWechatOrder(model_to_dict(_order), 1)
 
         #TODO: payState check
-        fp = open("result.txt", "w+")
+        fp = open("vip.xml", "w+")
         fp.write(result)
         fp.close()
-
-        payState = 0
-        if payState == 0:
-            _order.state=2
-            _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":_vip, "processing":1})
-        else:
+        tree = ET.parse("vip.xml")
+        root = tree.getroot()
+        if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
             _order.state = 1
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":_vip, "processing":0})
+        else:
+            _order.state=2
+            _order.save()
+            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":_vip, "processing":1})

@@ -230,11 +230,8 @@ def getOrder(request):
             fp = open("debug.txt", "w+")
             fp.write(root[18].text)
             fp.close()
-            if root[0].text == "SUCCESS":
-                if root[18].text == "SUCCESS":
-                    payState = 1
-                else:
-                    payState = 0
+            if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
+                payState = 1
             else:
                 payState = 0
             if payState == 1:
