@@ -65,7 +65,7 @@ def vipOrder(request):
         fp = open("resultok.txt", "w+")
         fp.write(root.find("return_code").text)
         fp.close()
-        if root.find("return_code"):
+        if and root.find("return_code").text == "SUCCESS":
             prepayid = root.find("prepay_id").text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
@@ -107,14 +107,18 @@ def vipConfirm(request):
         return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":returnVip, "state":state})
     else:
         result = checkWechatOrder(model_to_dict(_order), 1)
-        root = ET.fromstring(result)
-        if root.find("return_code") and root.find("return_code").text == "SUCCESS" and root.find("trade_state") and root.find("trade_state").text == "SUCCESS":
-            _order.state = 1
-            _order.save()
-            _vip = addNewPackage(_order.month, _order.level, _vip)
-            returnVip = model_to_dict(_vip)
-            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":0})
-        else:
-            _order.state=2
-            _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":1})
+        try:
+            root = ET.fromstring(result)
+            if root.find("return_code").text == "SUCCESS" and root.find("trade_state").text == "SUCCESS":
+                _order.state = 1
+                _order.save()
+                _vip = addNewPackage(_order.month, _order.level, _vip)
+                returnVip = model_to_dict(_vip)
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":0})
+            else:
+                _order.state=2
+                _order.save()
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":1})
+        except Exception, e:
+            logger.error(e)
+            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":returnVip, "state":state})
