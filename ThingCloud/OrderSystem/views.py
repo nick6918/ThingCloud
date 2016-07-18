@@ -295,6 +295,8 @@ def cancel(request):
 @UserAuthorization
 def complain(request):
     _user = request.user
+    user = User.objects.filter(uid=user["uid"])
+    user = user[0]
     oid = request.POST.get("oid", None)
     notes = request.POST.get("notes", None)
     if not oid or not notes:
