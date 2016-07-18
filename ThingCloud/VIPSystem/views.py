@@ -109,8 +109,9 @@ def vipConfirm(request):
             _order.state = 1
             _order.save()
             _vip = addNewPackage(_order.month, _order.level, _vip)
-            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":model_to_dict(_vip), "processing":0})
+            returnVip = model_to_dict(_vip)
+            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":0})
         else:
             _order.state=2
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":model_to_dict(_vip), "processing":1})
+            return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":1})
