@@ -87,6 +87,11 @@ def vipConfirm(request):
     else:
         state = False
         _vip = None
+    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 1
+    else:
+        orderstate = 0
     void = request.GET.get("void", None)
     if not void:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":model_to_dict(_vip), "state":state})
