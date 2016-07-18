@@ -66,7 +66,7 @@ def addNewPackage(month, typeid, vip=None):
 	else:
 		vip = VIP()
 		vip.save()
-		newPackage = VIPPackage(startdate = datetime.now(), days = month*31, level=typeid, vip_belong=vip)
+		newPackage = VIPPackage(start_date = datetime.now(), days = month*31, level=typeid)
 		newPackage.save()
 		vip.headPackage = newPackage
 		vip.save()
