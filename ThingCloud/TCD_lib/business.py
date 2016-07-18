@@ -37,7 +37,7 @@ def addNewHeadPackage(vip, newPackage):
 	vip.save()
 	return vip
 
-def addNewPackage(month, typeid, vip=None):
+def addNewPackage(month, typeid, vip=None, user=None):
 	vip = flushVip(vip)
 	if vip:
 		currentPackage = vip.headPackage
@@ -70,6 +70,8 @@ def addNewPackage(month, typeid, vip=None):
 		newPackage.save()
 		vip.headPackage = newPackage
 		vip.save()
+		user.vip = vip
+		user.save()
 		return vip
 
 

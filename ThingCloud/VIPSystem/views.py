@@ -106,7 +106,7 @@ def vipConfirm(request):
             if root.find("return_code").text == "SUCCESS" and root.find("trade_state").text == "SUCCESS":
                 _order.state = 1
                 _order.save()
-                _vip = addNewPackage(_order.month, _order.level, _vip)
+                _vip = addNewPackage(_order.month, _order.level, _vip, _user)
                 returnVip = model_to_dict(_vip)
                 return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":0})
             else:
