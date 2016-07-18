@@ -62,10 +62,10 @@ def vipOrder(request):
     prepayid = ""
     try:
         root = ET.fromstring(result)
+        fp = open("resultok.txt", "w+")
+        fp.write(root.find("return_code").text)
+        fp.close()
         if root.find("return_code") and root.find("return_code").text == "SUCCESS":
-            fp = open("resultok.txt", "w+")
-            fp.write(root.find("return_code").text)
-            fp.close()
             prepayid = root.find("prepay_id").text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
