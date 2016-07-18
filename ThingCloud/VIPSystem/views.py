@@ -49,7 +49,7 @@ def vipOrder(request):
     fee = float(fee)
     month = int(month)
     typeid = int(typeid)
-    server_fee = getVIPfee(month, level, typeid)
+    server_fee = getVIPfee(month, typeid, typeid)
     if fee != server_fee:
         return Jsonify({"status":False, "error":"1510", "error_message":u"费用有误，您的订单费用为"+str(server_fee)+u"元。", "fee":server_fee})
     ##Generate wechat preorder
@@ -113,7 +113,7 @@ def vipConfirm(request):
         if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
             _order.state = 1
             _order.save()
-            _vip = addNewPackage(month, level, _vip)
+            _vip = addNewPackage(_order.month, _order.level, _vip)
             return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":model_to_dict(_vip), "processing":0})
         else:
             _order.state=2
