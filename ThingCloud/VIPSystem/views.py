@@ -61,10 +61,9 @@ def vipOrder(request):
     fp.close()
     prepayid = ""
     try:
-        tree = ET.parse("result.xml")
-        root = tree.getroot()
-        if root[0].text == "SUCCESS":
-            prepayid = root[8].text
+        root = ET.fromstring(result)
+        if root.find("return_code") and root.find("return_code").text == "SUCCESS":
+            prepayid = root.find("prepay_id").text
         else:
             return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})           
     except Exception, e:
@@ -105,12 +104,8 @@ def vipConfirm(request):
         return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":returnVip, "state":state})
     else:
         result = checkWechatOrder(model_to_dict(_order), 1)
-        fp = open("vip.xml", "w+")
-        fp.write(result)
-        fp.close()
-        tree = ET.parse("vip.xml")
-        root = tree.getroot()
-        if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
+        root = ET.fromstring(result)
+        if root.find("return_code") and root.find("return_code").text == "SUCCESS" and root.find("trade_state") and root.find("trade_state").text == "SUCCESS":
             _order.state = 1
             _order.save()
             _vip = addNewPackage(_order.month, _order.level, _vip)
