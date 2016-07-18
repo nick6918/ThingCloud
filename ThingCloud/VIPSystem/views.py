@@ -5,7 +5,7 @@ from OrderSystem.models import VIPOrder
 from django.forms.models import model_to_dict
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getVIPfee
-from TCD_lib.business import addVip, flushVip
+from TCD_lib.business import addNewPackage, flushVip
 from datetime import datetime
 import xml.etree.ElementTree as ET 
 from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder
@@ -27,7 +27,7 @@ def vip(request):
     _vip = VIP.objects.filter(vid=_user["vip"])
     if _vip:
         _vip = flushVip(_vip[0])
-        current_package = _vip.current_package
+        current_package = _vip.headPackage
         vip_info = model_to_dict(current_package)
         vip_info["end_date"] = vip_info["start_date"] + timedelta(vip_info["days"])
         vip_info["vid"] = _vip.vid
@@ -89,7 +89,7 @@ def vipConfirm(request):
         _vip = None
     void = request.GET.get("void", None)
     if not void:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":_vip, "state":state})
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":model_to_dict(_vip), "state":state})
     _order = VIPOrder.objects.filter(void=void)
     if not _order:
         return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":orderstate, "vip":_vip, "state":state })
@@ -106,7 +106,7 @@ def vipConfirm(request):
         if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
             _order.state = 1
             _order.save()
-            _vip = addVip(month, level, _vip)
+            _vip = addNewPackage(month, level, _vip)
             return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":_vip, "processing":0})
         else:
             _order.state=2

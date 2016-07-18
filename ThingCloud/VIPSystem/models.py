@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class VIPPackage(models.Model):
 	vpid = models.AutoField(primary_key = True)
-	vip_belong = models.ForeignKey(VIP)
+	nextPackage = models.ForeignKey("self", default = None)
 	start_date = models.DateTimeField()
 	days = models.IntegerField()
 	level = models.IntegerField()
@@ -17,7 +17,7 @@ class VIP(models.Model):
     """
 
     vid = models.AutoField(primary_key = True)
-    currentPackage = models.ForeignKey(VIPPackage, default = None)
+    headPackage = models.ForeignKey(VIPPackage, default = None)
 
     class Meta:
 
