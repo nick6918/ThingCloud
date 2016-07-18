@@ -4,7 +4,7 @@ from django.db import models
 class VIPPackage(models.Model):
 	vpid = models.AutoField(primary_key = True)
 	nextPackage = models.ForeignKey("self", null=True, default = None)
-	start_date = models.DateTimeField()
+	start_date = models.DateTimeField(null=True, default = None)
 	days = models.IntegerField()
 	level = models.IntegerField()
 
