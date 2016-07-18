@@ -63,7 +63,7 @@ def vipOrder(request):
     try:
         root = ET.fromstring(result)
         if root.find("return_code") and root.find("return_code").text == "SUCCESS":
-            fp = open("result.xml", "w+")
+            fp = open("resultok.txt", "w+")
             fp.write(root.find("return_code").text)
             fp.close()
             prepayid = root.find("prepay_id").text
