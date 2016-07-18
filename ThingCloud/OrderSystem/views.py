@@ -121,15 +121,11 @@ def confirmOrder(request):
         else:
             _order.state=0
             result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 0)
-            fp = open("result.xml", "w+")
-            fp.write(result)
-            fp.close()
             if not prepayid:
                 try:
-                    tree = ET.parse("result.xml")
-                    root = tree.getroot()
-                    if root[0].text == "SUCCESS":
-                        prepayid = root[8].text
+                    root = ET.fromstring(result)
+                    if root.find("return_code").text == "SUCCESS":
+                        prepayid = root.find("prepay_id").text
                     else:
                         return Jsonify({"status":False, "error":"1310", "error_message":u"微信预支付失败，响应失败"})			
                     _order.prepayid = prepayid
@@ -218,22 +214,10 @@ def getOrder(request):
         if checkPayment==1 and int(_order.state)==0:
             result = checkWechatOrder(model_to_dict(_order), 0)
 
-            #payState check
-            fp = open("payment.xml", "w+")
-            fp.write(result)
-            fp.close()
-
-            #TODO: Analyse wechat check result
             payState = 0
-            tree = ET.parse("payment.xml")
-            root = tree.getroot()
-            fp = open("debug.txt", "w+")
-            fp.write(root[18].text)
-            fp.close()
-            if root[0].text == "SUCCESS" and root[18].text == "SUCCESS":
+            root = ET.fromstring(result)
+            if root.find("return_code").text == "SUCCESS" and root.find("trade_state").text == "SUCCESS":
                 payState = 1
-            else:
-                payState = 0
             if payState == 1:
                 _order.state =1
                 _order.save()
