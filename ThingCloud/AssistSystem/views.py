@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.http import HttpResponse
 from django.shortcuts import render
 from models import Feedback, Discount, Activity, Version
 from AccountSystem.models import Community
@@ -87,3 +88,9 @@ def communityList(request):
 def getFeeList(request):
     origin, current, discount = feeList()
     return Jsonify({"status":True, "error":"", "origin":origin, "current":current, "discount":discount})
+
+def joinUs(request):
+    fp = open("TCD_lib/resources/join.html", "r")
+    context = fp.read()
+    httpResponse = HttpResponse(context, content_type="text/html")
+    return httpResponse
