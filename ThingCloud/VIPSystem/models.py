@@ -1,15 +1,23 @@
 from django.db import models
 
 # Create your models here.
+class VIPPackage(models.Model):
+	vpid = models.AutoField(primary_key = True)
+	nextPackage = models.ForeignKey("self", null=True, default = None)
+	start_date = models.DateTimeField(null=True, default = None)
+	days = models.IntegerField()
+	level = models.IntegerField()
+
+	class Meta:
+		db_table = "package_vip"
+
 class VIP(models.Model):
     """
         VIP System for user.
     """
 
     vid = models.AutoField(primary_key = True)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    level = models.IntegerField()
+    headPackage = models.ForeignKey(VIPPackage, null=True, default = None)
 
     class Meta:
 
