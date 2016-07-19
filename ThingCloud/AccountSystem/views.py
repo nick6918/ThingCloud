@@ -9,7 +9,7 @@ from TCD_lib.utils import get_client_ip, Jsonify, dictPolish, polish_address
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
 from TCD_lib.SMS import MobSMS
-from models import User, UserSession, Code, Address
+from models import User, UserSession, Code, Address, InviteCode
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
 logger = logging.getLogger('appserver')
@@ -48,13 +48,17 @@ def register(request):
 		@result: Http Response in JSON.
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
+	invite = request.POST.get("invite", None) 
+	inviteObject = InviteCode.objects.filter(code=invite).filter(state>0)
+	if not inviteObject:
+		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
 	user['phone'] = request.POST.get("phone", None)
 	user['nickname'] = request.POST.get("nickname", None)
 	user['password'] = request.POST.get("password", None)
 	gid = request.POST.get("gid", None)
 	if gid:
 		user['gid']=gid
-	if not (user['nickname'] and user['password'] and user['phone']):
+	if not (user['nickname'] and user['password'] and user['phone'] and invite):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	
 	userList = User.objects.filter(nickname = user['nickname'])

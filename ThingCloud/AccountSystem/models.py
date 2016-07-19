@@ -85,3 +85,11 @@ class Address(models.Model):
 	class Meta:
 		db_table = 'user_address'
 
+class InviteCode(models.Model):
+	icid = models.AutoField(primary_key=True)
+	state = models.IntegerField()
+	code = models.CharField(max_length=50)
+	notes = models.CharField(max_length=100)
+
+	class Meta:
+		db_table = 'meta_invite'
