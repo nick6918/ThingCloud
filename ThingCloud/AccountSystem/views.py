@@ -49,6 +49,7 @@ def register(request):
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
 	invite = request.POST.get("invite", None) 
+	invite = invite.upper()
 	inviteObject = InviteCode.objects.filter(code=invite).filter(state>0)
 	if not inviteObject:
 		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
