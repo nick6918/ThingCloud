@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.http import HttpResponse
 from django.shortcuts import render
 from models import Feedback, Discount, Activity, Version
 from AccountSystem.models import Community
@@ -31,7 +32,7 @@ def checkDiscount(request):
     return Jsonify({"status":True, "error":"", "error_message":disc.message})
 
 def activityList(request):
-    activities = Activity.objects.filter(state=1).order_by('-priority', 'acid')
+    activities = Activity.objects.filter(state=1).order_by('-priority', '-acid')
     resultList = []
     for activity in activities:
         resultList.append(model_to_dict(activity))
@@ -87,3 +88,9 @@ def communityList(request):
 def getFeeList(request):
     origin, current, discount = feeList()
     return Jsonify({"status":True, "error":"", "origin":origin, "current":current, "discount":discount})
+
+def joinUs(request):
+    fp = open("TCD_lib/resources/join.html", "r")
+    context = fp.read()
+    httpResponse = HttpResponse(context, content_type="text/html")
+    return httpResponse
