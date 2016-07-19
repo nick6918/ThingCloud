@@ -394,6 +394,10 @@ def orderCallback(request):
         return Jsonify({"status":False, "error":"1110", "order":dictPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
 
 def vipCallback(request):
+    logger.debug("get here!!!!!")
+    fp = open("debug.txt", "w+")
+    fp.write(request.body)
+    fp.close()
     void = request.GET.get("void", None)
     if not void:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
