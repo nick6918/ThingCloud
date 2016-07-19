@@ -305,13 +305,14 @@ def changePassword(request):
 	_user = User.objects.filter(phone=phone)
 	if _user:
 		_user = _user[0]
+		user = model_to_dict(_user)
 		mobsms = MobSMS('148f6c0a15c12')
 		status = mobsms.verify_sms_code(86, phone, code)
 		if status==200:
 			salt = Salt()
 			timestamp = str(int(math.floor(time.time())))
-			_hash = salt.hash(salt.md5(user['password']) + "|" + user['username'] + "|" + timestamp)
-			password = salt.md5(_hash+salt.md5(user['password']))
+			_hash = salt.hash(salt.md5(password) + "|" + user['username'] + "|" + timestamp)
+			password = salt.md5(_hash+salt.md5(password))
 			_user.password = password
 			_user.salt = _hash
 			_user.save()
