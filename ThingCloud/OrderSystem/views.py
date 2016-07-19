@@ -401,6 +401,7 @@ def vipCallback(request):
         root = ET.fromstring(xmlcontent)
         if root.find("return_code").text == "SUCCESS" and root.find("result_code").text == "SUCCESS":
             oid = root.find("out_trade_no").text
+            logger.debug(str(oid)+"order callback caught!!!")
             _order = Order.objects.filter(oid=oid)
             if _order:
                 _order = _order[0]
