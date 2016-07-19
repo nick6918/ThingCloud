@@ -95,13 +95,13 @@ def vipConfirm(request):
         orderstate = 0
     void = request.GET.get("void", None)
     if not void:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":vip_info, "state":state})
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":dictPolish(vip_info), "state":state})
     _order = VIPOrder.objects.filter(void=void)
     if not _order:
-        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":orderstate, "vip":vip_info, "state":state })
+        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":orderstate, "vip":dictPolish(vip_info), "state":state })
     _order = _order[0]
     if _order.state == 1:
-        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":vip_info, "state":state})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":dictPolish(vip_info), "state":state})
     else:
         result = checkWechatOrder(model_to_dict(_order), 1)
         try:
@@ -116,11 +116,11 @@ def vipConfirm(request):
                     vip_info = model_to_dict(current_package)
                     vip_info["end_date"] = vip_info["start_date"] + timedelta(vip_info["days"])
                     vip_info["vid"] = _vip.vid
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":vip_info, "processing":0})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":dictPolish(vip_info), "processing":0})
             else:
                 _order.state=2
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":vip_info, "processing":1})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":dictPolish(vip_info), "processing":1})
         except Exception, e:
             logger.error(e)
-            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":vip_info, "state":state})
+            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":dictPolish(vip_info), "state":state})
