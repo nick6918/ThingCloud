@@ -398,24 +398,28 @@ def vipCallback(request):
     root = ET.fromstring(xmlcontent)
     successString = "<xml>\n<return_code>SUCCESS</return_code>\n</xml>"
     failString = "<xml>\n<return_code>FAIL</return_code>\n</xml>"
-    if root.find("return_code").text == "SUCCESS" and root.find("result_code").text == "SUCCESS":
-        oid = root.find("out_trade_no").text
-        _order = Order.objects.filter(oid=oid)
-        if _order:
-            _order = _order[0]
-            if _order.state == 1:
-                return HttpResponse(sucessString)
+    try:
+        if root.find("return_code").text == "SUCCESS" and root.find("result_code").text == "SUCCESS":
+            oid = root.find("out_trade_no").text
+            _order = Order.objects.filter(oid=oid)
+            if _order:
+                _order = _order[0]
+                if _order.state == 1:
+                    return HttpResponse(sucessString)
+                else:
+                    _order.state = 1
+                    _order.save()
+                    _user = _order.user
+                    _vip = _user.vip
+                    _vip = addNewPackage(_order.month, _order.level, _vip, _user)
+                    return HttpResponse(sucessString)
             else:
-                _order.state = 1
-                _order.save()
-                _user = _order.user
-                _vip = _user.vip
-                _vip = addNewPackage(_order.month, _order.level, _vip, _user)
-                return HttpResponse(sucessString)
+                logger.error("1121, Callback failed, order not found")
+                return HttpResponse(successString)
         else:
-            logger.error("1121, Callback failed, order not found")
-            return HttpResponse(successString)
-    else:
-        logger.error("1120, Callback return failure")
-        return HttpResponse(failString)
+            logger.error("1120, Callback return failure")
+            return HttpResponse(failString)
+    except Exception, e:
+        logger.error(e)
+        logger.error("1122, wechat request parsing error")
 
