@@ -26,6 +26,7 @@ class Discount(models.Model):
 class Activity(models.Model):
     acid = models.AutoField(primary_key=True)
     state = models.IntegerField()
+    typename = models.CharField(max_length=50)
     priority = models.IntegerField()
     name = models.CharField(max_length=200)
     discount = models.ForeignKey(Discount)

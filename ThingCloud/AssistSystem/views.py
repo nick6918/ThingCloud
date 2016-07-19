@@ -32,7 +32,7 @@ def checkDiscount(request):
     return Jsonify({"status":True, "error":"", "error_message":disc.message})
 
 def activityList(request):
-    activities = Activity.objects.filter(state=1).order_by('-priority', 'acid')
+    activities = Activity.objects.filter(state=1).order_by('-priority', '-acid')
     resultList = []
     for activity in activities:
         resultList.append(model_to_dict(activity))
