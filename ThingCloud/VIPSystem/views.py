@@ -80,11 +80,14 @@ def vipConfirm(request):
     if _vip:
         _vip = _vip[0]
         state = True
-        returnVip = model_to_dict(_vip)
+        current_package = _vip.headPackage
+        vip_info = model_to_dict(current_package)
+        vip_info["end_date"] = vip_info["start_date"] + timedelta(vip_info["days"])
+        vip_info["vid"] = _vip.vid
     else:
         state = False
         _vip = None
-        returnVip = {}
+        vip_info = {}
     unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
     if unfinishedOrder:
         orderstate = 1
@@ -92,13 +95,13 @@ def vipConfirm(request):
         orderstate = 0
     void = request.GET.get("void", None)
     if not void:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":returnVip, "state":state})
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":orderstate, "vip":vip_info, "state":state})
     _order = VIPOrder.objects.filter(void=void)
     if not _order:
-        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":orderstate, "vip":returnVip, "state":state })
+        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":orderstate, "vip":vip_info, "state":state })
     _order = _order[0]
     if _order.state == 1:
-        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":returnVip, "state":state})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":vip_info, "state":state})
     else:
         result = checkWechatOrder(model_to_dict(_order), 1)
         try:
@@ -109,12 +112,15 @@ def vipConfirm(request):
                 _vip = addNewPackage(_order.month, _order.level, _vip, _user)
                 if _vip:
                     state = 1
-                returnVip = model_to_dict(_vip)
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":0})
+                    current_package = _vip.headPackage
+                    vip_info = model_to_dict(current_package)
+                    vip_info["end_date"] = vip_info["start_date"] + timedelta(vip_info["days"])
+                    vip_info["vid"] = _vip.vid
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":vip_info, "processing":0})
             else:
                 _order.state=2
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":returnVip, "processing":1})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":state, "vip":vip_info, "processing":1})
         except Exception, e:
             logger.error(e)
-            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":returnVip, "state":state})
+            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":vip_info, "state":state})
