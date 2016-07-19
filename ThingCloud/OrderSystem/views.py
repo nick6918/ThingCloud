@@ -377,21 +377,33 @@ def delete(request):
         return Jsonify({"status":False, "error":"1306", "error_message":u"订单正在处理中, 暂不能删除。 如遇特殊情况, 请直接联系客服。"})
 
 def orderCallback(request):
-    oid = request.POST.get("oid", None)
-    _order = Order.objects.filter(oid=oid)
-    if not oid:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
-    if not _order:
-        return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
-    _order = _order[0]
-    current_state = _order.state
-    if current_state == 0 or current_state == 2:
-        _order.state = 1
-        _order.paid_time = datetime.now()
-        _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
-    else:
-        return Jsonify({"status":False, "error":"1110", "order":dictPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
+    xmlcontent = request.body
+    successString = "<xml>\n<return_code>SUCCESS</return_code>\n</xml>"
+    failString = "<xml>\n<return_code>FAIL</return_code>\n</xml>"
+    try:
+        root = ET.fromstring(xmlcontent)
+        if root.find("return_code").text == "SUCCESS" and root.find("result_code").text == "SUCCESS":
+            oid = root.find("out_trade_no").text
+            logger.debug(str(oid)+"order callback caught!!!")
+            _order = Order.objects.filter(void=oid)
+            if _order:
+                _order = _order[0]
+                if _order.state == 1:
+                    return HttpResponse(sucessString)
+                else:
+                    _order.state = 1
+                    _order.save()
+                    return HttpResponse(sucessString)
+            else:
+                logger.error("1121, Callback failed, order not found")
+                return HttpResponse(successString)
+        else:
+            logger.error("1120, Callback return failure")
+            return HttpResponse(failString)
+    except Exception, e:
+        logger.error(e)
+        logger.error("1122, wechat request parsing error")
+        return HttpResponse(failString)
 
 def vipCallback(request):
     xmlcontent = request.body
@@ -401,8 +413,8 @@ def vipCallback(request):
         root = ET.fromstring(xmlcontent)
         if root.find("return_code").text == "SUCCESS" and root.find("result_code").text == "SUCCESS":
             oid = root.find("out_trade_no").text
-            logger.debug(str(oid)+"order callback caught!!!")
-            _order = Order.objects.filter(oid=oid)
+            logger.debug(str(oid)+"VIP order callback caught!!!")
+            _order = VIPOrder.objects.filter(void=oid)
             if _order:
                 _order = _order[0]
                 if _order.state == 1:
