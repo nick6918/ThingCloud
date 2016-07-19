@@ -408,7 +408,10 @@ def vipCallback(request):
             else:
                 _order.state = 1
                 _order.save()
+                _user = _order.user
+                _vip = _user.vip
                 _vip = addNewPackage(_order.month, _order.level, _vip, _user)
+                return HttpResponse(sucessString)
         else:
             logger.error("1121, Callback failed, order not found")
             return HttpResponse(successString)
