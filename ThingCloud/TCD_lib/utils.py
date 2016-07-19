@@ -120,13 +120,12 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info['total_fee']  = int(order["fee"]*100)
     info['spbill_create_ip']  = userip
     info["notify_url"]  = ""
+    info['out_trade_no']  = str(order["oid"])
     if ordertype == 0:
         #delivery order
-        info['out_trade_no']  = "0"+str(order["oid"])
         info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
     else:
         #vip order
-        info['out_trade_no']  = "1"+str(order["void"])
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
 
