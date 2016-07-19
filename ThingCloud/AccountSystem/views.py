@@ -304,7 +304,7 @@ def changePassword(request):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	_user = User.objects.filter(phone=phone)
 	if _user:
-		_user = user[0]
+		_user = _user[0]
 		mobsms = MobSMS('148f6c0a15c12')
 		status = mobsms.verify_sms_code(86, phone, code)
 		if status==200:
