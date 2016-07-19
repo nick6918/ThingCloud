@@ -1,4 +1,5 @@
 from VIPSystem.models import VIP, VIPPackage
+from AccountSystem.models import User
 from datetime import datetime, timedelta
 from django.utils import timezone
 
@@ -39,6 +40,8 @@ def addNewHeadPackage(vip, newPackage):
 	return vip
 
 def addNewPackage(month, typeid, vip=None, user=None):
+	if type(user) == dict:
+		user = User.objects.filter(uid=user['uid'])[0]
 	vip = flushVip(vip)
 	if vip:
 		currentPackage = vip.headPackage
