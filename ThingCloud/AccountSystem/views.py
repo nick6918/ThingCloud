@@ -137,7 +137,7 @@ def sendCode(request):
 		if status==200:
 			return Jsonify({"status":True, "error":"", "error_message":""})
 		else:
-			return Jsonify({"status":True, "error":"1113", "error_message":"验证码验证失败。"})
+			return Jsonify({"status":False, "error":"1113", "error_message":"验证码验证失败。"})
 
 # def checkCode(request):
 # 	_code = request.GET.get('code', None)
