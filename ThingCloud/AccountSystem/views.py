@@ -58,7 +58,7 @@ def register(request):
 	if not (user['nickname'] and user['password'] and user['phone'] and invite):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	invite = invite.upper()
-	inviteObject = InviteCode.objects.filter(code=invite).filter(state>0)
+	inviteObject = InviteCode.objects.filter(code=invite).filter(state=0)
 	if not inviteObject:
 		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
 	userList = User.objects.filter(nickname = user['nickname'])
