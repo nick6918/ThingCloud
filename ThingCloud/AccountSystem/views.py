@@ -308,6 +308,8 @@ def changePassword(request):
 		user = model_to_dict(_user)
 		mobsms = MobSMS('148f6c0a15c12')
 		status = mobsms.verify_sms_code(86, phone, code)
+		logger.debug(status)
+		logger.debug(type(status))
 		if status==200:
 			salt = Salt()
 			timestamp = str(int(math.floor(time.time())))
