@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from models import Order, Complaint, VIPOrder
@@ -422,4 +422,5 @@ def vipCallback(request):
     except Exception, e:
         logger.error(e)
         logger.error("1122, wechat request parsing error")
+        return HttpResponse(failString)
 
