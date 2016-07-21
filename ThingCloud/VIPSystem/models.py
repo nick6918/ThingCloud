@@ -107,7 +107,7 @@ class VIP(models.Model):
 	def toDict(self):
 		result = model_to_dict(self.headPackage)
 		result["vid"] = self.vid
-		vip_info["end_date"] = result["start_date"] + timedelta(result["days"])
+		result["end_date"] = result["start_date"] + timedelta(result["days"])
 		return dictPolish(result)
 
 	class Meta:
