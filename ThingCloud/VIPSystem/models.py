@@ -64,8 +64,6 @@ class VIP(models.Model):
 				total_timedelta = difference
 				self.rotatePackage()	
 				difference = total_timedelta - timedelta(self.headPackage.days)
-			self.headPackage.days = self.headPackage.days - total_timedelta.days
-			self.headPackage.save()
 		return self
 
 	def addHeadPackage(self, newPackage):
