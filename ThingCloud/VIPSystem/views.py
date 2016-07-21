@@ -73,9 +73,9 @@ def vipOrder(request):
 def vipConfirm(request):
     _user = request.user
     _vip = VIP.objects.filter(vid=_user["vip"])
-    _vip.flush()
     if _vip:
         _vip = _vip[0]
+        _vip.flush()
         vip_info = _vip.toDict()
     else:
         _vip = None
