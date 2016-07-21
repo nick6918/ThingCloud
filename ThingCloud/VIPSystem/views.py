@@ -107,6 +107,7 @@ def vipConfirm(request):
                     user.vip = _vip
                     user.save()
                 _vip.addNewPackage(newPackage)
+                vip_info = _vip.toDict()
                 return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(vip_info), "vip":vip_info, "processing":0})
             else:
                 _order.state=2
