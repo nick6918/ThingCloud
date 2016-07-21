@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime, timedelta
 from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
+from django.utils import timezone
 
 # Create your models here.
 class VIPPackage(models.Model):
