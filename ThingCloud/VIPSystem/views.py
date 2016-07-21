@@ -114,4 +114,4 @@ def vipConfirm(request):
                 return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(vip_info), "vip":vip_info, "processing":1})
         except Exception, e:
             logger.error(e)
-            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":vip_info, "state":state})
+            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":vip_info, "state":bool(vip_info)})
