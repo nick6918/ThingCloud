@@ -13,14 +13,14 @@ class VIPPackage(models.Model):
 	level = models.IntegerField()
 	merged = models.IntegerField(default = 0)
 
-	def merge(otherPackage):
+	def merge(self, otherPackage):
 		self.days = self.days + otherPackage.days
 		self.save()
 		otherPackage.merged = 1
 		otherPackage.save()
 		return self
 
-	def insert(otherPackage):
+	def insert(self, otherPackage):
 		if self.nextPackage:
 			otherPackage.nextPackage = self.nextPackage
 			otherPackage.save()
