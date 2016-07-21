@@ -104,7 +104,7 @@ def vipConfirm(request):
                 newPackage = VIPPackage(level = _order.level, days = _order.month*31)
                 if not _vip:
                     _vip = VIP()
-                    user = User.objects.filter(uid=user["uid"])[0]
+                    user = User.objects.filter(uid=_user["uid"])[0]
                     user.vip = _vip
                     user.save()
                 _vip.addNewPackage(newPackage)
