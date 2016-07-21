@@ -23,9 +23,7 @@ class VIPPackage(models.Model):
 		if self.nextPackage:
 			otherPackage.nextPackage = self.nextPackage
 			otherPackage.save()
-			self.nextPackage = otherPackage
-		else:
-			self.nextPackage = otherPackage
+		self.nextPackage = otherPackage
 		self.save()
 		return self
 
@@ -33,16 +31,16 @@ class VIPPackage(models.Model):
 		db_table = "package_vip"
 
 class VIP(models.Model):
-    """
+	"""
         VIP System for user.
     """
 
-    vid = models.AutoField(primary_key = True)
-    headPackage = models.ForeignKey(VIPPackage, null=True, default = None)
+	vid = models.AutoField(primary_key = True)
+	headPackage = models.ForeignKey(VIPPackage, null=True, default = None)
 
-    def rotatePackage(self):
-    	if self.headPackage:
-    		self.headPackage.days = 0
+	def rotatePackage(self):
+		if self.headPackage:
+			self.headPackage.days = 0
 			self.headPackage.save()
 			if self.headPackage.nextPackage:
 				self.headPackage.nextPackage.start_date = timezone.now()
@@ -51,9 +49,9 @@ class VIP(models.Model):
 			self.save()
 		return self
 
-    def flush(self):
-    	if self.headPackage:
-	    	total_timedelta = timezone.now() - self.headPackage.start_date
+	def flush(self):
+		if self.headPackage:
+			total_timedelta = timezone.now() - self.headPackage.start_date
 			difference = total_timedelta - timedelta(self.headPackage.days)
 			while difference >= timedelta(0):
 				total_timedelta = difference
@@ -63,9 +61,9 @@ class VIP(models.Model):
 			self.headPackage.save()
 		return self
 
-    def addHeadPackage(self, newPackage):
-    	self.flush()
-    	if self.headPackage:
+	def addHeadPackage(self, newPackage):
+		self.flush()
+		if self.headPackage:
 			self.headPackage.days = self.headPackage.days - (timezone.now() - self.headPackage.start_date).days
 			self.headPackage.save()
 			newPackage.nextPackage = self.headPackage
@@ -112,6 +110,6 @@ class VIP(models.Model):
 		vip_info["end_date"] = result["start_date"] + timedelta(result["days"])
 		return dictPolish(result)
 
-    class Meta:
+	class Meta:
 
-        db_table = "user_vip"
+		db_table = "user_vip"
