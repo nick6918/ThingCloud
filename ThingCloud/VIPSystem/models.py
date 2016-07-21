@@ -53,6 +53,9 @@ class VIP(models.Model):
 	def flush(self):
 		if self.headPackage:
 			total_timedelta = timezone.now() - self.headPackage.start_date
+			logger.debug(timezone.now())
+			logger.debug(self.headPackage.start_date)
+			logger.debug(total_timedelta.days)
 			difference = total_timedelta - timedelta(self.headPackage.days)
 			while difference >= timedelta(0):
 				total_timedelta = difference
