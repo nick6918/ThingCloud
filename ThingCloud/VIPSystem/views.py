@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from models import VIP
+from models import VIP, VIPPackage
 from OrderSystem.models import VIPOrder
 from django.forms.models import model_to_dict
 from TCD_lib.security import UserAuthorization
