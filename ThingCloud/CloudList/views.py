@@ -117,4 +117,18 @@ def getItemList(request):
             del(item['time_saved'])
             del(item['state'])
             resultList.append(item)
+    else:
+        thing = Thing(avatar=1, name="1Q84", time_saved=datetime.now(), typeid=0, gender=2, subtype_name= "", user_belong_to_id= user['uid'], wh_in_id=0, state=1)
+        thing.save()
+        wh_id = thing.wh_in.wid
+        wh_name = thing.wh_in.name
+        item = model_to_dict(thing)
+        item['wh_id']=wh_id
+        item['wh_name']=wh_name
+        item['avatarurl'] = PICURL+"thing/activity.png"
+        del(item['wh_in'])
+        del(item['user_belong_to'])
+        del(item['time_saved'])
+        del(item['state'])
+        resultList.append(item)
     return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
