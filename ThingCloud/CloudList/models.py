@@ -16,6 +16,46 @@ class WareHouse(models.Model):
 	class Meta:
 		db_table = "warehouses"
 
+class Meta_City(models.Model):
+    ctid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'city'
+
+class Meta_District(models.Model):
+    dsid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    city_belong = models.ForeignKey(Meta_City)
+
+    class Meta:
+        db_table = 'districts'
+
+class Meta_Community(models.Model):
+    cmid = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    state = models.IntegerField()
+    district_belong = models.ForeignKey(Meta_District)
+
+    class Meta:
+        db_table = 'communities'
+
+class User_Address(models.Model):
+	adid = models.AutoField(primary_key=True)
+	user = models.ForeignKey(User)
+	addr = models.CharField(max_length=200)
+	phone = models.CharField(max_length=50)
+	name = models.CharField(max_length=100)
+	gender = models.IntegerField()
+	community_belong = models.ForeignKey(Meta_Community)
+	is_default = models.IntegerField()
+	tagid = models.IntegerField()
+	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
+	state = models.IntegerField()
+
+	class Meta:
+		db_table = 'addresses'
+
 class Thing(models.Model):
 	tid = models.AutoField(primary_key = True)
 	user_belong_to = models.ForeignKey(User)
