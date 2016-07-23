@@ -38,13 +38,14 @@ class Thing(models.Model):
 		result = model_to_dict(self)
 		result["wh_id"]= wh_in.wid
 		result["wh_name"] = wh_in.name
-        del(result['user_belong_to'])
-        del(result['time_saved'])
-        del(result['state'])
-        if result['present_id']:
-        	item['avatarurl'] = PICURL+"thing/present"+str(result['present_id'])+".png"
-        else:
-	        if int(item['avatar'])==1:
-	                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".png"
-	        else:
-	            item['avatarurl'] = PICURL+"thing/default.png"
+		del(result['user_belong_to'])
+		del(result['time_saved'])
+		del(result['state'])
+		if result['present_id']:
+			result['avatarurl'] = PICURL+"thing/present"+str(result['present_id'])+".png"
+		else:
+			if int(result['avatar'])==1:
+				result['avatarurl'] = PICURL+"thing/"+str(result['tid'])+".png"
+			else:
+				result['avatarurl'] = PICURL+"thing/default.png"
+		return result
