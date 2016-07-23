@@ -2,6 +2,9 @@ from django.db import models
 from AccountSystem.models import User
 from django.forms.models import model_to_dict
 
+AVATARPATH = UPYUNURL+"/thingavatar/"
+PICURL = "http://staticimage.thingcloud.net/thingcloud/"
+
 # Create your models here.
 
 class WareHouse(models.Model):
