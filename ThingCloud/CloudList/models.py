@@ -36,8 +36,8 @@ class Thing(models.Model):
 
 	def toDict(self):
 		result = model_to_dict(self)
-		result["wh_id"]= wh_in.wid
-		result["wh_name"] = wh_in.name
+		result["wh_id"]= self.wh_in.wid
+		result["wh_name"] = self.wh_in.name
 		del(result['user_belong_to'])
 		del(result['time_saved'])
 		del(result['state'])
