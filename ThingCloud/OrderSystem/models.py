@@ -8,7 +8,7 @@ from CloudList.models import Address
 class Order(models.Model):
 
     oid = models.AutoField(primary_key=True)
-    addr = models.ForeignKey(Address)
+    addr = models.ForeignKey(Address, null=True, default=None)
     user = models.ForeignKey(User)
     notes = models.CharField(max_length=300)
     fee = models.FloatField()
