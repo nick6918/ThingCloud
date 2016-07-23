@@ -16,6 +16,15 @@ logger = logging.getLogger('appserver')
 AVATARPATH = UPYUNURL+"/thingavatar/"
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 
+def addPresent(user_id, wh_id):
+    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1)
+    thing1.save()
+    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2)
+    thing2.save()
+    thing3 = Thing(avatar=1, name=u"存入你的商品", time_saved=datetime.now(), typeid=3, gender=2, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=3)
+    thing3.save() 
+    return [thing1, thing2, thing3] 
+
 # Create your views here.
 def addNewItem(request):
     character = request.POST.get("character", u'未知')
@@ -93,7 +102,6 @@ def getItemList(request):
     page = request.GET.get("page", 0)
     page = int(page)
     user = request.user
-    print user['uid']
     if typeid:
         typeid = int(typeid)
         itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
@@ -102,33 +110,9 @@ def getItemList(request):
     resultList = []
     if itemList:
         for item in itemList:
-            wh_id = item.wh_in.wid
-            wh_name = item.wh_in.name
-            item = model_to_dict(item)
-            item['wh_id']=wh_id
-            item['wh_name']=wh_name
-            if int(item['avatar'])==1:
-                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".png"
-            else:
-                item['avatarurl'] = PICURL+"thing/default.png"
-            print item
-            del(item['wh_in'])
-            del(item['user_belong_to'])
-            del(item['time_saved'])
-            del(item['state'])
-            resultList.append(item)
+            resultList.append(item.toDict())
     else:
-        thing = Thing(avatar=1, name="1Q84", time_saved=datetime.now(), typeid=0, gender=2, subtype_name= "", user_belong_to_id= user['uid'], wh_in_id=0, state=1)
-        thing.save()
-        wh_id = thing.wh_in.wid
-        wh_name = thing.wh_in.name
-        item = model_to_dict(thing)
-        item['wh_id']=wh_id
-        item['wh_name']=wh_name
-        item['avatarurl'] = PICURL+"thing/activity.png"
-        del(item['wh_in'])
-        del(item['user_belong_to'])
-        del(item['time_saved'])
-        del(item['state'])
-        resultList.append(item)
+        itemList = addPresent(user['uid'], 1)
+        for item in itemList:
+            resultList.append(item.toDict())      
     return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
