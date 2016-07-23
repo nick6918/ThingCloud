@@ -2,7 +2,7 @@
 
 from django.db import models
 from AccountSystem.models import User
-from CloudList.models import Address
+# from CloudList.models import Address
 
 # Create your models here.
 class Order(models.Model):

@@ -3,7 +3,7 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from models import Order, Complaint, VIPOrder
-from CloudList.models import Thing, Address
+from CloudList.models import Thing
 from AccountSystem.models import User 
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
