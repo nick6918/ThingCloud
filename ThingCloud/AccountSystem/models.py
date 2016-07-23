@@ -22,7 +22,7 @@ class User(models.Model):
 	phone = models.CharField(max_length = 100)
 	avatar = models.IntegerField()
 	username = models.CharField(max_length = 100, default = "WEIRDUSER")
-	vip = models.ForeignKey(VIP)
+	vip = models.ForeignKey(VIP, null=True)
 
 	class Meta:
 		db_table = 'user'
