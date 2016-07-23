@@ -8,6 +8,14 @@ from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
 
 # Create your models here.
+class Courier(models.Model):
+    crid = models.AutoField(primary_key=True)
+    employee = models.OneToOneField(Employee)
+    wh_belong = models.ForeignKey(WareHouse)
+
+    class Meta:
+        db_table = "work_courier"
+
 class Order(models.Model):
 
     oid = models.AutoField(primary_key=True)
@@ -65,12 +73,4 @@ class VIPOrder(models.Model):
     class Meta:
 
         db_table = "order_vip"
-
-class Courier(models.Model):
-    crid = models.AutoField(primary_key=True)
-    employee = models.OneToOneField(Employee)
-    wh_belong = models.ForeignKey(WareHouse)
-
-    class Meta:
-        db_table = "work_courier"
 
