@@ -36,6 +36,7 @@ class Meta_Community(models.Model):
     name = models.CharField(max_length=100)
     state = models.IntegerField()
     district_belong = models.ForeignKey(Meta_District)
+    wh_in = models.ForeignKey(WareHouse)
 
     class Meta:
         db_table = 'communities'
