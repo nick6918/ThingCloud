@@ -9,7 +9,8 @@ from TCD_lib.utils import get_client_ip, Jsonify, dictPolish, polish_address
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
 from TCD_lib.SMS import MobSMS
-from models import User, UserSession, Code, Address, InviteCode
+from models import User, UserSession, Code, InviteCode
+from CloudList.models import Address
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
 logger = logging.getLogger('appserver')

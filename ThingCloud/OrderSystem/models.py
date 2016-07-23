@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from AccountSystem.models import Address, User
+from AccountSystem.models import User
+from CloudList.models import Address
 
 # Create your models here.
 class Order(models.Model):
