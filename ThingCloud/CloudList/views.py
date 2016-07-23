@@ -8,13 +8,17 @@ from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify
 from TCD_lib.constants import TYPECONSTANT, PAGECOUNT
 from TCD_lib.picture import Picture
-from TCD_lib.settings import UPYUNURL
+from TCD_lib.settings import UPYUNURL, AVATARPATH
 import logging
 
 logger = logging.getLogger('appserver')
 
-AVATARPATH = UPYUNURL+"/thingavatar/"
-PICURL = "http://staticimage.thingcloud.net/thingcloud/"
+def addPresent(user_id, wh_id):
+    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, units=1, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1, notes="新用户赠送")
+    thing1.save()
+    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2, notes="新用户赠送")
+    thing2.save()
+    return [thing1, thing2] 
 
 # Create your views here.
 def addNewItem(request):
@@ -93,7 +97,6 @@ def getItemList(request):
     page = request.GET.get("page", 0)
     page = int(page)
     user = request.user
-    print user['uid']
     if typeid:
         typeid = int(typeid)
         itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
@@ -102,19 +105,9 @@ def getItemList(request):
     resultList = []
     if itemList:
         for item in itemList:
-            wh_id = item.wh_in.wid
-            wh_name = item.wh_in.name
-            item = model_to_dict(item)
-            item['wh_id']=wh_id
-            item['wh_name']=wh_name
-            if int(item['avatar'])==1:
-                item['avatarurl'] = PICURL+"thing/"+str(item['tid'])+".png"
-            else:
-                item['avatarurl'] = PICURL+"thing/default.png"
-            print item
-            del(item['wh_in'])
-            del(item['user_belong_to'])
-            del(item['time_saved'])
-            del(item['state'])
-            resultList.append(item)
+            resultList.append(item.toDict())
+    else:
+        itemList = addPresent(user['uid'], 1)
+        for item in itemList:
+            resultList.append(item.toDict())      
     return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})

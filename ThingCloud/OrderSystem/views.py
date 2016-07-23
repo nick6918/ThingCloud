@@ -8,7 +8,7 @@ from AccountSystem.models import Address, User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
 from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder, polish_address
-from VIPSystem.models import VIP
+from VIPSystem.models import VIP, VIPPackage
 from datetime import datetime, timedelta
 import random
 import xml.etree.ElementTree as ET 
@@ -394,10 +394,6 @@ def orderCallback(request):
         return Jsonify({"status":False, "error":"1110", "order":dictPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
 
 def vipCallback(request):
-    logger.debug("get here!!!!!")
-    fp = open("debug.txt", "w+")
-    fp.write(request.body)
-    fp.close()
     void = request.GET.get("void", None)
     if not void:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
@@ -413,20 +409,14 @@ def vipCallback(request):
             return Jsonify({"status":False, "error":"1502", "error_message":u"该订单不属于任何用户。"})
         else:
             _user = _user[0]
-            if not _user.vip_id:
-                _vip = VIP(start_date=datetime.now(), end_date=datetime.now()+timedelta(month*31), level=0)
+            if not _user.vip:
+                _vip = VIP()
                 _vip.save()
-                _user.vip_id=_vip.vid
+                _user.vip=_vip
                 _user.save()
-                viporder.state=1
-                viporder.save()
-                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
-            else:
-                _vip = _user.vip
-                enddate = _vip.end_date
-                newend = enddate + timedelta(month*31)
-                _vip.end_date = newend
-                _vip.save()
-                viporder.state=1
-                viporder.save()
-                return Jsonify({"status":True, "vip":dictPolish(model_to_dict(_vip))})
+            viporder.state=1
+            viporder.save()
+            newPackage = VIPPackage(level = viporder.level, days = viporder.month*31)
+            _vip.addNewPackage(newPackage)
+            return Jsonify({"status":True, "vip":_vip.toDict()})
+
