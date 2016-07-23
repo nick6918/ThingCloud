@@ -3,8 +3,8 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict
 from models import Order, Complaint, VIPOrder
-from CloudList.models import Thing
-from AccountSystem.models import Address, User
+from CloudList.models import Thing, Address
+from AccountSystem.models import User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
 from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder, polish_address

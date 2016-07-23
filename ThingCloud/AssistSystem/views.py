@@ -3,7 +3,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Feedback, Discount, Activity, Version
-from AccountSystem.models import Community
+from CloudList.models import Community
 from TCD_lib.utils import Jsonify
 from TCD_lib.fee import feeList
 from TCD_lib.security import UserAuthorization
@@ -70,7 +70,7 @@ def versionInfo(request):
 
 def communityList(request):
     result = {}
-    for item in Community.objects.filter(state=1):
+    for item in Meta_Community.objects.filter(state=1):
         district = item.district_belong
         city = district.city_belong
         if city.name in result.keys():

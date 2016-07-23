@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from AccountSystem.models import Address, User
+from AccountSystem.models import User
+from CloudList.models import Address
 
 # Create your models here.
 class Order(models.Model):
 
     oid = models.AutoField(primary_key=True)
-    addr = models.ForeignKey(Address)
+    addr = models.ForeignKey(Address, null=True, default=None)
     user = models.ForeignKey(User)
     notes = models.CharField(max_length=300)
     fee = models.FloatField()
@@ -15,8 +16,8 @@ class Order(models.Model):
     itemList = models.CharField(max_length=200)
     state = models.IntegerField()
     create_time = models.DateTimeField()
-    paid_time = models.DateTimeField()
-    finish_time = models.DateTimeField()
+    paid_time = models.DateTimeField(null=True, default=None)
+    finish_time = models.DateTimeField(null=True, default=None)
     prepayid = models.CharField(max_length=50)
     signature = models.CharField(max_length=50)
     showid = models.CharField(max_length=50)

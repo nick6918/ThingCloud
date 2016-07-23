@@ -22,7 +22,7 @@ class User(models.Model):
 	phone = models.CharField(max_length = 100)
 	avatar = models.IntegerField()
 	username = models.CharField(max_length = 100, default = "WEIRDUSER")
-	vip = models.ForeignKey(VIP)
+	vip = models.ForeignKey(VIP, null=True)
 
 	class Meta:
 		db_table = 'user'
@@ -44,46 +44,6 @@ class Code(models.Model):
 
 	class Meta:
 		db_table = 'code_by_phone'
-
-class City(models.Model):
-    ctid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-
-    class Meta:
-        db_table = 'meta_city'
-
-class District(models.Model):
-    dsid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    city_belong = models.ForeignKey(City)
-
-    class Meta:
-        db_table = 'meta_districts'
-
-class Community(models.Model):
-    cmid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    state = models.IntegerField()
-    district_belong = models.ForeignKey(District)
-
-    class Meta:
-        db_table = 'meta_communities'
-
-class Address(models.Model):
-	adid = models.AutoField(primary_key=True)
-	user = models.ForeignKey(User)
-	addr = models.CharField(max_length=200)
-	phone = models.CharField(max_length=50)
-	name = models.CharField(max_length=100)
-	gender = models.IntegerField()
-	community_belong = models.ForeignKey(Community)
-	is_default = models.IntegerField()
-	tagid = models.IntegerField()
-	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
-	state = models.IntegerField()
-
-	class Meta:
-		db_table = 'user_address'
 
 class InviteCode(models.Model):
 	icid = models.AutoField(primary_key=True)
