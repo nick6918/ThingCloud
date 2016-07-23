@@ -7,7 +7,7 @@ from CloudList.models import Thing, Address
 from AccountSystem.models import User
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
-from TCD_lib.utils import Jsonify, dictPolish, unifyOrder, iosOrder, checkWechatOrder, polish_address
+from TCD_lib.utils import Jsonify, unifyOrder, iosOrder, checkWechatOrder
 from VIPSystem.models import VIP, VIPPackage
 from datetime import datetime, timedelta
 import random
@@ -56,17 +56,17 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(order)), "address":""})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":""})
     else:
         _addr_object = _addr[0]
-        _addr = model_to_dict(_addr_object)
+        _addr = _addr_object.toDict()
      	fee, detail = getDeliveryfee(1)
         order = Order(user_id=_user['uid'], notes="", fee=fee, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, addr=_addr_object)
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(order)), "address":polish_address(_addr_object), "detail":detail})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail})
 
 @UserAuthorization
 def modifyOrder(request):
@@ -84,7 +84,7 @@ def modifyOrder(request):
         _order.addr_id = addrid
         _order.fee=6
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def confirmOrder(request):
@@ -111,16 +111,16 @@ def confirmOrder(request):
         if notes:
             _order.notes = notes
         if fee != _order.fee:
-            return Jsonify({"status":False, "error":"1303", "fee":fee, "order":dictPolish(model_to_dict(_order)), "error_message":u"订单价格有误， 请重新下单。"})
+            return Jsonify({"status":False, "error":"1303", "fee":fee, "order":_order.toDict(), "error_message":u"订单价格有误， 请重新下单。"})
         ##wechat order
         if fee==0:
             _order.paid_time=datetime.now()
             _order.state=1
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"会员免运费: 0元。"})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "detail":u"会员免运费: 0元。"})
         else:
             _order.state=0
-            result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 0)
+            result = unifyOrder(_order.toDict(), body, detail, ipaddr, 0)
             if not prepayid:
                 try:
                     root = ET.fromstring(result)
@@ -136,7 +136,7 @@ def confirmOrder(request):
                     return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
             #为iOS准备调起支付所需的参数
             data = iosOrder(prepayid)
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "data":data, "detail":u"同仓存取快递费: 6元。"})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "data":data, "detail":u"同仓存取快递费: 6元。"})
 
 # @UserAuthorization
 # def checkPayment(request):
@@ -154,7 +154,7 @@ def confirmOrder(request):
 #             #支付成功， 且已经收到微信回调
 #             return Jsonify({"status":True, "error":"", "error_message":"", "state":1})
 #         else:
-#             result = checkWechatOrder(model_to_dict(_order), 0)
+#             result = checkWechatOrder(_order.toDict(), 0)
 
 #             #payState check
 #             fp = open("result.txt", "w+")
@@ -188,11 +188,11 @@ def getOrderList(request):
         stateid=int(stateid)
         itemList = itemList.filter(stateid)
     for item in itemList:
-        current_item = model_to_dict(item)
+        current_item = item.toDict()
         current_address = Address.objects.filter(adid=item.addr_id)
         if current_address:
             current_address = current_address[0]
-            current_item["address"]=polish_address(current_address)
+            current_item["address"]=current_address.toDict()
         else:
             current_item["address"] = ""
         resultList.append(current_item)
@@ -212,7 +212,7 @@ def getOrder(request):
     if _order:
         _order = _order[0]
         if checkPayment==1 and int(_order.state)==0:
-            result = checkWechatOrder(model_to_dict(_order), 0)
+            result = checkWechatOrder(_order.toDict(), 0)
 
             payState = 0
             root = ET.fromstring(result)
@@ -228,11 +228,11 @@ def getOrder(request):
         thingList = getThingList(itemList)
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
-            address=polish_address(address[0])
+            address = address[0]
+            address = address.toDict()
         else:
             address=""
-        dictPolish(model_to_dict(_order))
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "address":address, "thinglist":thingList, "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "detail":u"同仓存取快递费: 6元。"})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
@@ -254,7 +254,8 @@ def cancel(request):
             thingList = getThingList(itemList)
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
-                address=model_to_dict(address[0])
+                address = address[0]
+                address = address.toDict()
             else:
                 address=""
             if _order.fee != 0:
@@ -266,13 +267,13 @@ def cancel(request):
                 if refundstate:
                     _order.state=8
                     _order.save()
-                    return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
+                    return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
                 else:
                     _order.save()
                     return Jsonify({"status":False, "error":"1304", "error_message":u"微信退款失败，请联系客服。"})
             else:
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
+                return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
         else:
             return Jsonify({"status":False, "error":"1303", "error_message":u"用户无权进行此操作。"})
 
@@ -301,11 +302,12 @@ def complain(request):
             thingList = getThingList(itemList)
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
-                address=model_to_dict(address[0])
+                address = address[0]
+                address = address.toDict()
             else:
                 address=""
             _order.save()
-            return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
+            return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def update(request):
@@ -333,12 +335,13 @@ def update(request):
     thingList = getThingList(_order.itemList)
     address = Address.objects.filter(adid=_order.addr_id)
     if address:
-        address=model_to_dict(address[0])
+        address = address[0]
+        address = address.toDict()
     else:
         address=""
     current_state=_order.state
     if origin!=current_state:
-        return Jsonify({"status":False, "error":"1305", "error_message":u"订单状态不一致, 已重新刷新该订单。", "order":dictPolish(model_to_dict(_order)), "thinglist":thingList, "address":address})
+        return Jsonify({"status":False, "error":"1305", "error_message":u"订单状态不一致, 已重新刷新该订单。", "order":_order.toDict(), "thinglist":thingList, "address":address})
     gid = _user['gid']
     if origin not in STATE_ALLOWED[gid]:
         return Jsonify({"status":False, "error":"1110", "error_message":u"用户无权进行此操作。"})
@@ -353,7 +356,7 @@ def update(request):
         _order.state = 6
         _order.finish_time = datetime.now()
     _order.save()
-    return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
+    return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def delete(request):
@@ -389,9 +392,9 @@ def orderCallback(request):
         _order.state = 1
         _order.paid_time = datetime.now()
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":dictPolish(model_to_dict(_order)), "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "detail":u"同仓存取快递费: 6元。"})
     else:
-        return Jsonify({"status":False, "error":"1110", "order":dictPolish(model_to_dict(_order)),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
+        return Jsonify({"status":False, "error":"1110", "order":_order.toDict(),"detail":u"同仓存取快递费: 6元。", "error_message":u"用户无权进行此操作。"})
 
 def vipCallback(request):
     void = request.GET.get("void", None)
