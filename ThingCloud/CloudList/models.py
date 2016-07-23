@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from AccountSystem.models import User
 from django.forms.models import model_to_dict
