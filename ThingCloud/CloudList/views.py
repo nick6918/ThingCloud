@@ -8,13 +8,10 @@ from TCD_lib.security import UserAuthorization
 from TCD_lib.utils import Jsonify
 from TCD_lib.constants import TYPECONSTANT, PAGECOUNT
 from TCD_lib.picture import Picture
-from TCD_lib.settings import UPYUNURL
+from TCD_lib.settings import UPYUNURL, AVATARPATH
 import logging
 
 logger = logging.getLogger('appserver')
-
-AVATARPATH = UPYUNURL+"/thingavatar/"
-PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 
 def addPresent(user_id, wh_id):
     thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1)
