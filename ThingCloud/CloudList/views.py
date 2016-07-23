@@ -14,9 +14,9 @@ import logging
 logger = logging.getLogger('appserver')
 
 def addPresent(user_id, wh_id):
-    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, units=1, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1)
+    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, units=1, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1, notes="新用户赠送")
     thing1.save()
-    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2)
+    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2, notes="新用户赠送")
     thing2.save()
     return [thing1, thing2] 
 
