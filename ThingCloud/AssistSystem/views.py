@@ -3,7 +3,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Feedback, Discount, Activity, Version
-from AccountSystem.models import Meta_Community
+from CloudList.models import Community
 from TCD_lib.utils import Jsonify
 from TCD_lib.fee import feeList
 from TCD_lib.security import UserAuthorization

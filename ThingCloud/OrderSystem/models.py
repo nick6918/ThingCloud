@@ -2,13 +2,13 @@
 
 from django.db import models
 from AccountSystem.models import User
-from CloudList.models import User_Address
+from CloudList.models import Address
 
 # Create your models here.
 class Order(models.Model):
 
     oid = models.AutoField(primary_key=True)
-    addr = models.ForeignKey(User_Address)
+    addr = models.ForeignKey(Address)
     user = models.ForeignKey(User)
     notes = models.CharField(max_length=300)
     fee = models.FloatField()

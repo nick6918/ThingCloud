@@ -16,39 +16,39 @@ class WareHouse(models.Model):
 	class Meta:
 		db_table = "warehouses"
 
-class Meta_City(models.Model):
+class City(models.Model):
     ctid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'city'
 
-class Meta_District(models.Model):
+class District(models.Model):
     dsid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    city_belong = models.ForeignKey(Meta_City)
+    city_belong = models.ForeignKey(City)
 
     class Meta:
         db_table = 'districts'
 
-class Meta_Community(models.Model):
+class Community(models.Model):
     cmid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     state = models.IntegerField()
-    district_belong = models.ForeignKey(Meta_District)
+    district_belong = models.ForeignKey(District)
     wh_in = models.ForeignKey(WareHouse)
 
     class Meta:
         db_table = 'communities'
 
-class User_Address(models.Model):
+class Address(models.Model):
 	adid = models.AutoField(primary_key=True)
 	user = models.ForeignKey(User)
 	addr = models.CharField(max_length=200)
 	phone = models.CharField(max_length=50)
 	name = models.CharField(max_length=100)
 	gender = models.IntegerField()
-	community_belong = models.ForeignKey(Meta_Community)
+	community_belong = models.ForeignKey(Community)
 	is_default = models.IntegerField()
 	tagid = models.IntegerField()
 	#1 表示正在使用， 0表示已被用户删除， 2表示 异常。
