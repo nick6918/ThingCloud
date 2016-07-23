@@ -18,8 +18,6 @@ def addPresent(user_id, wh_id):
     thing1.save()
     thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2)
     thing2.save()
-    thing3 = Thing(avatar=1, name=u"存入你的商品", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=3)
-    thing3.save() 
     return [thing1, thing2, thing3] 
 
 # Create your views here.
