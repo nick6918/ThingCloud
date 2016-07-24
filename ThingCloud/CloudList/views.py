@@ -115,3 +115,5 @@ def getItemList(request):
     except Exception, e:
         logger.error("!!!")
         logger.error(e)
+        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
+
