@@ -3,14 +3,14 @@
 from django.db import models
 from AccountSystem.models import User
 from CloudList.models import Address, WareHouse
-from MainSystem.models import Employee
+from WorkerSystem.models import Worker
 from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
 
 # Create your models here.
 class Courier(models.Model):
     crid = models.AutoField(primary_key=True)
-    employee = models.OneToOneField(Employee)
+    worker = models.OneToOneField(Worker)
     wh_belong = models.ForeignKey(WareHouse)
 
     class Meta:
