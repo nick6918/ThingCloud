@@ -40,8 +40,12 @@ class Order(models.Model):
 
     def toDict(self):
         _order = model_to_dict(self)
-        _order['courier_id'] = self.courier.employee.id
-        _order['courier_name'] = self.courier.employee.name
+        if self.courier:
+            _order['courier_id'] = self.courier.employee.id
+            _order['courier_name'] = self.courier.employee.name
+        else:
+            _order['courier_id'] = ""
+            _order['courier_name'] = ""
         _address = self.addr.toDict()
         _order.update(_address)
         return dictPolish(_order)
