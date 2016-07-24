@@ -70,7 +70,7 @@ class VIPOrder(models.Model):
     month = models.IntegerField()
     level = models.IntegerField()
     user = models.ForeignKey(User)
-    prepayid = models.CharField(max_length=50)
+    prepayid = models.CharField(max_length=50, null=True, default=None)
     fee = models.CharField(max_length=50)
     #state == 0, 未支付, state = 1, 已支付， state = 2， 支付处理中
     state = models.IntegerField()
