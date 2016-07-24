@@ -32,7 +32,7 @@ class Order(models.Model):
     prepayid = models.CharField(max_length=50)
     signature = models.CharField(max_length=50)
     showid = models.CharField(max_length=50)
-    courier = models.ForeignKey(Courier)
+    courier = models.ForeignKey(Courier, null=True, default=None)
 
     class Meta:
 
