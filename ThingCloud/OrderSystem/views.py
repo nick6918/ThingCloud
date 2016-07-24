@@ -84,7 +84,7 @@ def modifyOrder(request):
         _order.addr_id = addrid
         _order.fee=6
         _order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
 def confirmOrder(request):
