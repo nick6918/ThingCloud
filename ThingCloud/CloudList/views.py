@@ -104,7 +104,7 @@ def getItemList(request):
         else:
             itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
         resultList = []
-        if itemList:
+        if itemList or page > 0 or typeid:
             for item in itemList:
                 resultList.append(item.toDict())
         else:
