@@ -46,8 +46,9 @@ class Order(models.Model):
         else:
             _order['courier_id'] = ""
             _order['courier_name'] = ""
-        _address = self.addr.toDict()
-        _order.update(_address)
+        if self.addr:
+            _address = self.addr.toDict()
+            _order.update(_address)
         return dictPolish(_order)
 
 class Complaint(models.Model):
