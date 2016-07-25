@@ -93,16 +93,16 @@ def modifyNotes(request):
 @UserAuthorization
 def getItemList(request):
     #can only get one type of item
+    typeid = request.GET.get("typeid", None)
+    page = request.GET.get("page", 0)
+    page = int(page)
+    user = request.user
+    if typeid:
+        typeid = int(typeid)
+        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
+    else:
+        itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     try:
-        typeid = request.GET.get("typeid", None)
-        page = request.GET.get("page", 0)
-        page = int(page)
-        user = request.user
-        if typeid:
-            typeid = int(typeid)
-            itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
-        else:
-            itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
         resultList = []
         if itemList or page > 0 or typeid:
             logger.debug("GET HERE HOTTTTTT")
