@@ -101,4 +101,6 @@ class Thing(models.Model):
 				result['avatarurl'] = PICURL+"thing/"+str(result['tid'])+".png"
 			else:
 				result['avatarurl'] = PICURL+"thing/default.png"
+		for item in result.keys():
+			logger.debug((item, type(result[item])))
 		return result
