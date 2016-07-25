@@ -76,7 +76,7 @@ def register(request):
 		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
 	else:
 		mobsms = MobSMS('148f6c0a15c12')
-		status = mobsms.verify_sms_code(86, phone, code)
+		status = mobsms.verify_sms_code(86, user['phone'], code)
 		if not status==200:
 			return Jsonify({"status":False, "error":"1113", "error_message":"验证码验证失败。"})
 	user['loginIp'] = get_client_ip(request)
