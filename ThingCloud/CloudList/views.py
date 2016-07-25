@@ -114,7 +114,7 @@ def getItemList(request):
                 resultList.append(item.toDict())      
         return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
     except Exception, e:
-        logger.error("!!!")
+        logger.error("!!!+1")
         logger.error(e)
         return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
 
