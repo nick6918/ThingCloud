@@ -102,19 +102,18 @@ def getItemList(request):
         itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).filter(typeid=typeid).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     else:
         itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
-    try:
-        resultList = []
-        if itemList or page > 0 or typeid:
-            logger.debug("GET HERE HOTTTTTT")
-            for item in itemList:
-                resultList.append(item.toDict())
-        else:
+    resultList = []
+    if itemList or page > 0 or typeid:
+        logger.debug("GET HERE HOTTTTTT")
+        for item in itemList:
+            resultList.append(item.toDict())
+    else:
+        try:
             itemList = addPresent(user['uid'], 1)
-            for item in itemList:
-                resultList.append(item.toDict())      
-        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
-    except Exception, e:
-        logger.error("!!!+1")
-        logger.error(e)
-        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
-
+        except Exception, e:
+            logger.error("!!!+2")
+            logger.error(e)
+            return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
+        for item in itemList:
+            resultList.append(item.toDict())      
+    return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
