@@ -108,12 +108,12 @@ def getItemList(request):
         for item in itemList:
             resultList.append(item.toDict())
     else:
-        try:
-            itemList = addPresent(user['uid'], 1)  
-        except Exception, e:
-            logger.error("!!!+2")
-            logger.error(e)
-            return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})    
+        itemList = addPresent(user['uid'], 1)  
         for item in itemList:
             resultList.append(item.toDict())
-    return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
+    try:
+        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""}) 
+    except Exception, e:
+        logger.error("!!!+2")
+        logger.error(e)
+        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})    
