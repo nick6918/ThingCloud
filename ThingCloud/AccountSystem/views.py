@@ -51,9 +51,11 @@ def register(request):
 	user = {"gid" : 1, "version": "1.0 User"}
 	invite = request.POST.get("invite", None) 
 	user['phone'] = request.POST.get("phone", None)
+	randCount = random.randint(1000, 10000)
+	user['nickname'] = request.POST.get("nickname", u"邻仓客"+str(randCount))
 	while True:
 		randCount = random.randint(1000, 10000)
-		user['nickname'] = request.POST.get("nickname", u"邻仓客"+str(randCount))
+		user['nickname'] = u"邻仓客"+str(randCount)
 		userList = User.objects.filter(nickname = user['nickname'])
 		if not userList:
 			break
