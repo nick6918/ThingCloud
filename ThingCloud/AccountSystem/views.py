@@ -71,8 +71,8 @@ def register(request):
 	inviteObject = InviteCode.objects.filter(code=invite).filter(state=0)
 	if not inviteObject:
 		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
-	user = User.objects.filter(phone=user['phone'])
-	if user:
+	_user = User.objects.filter(phone=user['phone'])
+	if _user:
 		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
 	else:
 		mobsms = MobSMS('148f6c0a15c12')
