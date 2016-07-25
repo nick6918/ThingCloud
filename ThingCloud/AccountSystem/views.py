@@ -50,9 +50,13 @@ def register(request):
 	"""
 	user = {"gid" : 1, "version": "1.0 User"}
 	invite = request.POST.get("invite", None) 
-	randCount = random.randint(1000, 10000)
 	user['phone'] = request.POST.get("phone", None)
-	user['nickname'] = request.POST.get("nickname", u"邻仓客"+str(randCount))
+	while True:
+		randCount = random.randint(1000, 10000)
+		user['nickname'] = request.POST.get("nickname", u"邻仓客"+str(randCount))
+		userList = User.objects.filter(nickname = user['nickname'])
+		if not userList:
+			break
 	user['password'] = request.POST.get("password", None)
 	gid = request.POST.get("gid", None)
 	code = request.POST.get("code", None)
@@ -60,7 +64,6 @@ def register(request):
 		user['gid']=gid
 	if not (user['password'] and user['phone'] and invite and code):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
-	user['phone'] = int(user['phone'])
 	code = int(code)
 	invite = invite.upper()
 	inviteObject = InviteCode.objects.filter(code=invite).filter(state=0)
@@ -74,9 +77,6 @@ def register(request):
 		status = mobsms.verify_sms_code(86, phone, code)
 		if not status==200:
 			return Jsonify({"status":False, "error":"1113", "error_message":"验证码验证失败。"})
-	userList = User.objects.filter(nickname = user['nickname'])
-	if userList:
-		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
 	user['loginIp'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
 	user['birthday'] = request.POST.get("birthday", "")
