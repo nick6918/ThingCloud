@@ -24,7 +24,7 @@ def addPresent(user_id, wh_id, typeid=None):
     else:
         logger.debug("123456789")
         itemList = Thing.objects.filter(user_belong_to_id=user_id).filter(state=1).order_by('-tid')[0:PAGECOUNT]
-    return itemlist
+    return itemList
 
 # Create your views here.
 def addNewItem(request):
