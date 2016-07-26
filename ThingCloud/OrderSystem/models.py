@@ -48,12 +48,12 @@ def addInfo(order, state):
         html_text = html_text + addInfo(order, 2)
         if typeid == 0:
             try:
-                html_text += u"  <p>快递员<span class=info>"+order.courier.worker.name+u"</span>已出单, 预计20分钟内前往<span class=info>"+order.address.name+u"</span>取件。</p>\n"
+                html_text += u"  <p>快递员<span class=info>"+order.courier.worker.name+u"("+order.courier.worker.phone+u")</span>已出单, 预计20分钟内将您的订单送至<span class=info>"+order.addr.name+u"</span>。</p>\n"
             except Exception,e :
-                html_text += u"  <p>快递员已出单, 预计20分钟内前往<span class=info>"+order.address.name+u"</span>取件。</p>\n"              
+                html_text += u"  <p>快递员已出单, 预计20分钟内前往<span class=info>"+order.addr.name+u"</span>取件。</p>\n"              
         else:
             try:
-                html_text += u"  <p>快递员<span class=info>"+order.courier.worker.name+u"</span>已出单, 预计20分钟内将您的订单送至<span class=info>"+order.address.name+u"</span>。</p>\n"
+                html_text += u"  <p>快递员<span class=info>"+order.courier.worker.name+u"("+order.courier.worker.phone+u")</span>已出单, 预计20分钟内将您的订单送至<span class=info>"+order.addr.name+u"</span>。</p>\n"
             except Exception,e :
                 html_text += u"  <p>快递员已出单, 预计20分钟内将您的订单送至<span class=info>"+order.addr.name+u"</span>。</p>\n"              
     elif state==4:
