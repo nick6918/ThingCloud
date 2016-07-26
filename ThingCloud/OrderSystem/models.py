@@ -35,7 +35,7 @@ def addInfo(order, state):
     if state < 2:
         html_text += "  <p>系统正在处理您的订单, 请稍候查看。</p>\n"
     elif state == 2:
-        html_text += "  <p>您的订单已创建, 正由<span class=info>"+order.community_belong.wh_in.name+"</span>处理中。</p>\n"
+        html_text += "  <p>您的订单已创建, 正由<span class=info>"+order.addr.community_belong.wh_in.name+"</span>处理中。</p>\n"
         if typeid == 0:
             html_text += "  <p>正在等待快递员出单, 预计30分钟内前往<span class=info>"+order.address.name+"</span>取件。</p>\n"
             html_text += "  <p>请准备好您要存入邻仓的物品， 快递员会上门取件并向您出具存货确认单。</p>\n"
