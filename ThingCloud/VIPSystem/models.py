@@ -41,6 +41,17 @@ class VIP(models.Model):
 
 	vid = models.AutoField(primary_key = True)
 	headPackage = models.ForeignKey(VIPPackage, null=True, default = None)
+	current_units = models.IntegerField(default=0)
+
+	def consumeUnits(self, number_of_units):
+		self.current_units = current_units + number_of_units
+		self.current_units.save()
+		return self.current_units
+
+	def recoverUnits(self.number_of_units):
+		self.current_units = current_units + number_of_units
+		self.current_units.save()
+		return self.current_units
 
 	def rotatePackage(self):
 		if self.headPackage:

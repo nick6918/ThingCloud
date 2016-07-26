@@ -20,23 +20,6 @@ PAGECOUNT = 8
 PICURL = "http://staticimage.thingcloud.net/thingcloud/"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-def getThingList(itemList):
-    thingList = []
-    if itemList:
-        print itemList
-        itemList = itemList.split(",")
-        for item in itemList:
-            current_item = Thing.objects.filter(tid=item)
-            if current_item:
-                current_item = model_to_dict(current_item[0])
-                if int(current_item['avatar'])==1:
-                    current_item['avatarurl'] = PICURL+"thing/"+str(current_item['tid'])+".png"
-                else:
-                    current_item['avatarurl'] = PICURL+"thing/default.png"
-                thingList.append(current_item)
-    return thingList
-
-
 @UserAuthorization
 def generateOrder(request):
     _user = request.user
@@ -224,8 +207,7 @@ def getOrder(request):
             else:
                 _order.state = 2
                 _order.save()
-        itemList = _order.itemList
-        thingList = getThingList(itemList)
+        thingList = _order.getThingList()
         address = Address.objects.filter(adid=_order.addr_id)
         if address:
             address = address[0]
@@ -322,6 +304,7 @@ def update(request):
     STATE_ALLOWED = [[1, 3, 4, 5, 9], [5,9], [1, 3, 4]]
 
     _user = request.user
+    vip = VIP.objects.filter(vid=_user["vip_id"])
     oid = request.POST.get("oid", None)
     origin = request.POST.get("origin", None)
     if not oid or not origin:
@@ -346,11 +329,27 @@ def update(request):
     if origin not in STATE_ALLOWED[gid]:
         return Jsonify({"status":False, "error":"1110", "error_message":u"用户无权进行此操作。"})
     state = 11
+    typeid = order.typeid
     if current_state == 1:
         _order.state = 3
     if current_state == 3:
-        _order.state = 4
+        if typeid == 0:
+            _order.state = 4
+        else:
+            totalunits = _order.getTotalUnits()
+            if vip:
+                vip = vip[0]
+                vip.recoverUnits(totalunits)
+            else:
+                return Jsonify({"status":False, "error":"1310", "error_message":"用户还不是vip, 请先购买空间。", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
+            _order.state = 5
     if current_state == 4:
+        totalunits = _order.getTotalUnits()
+        if vip:
+            vip = vip[0]
+            vip.consumeUnits(totalunits)
+        else:
+            return Jsonify({"status":False, "error":"1310", "error_message":"用户还不是vip, 请先购买空间。", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
         _order.state = 5
     if current_state == 5 or current_state == 9:
         _order.state = 6
