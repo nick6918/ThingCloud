@@ -8,6 +8,9 @@ from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
 from TCD_lib.settings import PICURL
 
+import logging
+logger = logging.getLogger('appserver')
+
 html_head = """
 <!DOCTYPE html>
 <html lang="en">
