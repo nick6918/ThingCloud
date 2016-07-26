@@ -11,7 +11,7 @@ from TCD_lib.settings import PICURL
 import logging
 logger = logging.getLogger('appserver')
 
-html_head = """
+html_head = u"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +27,7 @@ html_head = """
 <body>
 
     """
-html_tail ="""
+html_tail =u"""
 
 </body>
 </html>
