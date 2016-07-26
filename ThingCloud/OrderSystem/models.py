@@ -55,7 +55,7 @@ def addInfo(order, state):
             try:
                 html_text += u"  <p>快递员<span class=info>"+order.courier.worker.name+u"</span>已出单, 预计20分钟内将您的订单送至<span class=info>"+order.address.name+u"</span>。</p>\n"
             except Exception,e :
-                html_text += u"  <p>快递员已出单, 预计20分钟内将您的订单送至<span class=info>"+order.address.name+u"</span>。</p>\n"              
+                html_text += u"  <p>快递员已出单, 预计20分钟内将您的订单送至<span class=info>"+order.addr.name+u"</span>。</p>\n"              
     elif state==4:
         html_text = html_text + addInfo(order, 3)
         html_text += u"  <p>快递员已取到货品, 预计1小时内送货入库。货品入库后, 您可在订单页面或者邻仓主页查看所有您存入的商品。</p>\n"
