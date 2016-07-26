@@ -171,6 +171,8 @@ def getOrderList(request):
         stateid=int(stateid)
         itemList = itemList.filter(stateid)
     for item in itemList:
+        logger.error(type(u'你好'))
+        logger.error(type(item.addr.community_belong.wh_in.name))
         current_item = item.toDict()
         current_address = Address.objects.filter(adid=item.addr_id)
         if current_address:
