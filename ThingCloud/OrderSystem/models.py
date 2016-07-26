@@ -8,7 +8,7 @@ from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
 from TCD_lib.settings import PICURL
 
-    html_head = """
+html_head = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +24,7 @@ from TCD_lib.settings import PICURL
 <body>
 
     """
-    html_tail ="""
+html_tail ="""
 
 </body>
 </html>

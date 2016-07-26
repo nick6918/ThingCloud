@@ -48,7 +48,7 @@ class VIP(models.Model):
 		self.current_units.save()
 		return self.current_units
 
-	def recoverUnits(self.number_of_units):
+	def recoverUnits(self, number_of_units):
 		self.current_units = current_units + number_of_units
 		self.current_units.save()
 		return self.current_units
