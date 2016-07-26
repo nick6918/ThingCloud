@@ -57,6 +57,15 @@ class Address(models.Model):
 	class Meta:
 		db_table = 'addresses'
 
+	def toDict(self):
+		_address = model_to_dict(self)
+		_address["city"] = self.community_belong.district_belong.city_belong.name
+		_address["district"] = self.community_belong.district_belong.name
+		_address["community"] = self.community_belong.name
+		_address["whid"] = self.community_belong.wh_in.wid
+		_address["wh_name"] = self.community_belong.wh_in.name
+		return _address
+
 class Thing(models.Model):
 	tid = models.AutoField(primary_key = True)
 	user_belong_to = models.ForeignKey(User)

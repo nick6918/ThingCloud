@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from django.forms.models import model_to_dict
 from datetime import datetime
-from TCD_lib.utils import get_client_ip, Jsonify, dictPolish, polish_address
+from TCD_lib.utils import get_client_ip, Jsonify, dictPolish
 from TCD_lib.security import Salt
 from TCD_lib.picture import Picture
 from TCD_lib.SMS import MobSMS
@@ -51,23 +51,34 @@ def register(request):
 	user = {"gid" : 1, "version": "1.0 User"}
 	invite = request.POST.get("invite", None) 
 	user['phone'] = request.POST.get("phone", None)
-	user['nickname'] = request.POST.get("nickname", None)
+	randCount = random.randint(1000, 10000)
+	user['nickname'] = request.POST.get("nickname", u"邻仓客"+str(randCount))
+	while True:
+		randCount = random.randint(1000, 10000)
+		user['nickname'] = u"邻仓客"+str(randCount)
+		userList = User.objects.filter(nickname = user['nickname'])
+		if not userList:
+			break
 	user['password'] = request.POST.get("password", None)
 	gid = request.POST.get("gid", None)
+	code = request.POST.get("code", None)
 	if gid:
 		user['gid']=gid
-	if not (user['nickname'] and user['password'] and user['phone'] and invite):
+	if not (user['password'] and user['phone'] and invite and code):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
+	code = int(code)
 	invite = invite.upper()
 	inviteObject = InviteCode.objects.filter(code=invite).filter(state=0)
 	if not inviteObject:
 		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
-	userList = User.objects.filter(nickname = user['nickname'])
-	if userList:
-		return Jsonify({"status":False, "error":"1108", "error_message":"昵称已被注册, 请重新输入。"})
-	userList = User.objects.filter(phone=user['phone'])
-	if userList:
-		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录。"})
+	_user = User.objects.filter(phone=user['phone'])
+	if _user:
+		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
+	else:
+		mobsms = MobSMS('148f6c0a15c12')
+		status = mobsms.verify_sms_code(86, user['phone'], code)
+		if not status==200:
+			return Jsonify({"status":False, "error":"1113", "error_message":"验证码验证失败。"})
 	user['loginIp'] = get_client_ip(request)
 	user['registerTime'] = datetime.now()
 	user['birthday'] = request.POST.get("birthday", "")
@@ -229,7 +240,7 @@ def address(request):
 						def_address.save()
 					address.is_default=1
 				address.save()
-		return Jsonify({"status":True, "error":"", "error_message":"", "address":polish_address(address)})
+		return Jsonify({"status":True, "error":"", "error_message":"", "address":address.toDict()})
 	if request.method == 'GET':
 		addrid = request.GET.get("addrid")
 		if not addrid:
@@ -241,7 +252,7 @@ def address(request):
 				return Jsonify({"status":False, "error":"1111", "error_message":"地址不存在。"})
 			else:
 				address = address[0]
-				return Jsonify({"status":True, "error":"", "error_message":"", "address":polish_address(address)})
+				return Jsonify({"status":True, "error":"", "error_message":"", "address":address.toDict()})
 
 @UserAuthorization
 def addressList(request):
@@ -249,7 +260,7 @@ def addressList(request):
 	addressList = Address.objects.filter(user_id=_user['uid']).filter(state=1)
 	resultList = []
 	for address in addressList:
-		address = polish_address(address)
+		address = address.toDict()
 		address["addrid"]=address["adid"]
 		del(address["user"])
 		del(address["adid"])

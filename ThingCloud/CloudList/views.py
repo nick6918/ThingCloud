@@ -13,12 +13,18 @@ import logging
 
 logger = logging.getLogger('appserver')
 
-def addPresent(user_id, wh_id):
-    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, units=1, subtype_name= "", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1, notes="新用户赠送")
+def addPresent(user_id, wh_id, typeid=None):
+    thing1 = Thing(avatar=1, name=u"邻仓主题T恤", time_saved=datetime.now(), typeid=1, gender=2, units=1, subtype_name= u"", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=1, notes=u"新用户赠送")
     thing1.save()
-    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= "书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2, notes="新用户赠送")
+    thing2 = Thing(avatar=1, name=u"邻仓主题书签", time_saved=datetime.now(), typeid=3, gender=2, units=1, subtype_name= u"书签", user_belong_to_id= user_id, wh_in_id=wh_id, state=1, present_id=2, notes=u"新用户赠送")
     thing2.save()
-    return [thing1, thing2] 
+    if typeid:
+        typeid = int(typeid)
+        itemList = Thing.objects.filter(user_belong_to_id=user_id).filter(state=1).filter(typeid=typeid).order_by('-tid')[0:PAGECOUNT]
+    else:
+        logger.debug("123456789")
+        itemList = Thing.objects.filter(user_belong_to_id=user_id).filter(state=1).order_by('-tid')[0:PAGECOUNT]
+    return itemList
 
 # Create your views here.
 def addNewItem(request):
@@ -103,11 +109,17 @@ def getItemList(request):
     else:
         itemList = Thing.objects.filter(user_belong_to_id=user['uid']).filter(state=1).order_by('-tid')[PAGECOUNT*page:PAGECOUNT*(page+1)]
     resultList = []
-    if itemList:
+    if itemList or page > 0 or typeid:
+        logger.debug("GET HERE HOTTTTTT")
         for item in itemList:
             resultList.append(item.toDict())
     else:
-        itemList = addPresent(user['uid'], 1)
+        itemList = addPresent(user['uid'], 1, typeid)  
         for item in itemList:
-            resultList.append(item.toDict())      
-    return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})
+            resultList.append(item.toDict())
+    try:
+        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""}) 
+    except Exception, e:
+        logger.error("!!!+2")
+        logger.error(e)
+        return Jsonify({"status":True, "itemlist":resultList, "error":"", "error_message":""})    

@@ -70,7 +70,7 @@ def versionInfo(request):
 
 def communityList(request):
     result = {}
-    for item in Meta_Community.objects.filter(state=1):
+    for item in Community.objects.filter(state=1):
         district = item.district_belong
         city = district.city_belong
         if city.name in result.keys():

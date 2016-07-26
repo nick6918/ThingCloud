@@ -37,13 +37,6 @@ def dictPolish(jDict):
             result[item]=jDict[item]
     return result
 
-def polish_address(address):
-    _address = model_to_dict(address)
-    _address["city"] = address.community_belong.district_belong.city_belong.name
-    _address["district"] = address.community_belong.district_belong.name
-    _address["community"] = address.community_belong.name
-    return _address
-
 def generateRandomString(size):
 
     ALPHABET = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
