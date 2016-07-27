@@ -41,7 +41,7 @@ def generateOrder(request):
     createtime = datetime.now()
     _addr = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
     if not _addr:
-        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, showid="0", "state":bool(user['vip_id'], "user":_user))
+        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, showid="0")
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
@@ -56,7 +56,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, , "state":bool(user['vip_id'], "user":_user})
 
 @UserAuthorization
 def modifyOrder(request):
