@@ -5,7 +5,6 @@ from django.forms.models import model_to_dict
 from models import Order, Complaint, VIPOrder
 from CloudList.models import Thing, Address
 from AccountSystem.models import User
-from VIPSystem.models import VIPOrder
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
 from TCD_lib.utils import Jsonify, unifyOrder, iosOrder, checkWechatOrder
