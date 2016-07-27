@@ -5,6 +5,7 @@ from django.forms.models import model_to_dict
 from models import Order, Complaint, VIPOrder
 from CloudList.models import Thing, Address
 from AccountSystem.models import User
+from VIPSystem.models import VIPOrder
 from TCD_lib.security import UserAuthorization
 from TCD_lib.fee import getDeliveryfee
 from TCD_lib.utils import Jsonify, unifyOrder, iosOrder, checkWechatOrder
@@ -27,19 +28,25 @@ def generateOrder(request):
     if not typeid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     typeid = int(typeid)
+
+    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 1
+    else:
+        orderstate = 0
+
     #itemlist is a list of item number, eg.
     #"1101, 1302, 1323, 1333"
     itemlist = request.POST.get("itemlist", "")
     createtime = datetime.now()
-    _user = request.user
     _addr = Address.objects.filter(user_id=_user['uid']).filter(is_default=1)
     if not _addr:
-        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, showid="0")
+        order = Order(user_id=_user['uid'], notes="", fee=0, typeid=typeid, itemList=itemlist, state=12, create_time=createtime, showid="0", "state":bool(user['vip_id'], "user":_user))
         order.save()
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":""})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(user['vip_id'], "user":_user})
     else:
         _addr_object = _addr[0]
         _addr = _addr_object.toDict()
@@ -49,7 +56,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate})
 
 @UserAuthorization
 def modifyOrder(request):
