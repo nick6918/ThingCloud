@@ -2,7 +2,7 @@
 
 from django.db import models
 from AccountSystem.models import User
-from CloudList.models import Address, WareHouse
+from CloudList.models import Address, WareHouse, Thing
 from WorkerSystem.models import Worker
 from django.forms.models import model_to_dict
 from TCD_lib.utils import dictPolish
@@ -123,7 +123,7 @@ class Order(models.Model):
         thingList = []
         itemList = self.itemList.split(",")
         for item in itemList:
-            current_item = self.objects.filter(tid=item)
+            current_item = Thing.objects.filter(tid=item)
             if current_item:
                 current_item = current_item[0].toDict()
                 thingList.append(current_item)
