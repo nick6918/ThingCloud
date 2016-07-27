@@ -86,9 +86,9 @@ def UserAuthorization(func):
 					else:
 						_user = _user[0]
 						user = model_to_dict(_user)
-						vip = _user.vip
 						user['current_units'] = 0
 						user['total_units'] = "0"
+						vip = _user.vip
 						if vip:
 							user['current_units'] = vip.current_units
 							user['total_units'] = vip.volume()
