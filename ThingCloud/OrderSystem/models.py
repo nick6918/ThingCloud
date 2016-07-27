@@ -117,6 +117,7 @@ class Order(models.Model):
         _order = model_to_dict(self)
         infoList = html_head + addInfo(self, self.state) + html_tail
         _order["infolist"] = infoList
+        _order["total_units"] = self.getTotalUnits()
         return dictPolish(_order)
 
     def getThingList(self):
@@ -134,10 +135,11 @@ class Order(models.Model):
         total_units = 0
         itemList = self.itemList.split(",")
         for item in itemList:
-            thing = Thing.objects.filter(tid=item)
-            if thing:
-                thing = thing[0]
-                total_units += thing.units
+            if item:
+                thing = Thing.objects.filter(tid=item)
+                if thing:
+                    thing = thing[0]
+                    total_units += thing.units
         return total_units
 
 class Complaint(models.Model):
