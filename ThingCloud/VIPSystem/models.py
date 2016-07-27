@@ -126,6 +126,8 @@ class VIP(models.Model):
 
 	def toDict(self):
 		result = model_to_dict(self.headPackage)
+		result["total_units"] = self.headPackage.volume()
+		result["current_units"] = self.current_units
 		result["vid"] = self.vid
 		result["end_date"] = result["start_date"] + timedelta(result["days"])
 		return dictPolish(result)
