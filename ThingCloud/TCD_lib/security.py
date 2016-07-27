@@ -75,21 +75,28 @@ def UserAuthorization(func):
 			else:
 				_session_info = UserSession.objects.filter(session_password=user['password'])
 				if not _session_info:
-					 return Jsonify({"error":"1102", "error_message":"用户未登录, wrong session。", "status":False})
+					return Jsonify({"error":"1102", "error_message":"用户未登录, wrong session。", "status":False})
 			 	else:
-					 _session_info = model_to_dict(_session_info[0])
-					 print _session_info
-					 _uid = _session_info['uid']
-					 user = User.objects.filter(uid=_uid)
-					 user = model_to_dict(user[0])
-					 if not user:
-						 return Jsonify({"error":"1103", "error_message":"用户不存在。", "status":False})
-					 else:
-						 del(user['loginIp'])
-						 del(user['lastLogin'])
-						 del(user['salt'])
-						 del(user['password'])
-						 del(user['register'])
-					 	 request.user=user
+					_session_info = model_to_dict(_session_info[0])
+					print _session_info
+					_uid = _session_info['uid']
+					_user = User.objects.filter(uid=_uid)
+					if not _user:
+						return Jsonify({"error":"1103", "error_message":"用户不存在。", "status":False})
+					else:
+						_user = _user[0]
+						user = model_to_dict(_user)
+						vip = _user.vip:
+						user['current_units'] = 0
+						user['total_units'] = "0"
+						if vip:
+							user['current_units'] = vip.current_units
+							user['total_units'] = vip.volume()
+						del(user['loginIp'])
+						del(user['lastLogin'])
+						del(user['salt'])
+						del(user['password'])
+						del(user['register'])
+					 	request.user=user
 		return func(request, *av, **kw)
 	return inner

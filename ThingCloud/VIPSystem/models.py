@@ -16,6 +16,10 @@ class VIPPackage(models.Model):
 	level = models.IntegerField()
 	merged = models.IntegerField(default = 0)
 
+	def volume(self):
+		volumeList = ["100", "200", "500", "700", "1000", "unlimited"]
+		return volumeList[self.level]
+
 	def merge(self, otherPackage):
 		self.days = self.days + otherPackage.days
 		self.save()
