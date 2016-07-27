@@ -123,7 +123,7 @@ class Order(models.Model):
         thingList = []
         itemList = self.itemList.split(",")
         for item in itemList:
-            current_item = Thing.objects.filter(tid=item)
+            current_item = self.objects.filter(tid=item)
             if current_item:
                 current_item = current_item[0].toDict()
                 thingList.append(current_item)
