@@ -234,8 +234,7 @@ def cancel(request):
         state = _order.state
         if state <= 2:
             _order.state = 7
-            itemList = _order.itemList
-            thingList = getThingList(itemList)
+            itemList = _order.getThingList()
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
                 address = address[0]
@@ -282,8 +281,7 @@ def complain(request):
             comp = Complaint(order_id=oid, user_id=_user["uid"], notes=notes, state=0)
             comp.save()
             _order.state = 9
-            itemList = _order.itemList
-            thingList = getThingList(itemList)
+            itemList = _order.getThingList()
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
                 address = address[0]
@@ -317,7 +315,7 @@ def update(request):
     if not _order:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
     _order = _order[0]
-    thingList = getThingList(_order.itemList)
+    thingList = _order.getThingList()
     address = Address.objects.filter(adid=_order.addr_id)
     if address:
         address = address[0]
