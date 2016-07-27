@@ -234,7 +234,7 @@ def cancel(request):
         state = _order.state
         if state <= 2:
             _order.state = 7
-            itemList = _order.getThingList()
+            thingList = _order.getThingList()
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
                 address = address[0]
@@ -281,7 +281,7 @@ def complain(request):
             comp = Complaint(order_id=oid, user_id=_user["uid"], notes=notes, state=0)
             comp.save()
             _order.state = 9
-            itemList = _order.getThingList()
+            thingList = _order.getThingList()
             address = Address.objects.filter(adid=_order.addr_id)
             if address:
                 address = address[0]
