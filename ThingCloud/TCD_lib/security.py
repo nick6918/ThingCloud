@@ -91,7 +91,7 @@ def UserAuthorization(func):
 						vip = _user.vip
 						if vip:
 							user['current_units'] = vip.current_units
-							user['total_units'] = vip.volume()
+							user['total_units'] = vip.headPackage.volume()
 						del(user['loginIp'])
 						del(user['lastLogin'])
 						del(user['salt'])
