@@ -35,7 +35,7 @@ def generateOrder(request):
         orderstate = 0
     _vip = ""
     if user["vip"]:
-        _vip = VIP.objects.filter(vid=user["vip"])
+        _vip = VIP.objects.filter(vid=_user["vip"])
         if _vip:
             _vip = _vip[0].toDict()
 
