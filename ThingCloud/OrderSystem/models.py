@@ -121,9 +121,9 @@ class Order(models.Model):
 
     def getThingList(self):
         thingList = []
-        if itemList:
-            itemList = self.itemList.split(",")
-            for item in itemList:
+        itemList = self.itemList.split(",")
+        for item in itemList:
+            if item:
                 current_item = Thing.objects.filter(tid=item)
                 if current_item:
                     current_item = current_item[0].toDict()
