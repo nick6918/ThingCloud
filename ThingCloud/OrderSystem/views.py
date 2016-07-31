@@ -45,7 +45,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(user["vip"]), "user":user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
     else:
         _addr_object = _addr[0]
         _addr = _addr_object.toDict()
@@ -55,7 +55,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, "state":bool(user["vip"]), "user":user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
 
 @UserAuthorization
 def modifyOrder(request):
