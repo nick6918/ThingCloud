@@ -35,7 +35,7 @@ class User(models.Model):
 			_vip = self.vip.toDict()
 			_user["vipinfo"] = _vip
 		else:
-			_user["vipinfo"] = ""
+			_user["vipinfo"] = {}
 		del(_user['loginIp'])
 		del(_user['lastLogin'])
 		del(_user['salt'])
