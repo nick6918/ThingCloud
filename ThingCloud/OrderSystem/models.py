@@ -9,7 +9,7 @@ from TCD_lib.utils import dictPolish
 from TCD_lib.picture import Files
 from TCD_lib.settings import PICURL, UPYUNURL
 
-FILEPATH = UPYUNURL+"/orderfiles/"
+FILEPATH = UPYUNURL+u"/orderfiles/"
 
 import logging
 logger = logging.getLogger('appserver')
@@ -118,7 +118,7 @@ class Order(models.Model):
 
     def flushInfo(self):
         infoList = html_head + generateInfo(self, self.state) + html_tail
-        status = Files().uploadFiles(FILEPATH + str(self.oid) + ".html", infoList)
+        status = Files().uploadFiles(FILEPATH + unicode(self.oid) + u".html", infoList)
         return status
 
     def toDict(self):
