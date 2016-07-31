@@ -122,13 +122,13 @@ class Order(models.Model):
         # fp.write(infoList.encode('UTF-8'))
         # fp.close()
         # status = True
-        status = Files().uploadFiles("htmltext/"+ str(self.oid) + ".html", infoList)
+        status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList)
         return status
 
     def toDict(self):
         _order = model_to_dict(self)
         #_order["texturl"] = "testapi.thingcloud.net:8001/htmltext/"+ str(self.oid) + ".html"
-        _order["texturl"] = "staticimage.thingcloud.net/htmltext/" + str(self.oid) + ".html"
+        _order["texturl"] = "staticimage.thingcloud.net/thingcloud/htmltext/" + str(self.oid) + ".html"
         _order["total_units"] = self.getTotalUnits()
         return dictPolish(_order)
 
