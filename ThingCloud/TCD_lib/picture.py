@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from TCD_lib import settings
 from TCD_lib.upyun.upyun import UpYun
 STATIC_IMAGE_PATH = ""
