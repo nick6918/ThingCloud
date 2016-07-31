@@ -45,6 +45,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
+        order.flushInfo()
         return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
     else:
         _addr_object = _addr[0]
@@ -55,6 +56,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
+        order.flushInfo()
         return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
 
 @UserAuthorization
@@ -361,6 +363,7 @@ def update(request):
         _order.state = 6
         _order.finish_time = datetime.now()
     _order.save()
+    _order.flushInfo()
     return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "thinglist":thingList, "address":address, "detail":u"同仓存取快递费: 6元。"})
 
 @UserAuthorization
