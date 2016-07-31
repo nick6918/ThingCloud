@@ -79,10 +79,10 @@ def vipConfirm(request):
         has_processing_order = True
     void = request.GET.get("void", None)
     if not void:
-        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":has_processing_order, "vip":vip_info, "state":bool(vip_info)})
+        return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user})
     _order = VIPOrder.objects.filter(void=void)
     if not _order:
-        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":has_processing_order, "vip":vip_info, "state":bool(vip_info)})
+        return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user})
     _order = _order[0]
     if _order.state == 1:
         return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "user":_user, "state":bool(_user['vip'])})
