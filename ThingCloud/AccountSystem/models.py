@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.forms.models import model_to_dict
 from VIPSystem.models import VIP
 
 # Create your models here.
@@ -26,6 +27,20 @@ class User(models.Model):
 
 	class Meta:
 		db_table = 'user'
+
+	def toDict(self):
+		_user = model_to_dict(self)
+		if self.vip:
+			_vip = self.vip.toDict()
+			_user["vip"] = _vip
+		else:
+			_user["vip"] = ""
+		del(_user['loginIp'])
+		del(_user['lastLogin'])
+		del(_user['salt'])
+		del(_user['password'])
+		del(_user['register'])
+		return _user
 
 
 class UserSession(models.Model):

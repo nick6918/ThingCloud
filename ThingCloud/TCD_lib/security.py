@@ -85,18 +85,6 @@ def UserAuthorization(func):
 						return Jsonify({"error":"1103", "error_message":"用户不存在。", "status":False})
 					else:
 						_user = _user[0]
-						user = model_to_dict(_user)
-						user['current_units'] = 0
-						user['total_units'] = "0"
-						vip = _user.vip
-						if vip:
-							user['current_units'] = vip.current_units
-							user['total_units'] = vip.headPackage.volume()
-						del(user['loginIp'])
-						del(user['lastLogin'])
-						del(user['salt'])
-						del(user['password'])
-						del(user['register'])
-					 	request.user=user
+					 	request.user=user.toDict()
 		return func(request, *av, **kw)
 	return inner
