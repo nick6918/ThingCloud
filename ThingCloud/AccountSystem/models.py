@@ -32,9 +32,9 @@ class User(models.Model):
 		_user = model_to_dict(self)
 		if self.vip:
 			_vip = self.vip.toDict()
-			_user["vip"] = _vip
+			_user["vipinfo"] = _vip
 		else:
-			_user["vip"] = ""
+			_user["vipinfo"] = ""
 		del(_user['loginIp'])
 		del(_user['lastLogin'])
 		del(_user['salt'])
