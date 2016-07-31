@@ -85,6 +85,6 @@ def UserAuthorization(func):
 						return Jsonify({"error":"1103", "error_message":"用户不存在。", "status":False})
 					else:
 						_user = _user[0]
-					 	request.user=user.toDict()
+					 	request.user=_user.toDict()
 		return func(request, *av, **kw)
 	return inner
