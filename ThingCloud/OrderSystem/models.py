@@ -117,6 +117,7 @@ class Order(models.Model):
         db_table = "orders"
 
     def flushInfo(self):
+        logger.debug("111111111Get here!!!!!!!!")
         infoList = html_head + generateInfo(self, self.state) + html_tail
         # fp = open("./htmltext/"+str(self.oid)+".html", "w+")
         # fp.write(infoList.encode('UTF-8'))
