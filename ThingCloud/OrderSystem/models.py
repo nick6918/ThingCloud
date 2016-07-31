@@ -122,7 +122,12 @@ class Order(models.Model):
         # fp.write(infoList.encode('UTF-8'))
         # fp.close()
         # status = True
-        status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList.encode('UTF-8'))
+        try:
+            status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList.encode('UTF-8'))
+        except Exception, e:
+            logger.error(e)
+        if status == False:
+            logger.error("1415, HTML UPLOAD ERROR")
         return status
 
     def toDict(self):
