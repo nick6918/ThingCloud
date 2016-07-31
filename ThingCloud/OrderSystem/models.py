@@ -25,7 +25,7 @@ html_head = u"""
             color: blue;
             text-decoration: underline;
         }
-    <style>
+    </style>
 </head>
 <body>
 

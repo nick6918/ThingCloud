@@ -430,4 +430,3 @@ def vipCallback(request):
             newPackage = VIPPackage(level = viporder.level, days = viporder.month*31)
             _vip.addNewPackage(newPackage)
             return Jsonify({"status":True, "vip":_vip.toDict()})
-
