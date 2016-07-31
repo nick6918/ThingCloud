@@ -125,6 +125,7 @@ class Order(models.Model):
         # status = True
         try:
             status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList.encode('UTF-8'))
+            logger.debug(status)
         except Exception, e:
             logger.error(e)
         if status == False:
