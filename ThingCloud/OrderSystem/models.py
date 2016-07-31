@@ -118,17 +118,17 @@ class Order(models.Model):
 
     def flushInfo(self):
         infoList = html_head + generateInfo(self, self.state) + html_tail
-        fp = open("./htmltext/"+str(self.oid)+".html", "w+")
-        fp.write(infoList.encode('UTF-8'))
-        fp.close()
-        status = True
-        #status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList)
+        # fp = open("./htmltext/"+str(self.oid)+".html", "w+")
+        # fp.write(infoList.encode('UTF-8'))
+        # fp.close()
+        # status = True
+        status = Files().uploadFiles("thingcloud/htmltext/"+ str(self.oid) + ".html", infoList.encode('UTF-8'))
         return status
 
     def toDict(self):
         _order = model_to_dict(self)
-        _order["texturl"] = "testapi.thingcloud.net:8001/htmltext/"+ str(self.oid) + ".html"
-        #_order["texturl"] = "staticimage.thingcloud.net/thingcloud/htmltext/" + str(self.oid) + ".html"
+        #_order["texturl"] = "testapi.thingcloud.net:8001/htmltext?oid"+ str(self.oid) + ".html"
+        _order["texturl"] = "staticimage.thingcloud.net/thingcloud/htmltext/" + str(self.oid) + ".html"
         _order["total_units"] = self.getTotalUnits()
         return dictPolish(_order)
 
