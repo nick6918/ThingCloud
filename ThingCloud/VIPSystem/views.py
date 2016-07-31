@@ -73,14 +73,6 @@ def vipOrder(request):
 @UserAuthorization
 def vipConfirm(request):
     _user = request.user
-    _vip = VIP.objects.filter(vid=_user["vip"])
-    if _vip:
-        _vip = _vip[0]
-        _vip.flush()
-        vip_info = _vip.toDict()
-    else:
-        _vip = None
-        vip_info = {}
     has_processing_order = False
     unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
     if unfinishedOrder:
@@ -93,7 +85,7 @@ def vipConfirm(request):
         return Jsonify({"status":False, "error":"1502", "error_message":u"订单不存在。", "processing":has_processing_order, "vip":vip_info, "state":bool(vip_info)})
     _order = _order[0]
     if _order.state == 1:
-        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "vip":vip_info, "state":bool(vip_info)})
+        return Jsonify({"status":True, "error":"", "error_message":u"", "processing":0, "user":_user, "state":bool(_user['vip'])})
     else:
         result = checkWechatOrder(model_to_dict(_order), 1)
         try:
@@ -102,19 +94,18 @@ def vipConfirm(request):
                 _order.state = 1
                 _order.save()
                 newPackage = VIPPackage(level = _order.level, days = _order.month*31)
-                if not _vip:
+                if not _user['vip']:
                     _vip = VIP()
                     _vip.save()
                     user = User.objects.filter(uid=_user["uid"])[0]
                     user.vip = _vip
                     user.save()
                 _vip.addNewPackage(newPackage)
-                vip_info = _vip.toDict()
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(vip_info), "vip":vip_info, "processing":0})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":_user, "processing":0})
             else:
                 _order.state=2
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(vip_info), "vip":vip_info, "processing":1})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":_user, "processing":1})
         except Exception, e:
             logger.error(e)
-            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "vip":vip_info, "state":bool(vip_info)})
+            return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "state":bool(_user['vip']), "user":_user})
