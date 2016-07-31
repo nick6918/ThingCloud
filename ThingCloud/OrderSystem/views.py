@@ -33,11 +33,6 @@ def generateOrder(request):
         orderstate = 1
     else:
         orderstate = 0
-    _vip = ""
-    if _user["vip"]:
-        _vip = VIP.objects.filter(vid=_user["vip"])
-        if _vip:
-            _vip = _vip[0].toDict()
 
     #itemlist is a list of item number, eg.
     #"1101, 1302, 1323, 1333"
@@ -50,7 +45,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(_vip), "vip":_vip})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(user["vip"]), "user":user})
     else:
         _addr_object = _addr[0]
         _addr = _addr_object.toDict()
@@ -60,7 +55,7 @@ def generateOrder(request):
         newid = createtime.strftime("%Y%m%d")+"0"*(4-len(str(order.oid)))+str(order.oid)
         order.showid=newid
         order.save()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, "state":bool(_vip), "vip":_vip})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":_addr_object.toDict(), "detail":detail, "processing":orderstate, "state":bool(user["vip"]), "user":user})
 
 @UserAuthorization
 def modifyOrder(request):
