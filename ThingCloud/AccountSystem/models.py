@@ -31,6 +31,7 @@ class User(models.Model):
 	def toDict(self):
 		_user = model_to_dict(self)
 		if self.vip:
+			self.vip.flush()
 			_vip = self.vip.toDict()
 			_user["vipinfo"] = _vip
 		else:

@@ -389,3 +389,12 @@ def updateAvatar(request):
 		return Jsonify({"status":False, "error":"1109", "error_message":"图片上传失败, 替换为默认头像。", "avatar":1})
 
 
+@UserAuthorization
+def flushUser(request):
+    _user = request.user
+    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 1
+    else:
+        orderstate = 0
+    return Jsonify({"status":True, "state":True, "error":"", "error_message":"", "processing":orderstate, "user":_user})
