@@ -11,6 +11,7 @@ from TCD_lib.picture import Picture
 from TCD_lib.SMS import MobSMS
 from models import User, UserSession, Code, InviteCode
 from OrderSystem.models import VIPOrder
+from VIPSystem.models import VIP
 from CloudList.models import Address
 import time,math, logging, random
 from TCD_lib.security import UserAuthorization
