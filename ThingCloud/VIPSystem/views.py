@@ -14,23 +14,30 @@ logger = logging.getLogger('appserver')
 
 # Create your views here.
 
-@UserAuthorization
-def vip(request):
-    _user = request.user
-    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
-    if unfinishedOrder:
-        orderstate = 1
-    else:
-        orderstate = 0
-    if not _user["vip"]:
-        return Jsonify({"status":False, "state":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
-    _vip = VIP.objects.filter(vid=_user["vip"])
-    if _vip:
-        _vip = _vip[0]
-        _vip.flush()
-        return Jsonify({"status":True, "state":True, "error":"", "error_message":"", "processing":orderstate, "vip":_vip.toDict(), "user":_user})
-    else:
-        return Jsonify({"status":False, "state":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
+
+
+# @UserAuthorization
+# def vip(request):
+"""
+Deprecated interface,
+
+Replaced by account/flush
+"""
+#     _user = request.user
+#     unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+#     if unfinishedOrder:
+#         orderstate = 1
+#     else:
+#         orderstate = 0
+#     if not _user["vip"]:
+#         return Jsonify({"status":False, "state":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
+#     _vip = VIP.objects.filter(vid=_user["vip"])
+#     if _vip:
+#         _vip = _vip[0]
+#         _vip.flush()
+#         return Jsonify({"status":True, "state":True, "error":"", "error_message":"", "processing":orderstate, "vip":_vip.toDict(), "user":_user})
+#     else:
+#         return Jsonify({"status":False, "state":False, "error":"1501", "error_message":"用户还不是会员, 请先加入会员。", "processing":orderstate})
 
 @UserAuthorization
 def vipOrder(request):
