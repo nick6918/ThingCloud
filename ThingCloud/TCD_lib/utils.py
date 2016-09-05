@@ -115,11 +115,11 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info["notify_url"]  = ""
     if ordertype == 0:
         #delivery order
-        info['out_trade_no']  = "10"+str(order["oid"])
+        info['out_trade_no']  = "110"+str(order["oid"])
         info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
     else:
         #vip order
-        info['out_trade_no']  = "11"+str(order["void"])
+        info['out_trade_no']  = "111"+str(order["void"])
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
     info['sign'] = signRequest(info)
