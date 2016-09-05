@@ -140,10 +140,10 @@ def checkWechatOrder(order, ordertype):
     info['nonce_str']  = generateRandomString(32)
     if ordertype == 0:
         #delivery order
-        info['out_trade_no']  = "10"+str(order["oid"])
+        info['out_trade_no']  = "110"+str(order["oid"])
     else:
         #vip order
-        info['out_trade_no']  = "11"+str(order["void"])
+        info['out_trade_no']  = "111"+str(order["void"])
 
     info['sign'] = signRequest(info)
     xml = generateXmlForm(info)
