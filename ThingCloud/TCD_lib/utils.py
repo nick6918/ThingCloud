@@ -125,7 +125,7 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info['sign'] = signRequest(info)
     xml = generateXmlForm(info)
     fp = open("xml.txt", "w")
-    fp.write(info)
+    fp.write(xml)
     fp.close()
     #统一下单接口xml表单
     content = deliverRequest(url, xml)
