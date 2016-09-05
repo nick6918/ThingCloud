@@ -70,9 +70,11 @@ def register(request):
 		return Jsonify({"status":False, "error":"1101", "error_message":"信息不足, 请重新输入。"})
 	code = int(code)
 	invite = invite.upper()
-	inviteObject = InviteCode.objects.filter(code=invite).filter(state=0)
+	inviteObject = InviteCode.objects.filter(code=invite).filter(state=1)
 	if not inviteObject:
 		return Jsonify({"status":False, "error":"1116", "error_message":"邀请码不存在。"})
+	else:
+		inviteObject = inviteObject[0]
 	_user = User.objects.filter(phone=user['phone'])
 	if _user:
 		return Jsonify({"status":False, "error":"1105", "error_message":"手机号已注册, 请直接登录"})
@@ -101,6 +103,11 @@ def register(request):
 	currentUser = User(gid = user["gid"], phone=user['phone'],nickname = user['nickname'], gender = user['gender'], birthday = user['birthday'], register = user['registerTime'], lastLogin = user['registerTime'], loginIp = user['loginIp'], avatar = user['avatar'], salt = _hash, password = password, username = user['username'] )
 	currentUser.save()
 	user['uid'] = currentUser.uid
+	if inviteObject:
+		inviteObject.state=0
+		inviteObject.timestamp = datetime.now()
+		inviteObject.uid_belong = user['uid']
+		inviteObject.save()
 	user['session'] = createSession(user)
 	if avatar:
 		currentPath = AVATARPATH + str(user['uid']) + ".png"
