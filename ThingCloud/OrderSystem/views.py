@@ -97,7 +97,7 @@ def confirmOrder(request):
         _order = _order[0]
         _sign = ""
         for i in range(8):
-            _sign = _sign + ALPHABET[random.randint(0, 62)]
+            _sign = _sign + ALPHABET[random.randint(0, 61)]
         _order.signature = _sign
         if notes:
             _order.notes = notes
