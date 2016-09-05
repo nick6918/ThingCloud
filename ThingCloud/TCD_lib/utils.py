@@ -149,4 +149,7 @@ def checkWechatOrder(order, ordertype):
     xml = generateXmlForm(info)
     #查询订单接口xml表单
     content = deliverRequest(url, xml)
+    fp = open("check.txt", "w")
+    fp.write(comtent)
+    fp.close()
     return content
