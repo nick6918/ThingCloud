@@ -250,7 +250,6 @@ def cancel(request):
             if address:
                 address = address[0]
                 address = address.toDict()
-                address["addr"] = address["community"] + address["addr"]
             else:
                 address=""
             if _order.fee != 0:

@@ -62,6 +62,7 @@ class Address(models.Model):
 		_address["city"] = self.community_belong.district_belong.city_belong.name
 		_address["district"] = self.community_belong.district_belong.name
 		_address["community"] = self.community_belong.name
+		_address['addr'] = _address['community'] + _address['addr']
 		_address["whid"] = self.community_belong.wh_in.wid
 		_address["wh_name"] = self.community_belong.wh_in.name
 		return _address
