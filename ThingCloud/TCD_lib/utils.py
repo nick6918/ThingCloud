@@ -122,7 +122,9 @@ def unifyOrder(order, body, detail, userip, ordertype):
         info['out_trade_no']  = "11"+str(order["void"])
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
-
+    fp = open("xml.txt", "w")
+    fp.write(info)
+    fp.close()
     info['sign'] = signRequest(info)
     xml = generateXmlForm(info)
     #统一下单接口xml表单
