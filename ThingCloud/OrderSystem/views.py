@@ -112,6 +112,9 @@ def confirmOrder(request):
         else:
             _order.state=0
             result = unifyOrder(_order.toDict(), body, detail, ipaddr, 0)
+            fp = open("result.txt", "w+")
+            fp.write(result)
+            fp.close()
             if not prepayid:
                 try:
                     root = ET.fromstring(result)
@@ -122,9 +125,6 @@ def confirmOrder(request):
                     _order.prepayid = prepayid
                     _order.save()
                 except Exception, e:
-                    fp = open("result.txt", "w+")
-                    fp.write(result)
-                    fp.close()
                     logger.error(e)
                     logger.error("1311 微信预支付失败， 未知错误")
                     return Jsonify({"status":False, "error":"1311", "error_message":u"微信预支付失败, 未知错误。"})
