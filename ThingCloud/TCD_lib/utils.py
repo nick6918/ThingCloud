@@ -115,11 +115,11 @@ def unifyOrder(order, body, detail, userip, ordertype):
     info["notify_url"]  = ""
     if ordertype == 0:
         #delivery order
-        info['out_trade_no']  = "0"+str(order["oid"])
+        info['out_trade_no']  = "10"+str(order["oid"])
         info['notify_url']  = "testapi.thingcloud.net:8001/order/callback"
     else:
         #vip order
-        info['out_trade_no']  = "1"+str(order["void"])
+        info['out_trade_no']  = "11"+str(order["void"])
         info['notify_url']  = "testapi.thingcloud.net:8001/vip/callback"
     info['trade_type']  = "APP"
 
@@ -138,10 +138,10 @@ def checkWechatOrder(order, ordertype):
     info['nonce_str']  = generateRandomString(32)
     if ordertype == 0:
         #delivery order
-        info['out_trade_no']  = "0"+str(order["oid"])
+        info['out_trade_no']  = "10"+str(order["oid"])
     else:
         #vip order
-        info['out_trade_no']  = "1"+str(order["void"])
+        info['out_trade_no']  = "11"+str(order["void"])
 
     info['sign'] = signRequest(info)
     xml = generateXmlForm(info)
