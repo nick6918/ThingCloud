@@ -61,6 +61,9 @@ def vipOrder(request):
     _order.save()
     result = unifyOrder(model_to_dict(_order), body, detail, ipaddr, 1)
     prepayid = ""
+    fp = open("result.txt", "w+")
+    fp.write(result)
+    fp.close()
     try:
         root = ET.fromstring(result)
         if root.find("return_code").text == "SUCCESS":
