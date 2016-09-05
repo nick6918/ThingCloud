@@ -224,7 +224,7 @@ def getOrder(request):
             address = address.toDict()
         else:
             address=""
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "user":_user, "detail":u"同仓存取快递费: 6元。"})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
@@ -247,6 +247,7 @@ def cancel(request):
             if address:
                 address = address[0]
                 address = address.toDict()
+                address["addr"] = address["community"] + address["addr"]
             else:
                 address=""
             if _order.fee != 0:
