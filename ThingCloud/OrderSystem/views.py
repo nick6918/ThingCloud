@@ -190,7 +190,7 @@ def getOrderList(request):
             current_address = current_address[0]
             current_item["address"]=current_address.toDict()
         else:
-            current_item["address"] = ""
+            current_item["address"] = {}
         resultList.append(current_item)
     print resultList
     return Jsonify({"status":True, "error":"", "error_message":"", "orderlist":resultList})
@@ -233,7 +233,7 @@ def getOrder(request):
             address = address[0]
             address = address.toDict()
         else:
-            address=""
+            address = {}
         return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "user":_user, "detail":u"同仓存取快递费: 6元。", "processing":orderstate, "state":bool(_user["vip"])})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
