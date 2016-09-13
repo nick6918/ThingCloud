@@ -108,8 +108,13 @@ def vipConfirm(request):
                 if not _user['vip']:
                     _vip = VIP()
                     _vip.save()
+                    logger.debug("***")
+                    logger.debug(user.toDict())
                     user.vip = _vip
                     user.save()
+                    logger.debug("***")
+                    logger.debug(user.toDict())
+                    user = User.objects.filter(uid=_user["uid"])[0]
                     _vip.addNewPackage(newPackage)
                 else:
                     _vip = VIP.objects.filter(vid=_user['vip'])
