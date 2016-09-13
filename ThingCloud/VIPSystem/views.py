@@ -110,7 +110,12 @@ def vipConfirm(request):
                     user = User.objects.filter(uid=_user["uid"])[0]
                     user.vip = _vip
                     user.save()
-                _vip.addNewPackage(newPackage)
+                else:
+                    _vip = VIP.objects.filter(vid=_user['vip'])
+                    if not _vip:
+                        return Jsonify({"status":False, "error":"1141", "error_message":u"会员状态有误， 请联系客服。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user})
+                    _vip = _vip[0]
+                    _vip.addNewPackage(newPackage)
                 return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":_user, "processing":0})
             else:
                 _order.state=2
