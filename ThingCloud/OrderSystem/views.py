@@ -201,6 +201,13 @@ def getOrder(request):
     checkPayment = request.GET.get("checkpayment", 0)
     checkPayment = int(checkPayment)
     _user = request.user
+    
+    unfinishedOrder = VIPOrder.objects.filter(user_id=_user['uid']).filter(state=2)
+    if unfinishedOrder:
+        orderstate = 1
+    else:
+        orderstate = 0
+    
     if not oid:
         return Jsonify({"status":False, "error":"1101", "error_message":u"输入信息不足。"})
     oid = int(oid)
@@ -227,7 +234,7 @@ def getOrder(request):
             address = address.toDict()
         else:
             address=""
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "user":_user, "detail":u"同仓存取快递费: 6元。"})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "address":address, "thinglist":thingList, "user":_user, "detail":u"同仓存取快递费: 6元。", "processing":orderstate, "state":bool(_user["vip"])})
     else:
         return Jsonify({"status":False, "error":"1302", "error_message":u"订单不存在。"})
 
