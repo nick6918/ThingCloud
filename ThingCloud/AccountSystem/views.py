@@ -181,15 +181,11 @@ def loginByPhone(request):
 	salt = Salt()
 	if not user:
 		return Jsonify({"status":False, "error":"1107", "error_message":"手机号未注册, 请首先注册。"})
+	password = user[0]['password']
 	user = user[0].toDict()
-	if user['password'] == salt.md5(user['salt']+salt.md5(user_password)):
+	if password == salt.md5(user['salt']+salt.md5(user_password)):
 		user['session'] = updateSession(user)
 		#some info is not allowed to be known by clients
-		del user['salt']
-		del user['password']
-		del user['register']
-		del user['loginIp']
-		del user['lastLogin']
 		return Jsonify({"status":True, "error":"", "error_message":"", "user":dictPolish(user)})
 	else:
 		return Jsonify({"status":False, "error":"1106", "error_message":"密码有误, 请重新输入"})
