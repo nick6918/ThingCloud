@@ -55,7 +55,7 @@ def getVIPfee(month, level, typeid):
     return fee
 
 def getDeliveryfee(_user, cmid):
-	if _user.vipinfo:
+	if _user['vipinfo']:
 		detail = u'同仓物流费用 6元\n会员免费 0元'
 		return (0, detail)
 	else:
