@@ -106,7 +106,7 @@ def confirmOrder(request):
         ##wechat order
         if fee==0:
             _order.paid_time=datetime.now()
-            _order.state=1
+            _order.state=3
             _order.save()
             return Jsonify({"status":True, "error":"", "error_message":"", "order":_order.toDict(), "detail":u"会员免运费: 0元。"})
         else:
