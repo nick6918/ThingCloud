@@ -100,6 +100,7 @@ def vipConfirm(request):
         result = checkWechatOrder(model_to_dict(_order), 1)
         try:
             root = ET.fromstring(result)
+            user = User.objects.filter(uid=_user["uid"])[0]
             if root.find("return_code").text == "SUCCESS" and root.find("trade_state").text == "SUCCESS":
                 _order.state = 1
                 _order.save()
@@ -107,20 +108,21 @@ def vipConfirm(request):
                 if not _user['vip']:
                     _vip = VIP()
                     _vip.save()
-                    user = User.objects.filter(uid=_user["uid"])[0]
                     user.vip = _vip
                     user.save()
+                    _vip.addNewPackage(newPackage)
                 else:
                     _vip = VIP.objects.filter(vid=_user['vip'])
                     if not _vip:
                         return Jsonify({"status":False, "error":"1141", "error_message":u"会员状态有误， 请联系客服。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user})
                     _vip = _vip[0]
                     _vip.addNewPackage(newPackage)
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":_user, "processing":0})
+                    
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":user.toDict(), "processing":0})
             else:
                 _order.state=2
                 _order.save()
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":_user, "processing":1})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":user.toDict(), "processing":1})
         except Exception, e:
             logger.error(e)
             return Jsonify({"status":False, "error":"1512", "error_message":u"微信查询失败。", "processing":1, "state":bool(_user['vip']), "user":_user})
