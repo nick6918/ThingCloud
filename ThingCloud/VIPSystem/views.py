@@ -114,11 +114,11 @@ def vipConfirm(request):
                 else:
                     _vip = VIP.objects.filter(vid=_user['vip'])
                     if not _vip:
-                        return Jsonify({"status":False, "error":"1141", "error_message":u"会员状态有误， 请联系客服。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user})
+                        return Jsonify({"status":False, "error":"1141", "error_message":u"会员状态有误， 请联系客服。", "processing":has_processing_order, "state":bool(_user['vip']), "user":_user, "vip":user.toDict()["vipinfo"]})
                     _vip = _vip[0]
                     _vip.addNewPackage(newPackage)
                     
-                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":user.toDict(), "processing":0})
+                return Jsonify({"status":True, "error":"", "error_message":u"", "state":bool(_user['vip']), "user":user.toDict(), "processing":0, "vip":user.toDict()["vipinfo"]})
             else:
                 _order.state=2
                 _order.save()
