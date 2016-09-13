@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from datetime import datetime
 from django.forms.models import model_to_dict
 from VIPSystem.models import VIP
 
@@ -65,8 +66,8 @@ class InviteCode(models.Model):
 	icid = models.AutoField(primary_key=True)
 	state = models.IntegerField()
 	code = models.CharField(max_length=50)
-	timestamp = models.DateTimeField()
-	uid_belong = models.CharField(max_length=20)
+	timestamp = models.DateTimeField(default=datetime.now())
+	uid_belong = models.CharField(max_length=20, null=True, default=None)
 	notes = models.CharField(max_length=100)
 
 	class Meta:
