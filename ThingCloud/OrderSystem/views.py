@@ -46,7 +46,7 @@ def generateOrder(request):
         order.showid=newid
         order.save()
         order.flushInfo()
-        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":"", "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
+        return Jsonify({"status":True, "error":"", "error_message":"", "order":order.toDict(), "address":{}, "processing":orderstate, "state":bool(_user["vip"]), "user":_user})
     else:
         _addr_object = _addr[0]
         _addr = _addr_object.toDict()
